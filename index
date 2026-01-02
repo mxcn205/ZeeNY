@@ -11,11 +11,9 @@
 
       --ink: rgba(25, 18, 22, 0.92);
       --muted: rgba(25, 18, 22, 0.62);
-
       --border: rgba(25, 18, 22, 0.14);
 
       --radius-lg: 18px;
-      --radius-md: 14px;
 
       --ease: cubic-bezier(.22, 1, .36, 1);
       --t: 520ms;
@@ -44,7 +42,7 @@
       opacity: 0.7;
     }
 
-    /* FULL PAGE scrapbook: removed outer rounded rectangles */
+    /* FULL PAGE scrapbook */
     .scrapbook{
       position: relative;
       height: 100%;
@@ -58,7 +56,7 @@
       overflow: hidden;
     }
 
-    /* Page transitions (page lift) */
+    /* Page transitions */
     .page{
       position: absolute;
       inset: 0;
@@ -125,7 +123,7 @@
       backdrop-filter: blur(8px);
     }
 
-    /* Boards grid (no outer frames) */
+    /* Boards grid */
     .boardGrid{
       height: 100%;
       min-height: 0;
@@ -167,7 +165,6 @@
     .h4{ grid-row: span 4; }
     .h5{ grid-row: span 5; }
 
-    /* Mobile: stack boards */
     @media (max-width: 760px){
       .board{ grid-column: span 12 !important; grid-row: span 4 !important; }
     }
@@ -194,9 +191,7 @@
       user-select: none;
     }
 
-    /* =================
-       Left/Right arrows
-       ================= */
+    /* Left/Right arrows */
     .navArrow{
       position: fixed;
       top: 50%;
@@ -222,16 +217,13 @@
     .navArrow:active{
       transform: translateY(-50%) scale(0.99);
     }
-
     .navArrow.left{ left: 14px; }
     .navArrow.right{ right: 14px; }
-
     .navArrow[disabled]{
       opacity: 0.35;
       cursor: default;
       pointer-events: none;
     }
-
     .navArrow svg{
       width: 20px;
       height: 20px;
@@ -243,7 +235,7 @@
     }
 
     /* =========================
-       Tweet section presentation
+       Tweets section (NO rounded rectangle background)
        ========================= */
     .tweetSection{
       position: relative;
@@ -254,7 +246,7 @@
       padding: clamp(12px, 2vw, 26px);
     }
 
-    /* Intro text (5s) */
+    /* Intro text */
     .tweetIntro{
       position: absolute;
       inset: 0;
@@ -262,7 +254,8 @@
       place-items: center;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 700ms var(--ease);
+      transition: opacity 420ms var(--ease);
+      z-index: 5;
     }
     .tweetIntro.show{ opacity: 1; }
     .tweetIntro .box{
@@ -283,49 +276,67 @@
     .tweetDim{
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.00);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 420ms ease, background 420ms ease;
+      transition: opacity 380ms ease;
+      z-index: 1;
     }
     .tweetDim.on{
       opacity: 1;
-      background: rgba(0,0,0,0.14); /* subtle */
+      background: rgba(0,0,0,0.18);
     }
 
+    /* Stage for single tweet viewing */
     .tweetStage{
       width: min(980px, 100%);
-      height: min(720px, calc(100vh - 120px));
+      height: min(760px, calc(100vh - 120px));
       display: grid;
       place-items: center;
       position: relative;
       z-index: 2;
-      opacity: 0;
-      transform: translateY(10px) scale(0.99);
-      transition: opacity 520ms var(--ease), transform 520ms var(--ease);
       pointer-events: none;
     }
-    .tweetStage.on{
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
+    .tweetStage.on{ pointer-events: auto; }
 
+    /* We show the entire image: object-fit: contain */
     .tweetCard{
+      position: absolute;
       width: 100%;
       height: 100%;
-      border-radius: var(--radius-lg);
+      border-radius: 16px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.06);
       box-shadow: 0 34px 90px rgba(0,0,0,0.30);
       display: grid;
       place-items: center;
+
+      opacity: 0;
+      transform: translateX(40px) scale(0.98);
+      filter: blur(2px);
+      transition:
+        opacity 520ms var(--ease),
+        transform 520ms var(--ease),
+        filter 520ms var(--ease);
     }
+    .tweetCard.active{
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      filter: blur(0);
+    }
+
+    /* Leaving card shrinks and “joins the background” */
+    .tweetCard.shrinkAway{
+      opacity: 1;
+      transform: translateX(-40px) scale(0.28) rotate(-2deg);
+      filter: blur(0.5px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+    }
+
     .tweetCard img{
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: contain; /* IMPORTANT: show full tweet */
       display: block;
       background: rgba(0,0,0,0.05);
     }
@@ -343,16 +354,101 @@
       border-radius: 999px;
       backdrop-filter: blur(8px);
       user-select: none;
-      z-index: 3;
+      z-index: 4;
       opacity: 0;
       transition: opacity 320ms ease;
       pointer-events: none;
     }
     .tweetHint.on{ opacity: 1; }
 
-    /* ================
-       Board Zoom Modal
-       ================ */
+    /* Collage view after last tweet */
+    .tweetCollage{
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: scale(0.985);
+      filter: blur(1px);
+      pointer-events: none;
+      transition: opacity 520ms var(--ease), transform 520ms var(--ease), filter 520ms var(--ease);
+    }
+    .tweetCollage.on{
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0);
+      pointer-events: auto;
+    }
+
+    .tweetCollageGrid{
+      height: 100%;
+      width: 100%;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 120px;
+      align-content: start;
+    }
+    @media (max-width: 980px){ .tweetCollageGrid{ grid-auto-rows: 105px; } }
+    @media (max-width: 760px){ .tweetCollageGrid{ grid-auto-rows: 96px; } }
+
+    .tweetThumb{
+      grid-column: span 6;
+      grid-row: span 3;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid rgba(25,18,22,0.14);
+      background: rgba(255,255,255,0.20);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.16);
+      cursor: zoom-in;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+    .tweetThumb:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 22px 46px rgba(0,0,0,0.20);
+      border-color: rgba(25,18,22,0.22);
+    }
+    .tweetThumb img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Make collage feel scrapbook-y: varied sizes */
+    .tw_w4{ grid-column: span 4; }
+    .tw_w5{ grid-column: span 5; }
+    .tw_w7{ grid-column: span 7; }
+    .tw_w8{ grid-column: span 8; }
+    .tw_h3{ grid-row: span 3; }
+    .tw_h4{ grid-row: span 4; }
+    .tw_h5{ grid-row: span 5; }
+
+    @media (max-width: 760px){
+      .tweetThumb{ grid-column: span 12 !important; grid-row: span 4 !important; }
+    }
+
+    .collageHint{
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: rgba(25,18,22,0.62);
+      background: rgba(255,255,255,0.46);
+      border: 1px solid rgba(25,18,22,0.12);
+      padding: 8px 10px;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+      user-select: none;
+      z-index: 4;
+      opacity: 0;
+      transition: opacity 320ms ease;
+      pointer-events: none;
+    }
+    .collageHint.on{ opacity: 1; }
+
+    /* Zoom overlay */
     .overlay{
       position: fixed;
       inset: 0;
@@ -449,19 +545,23 @@
       <!-- PAGE 4: Tweets -->
       <section class="page" data-page="tweets">
         <div class="tweetSection" id="tweetSection">
+
           <div class="tweetDim" id="tweetDim"></div>
 
           <div class="tweetIntro" id="tweetIntro">
             <div class="box">top tweets this year</div>
           </div>
 
-          <div class="tweetStage" id="tweetStage">
-            <div class="tweetCard">
-              <img id="tweetImg" src="" alt="Top tweet" />
-            </div>
+          <!-- Single-tweet stage -->
+          <div class="tweetStage" id="tweetStage" aria-hidden="true"></div>
+
+          <!-- Collage stage -->
+          <div class="tweetCollage" id="tweetCollage" aria-hidden="true">
+            <div class="collageHint" id="collageHint">click a tweet to zoom • → continues</div>
+            <div class="tweetCollageGrid" id="tweetCollageGrid"></div>
           </div>
 
-          <div class="tweetHint" id="tweetHint">← → to scroll • after the last one, → continues</div>
+          <div class="tweetHint" id="tweetHint">← → to scroll • last → shows scrapbook</div>
         </div>
       </section>
 
@@ -491,7 +591,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
   </button>
 
-  <!-- Zoom overlay (for boards) -->
+  <!-- Zoom overlay -->
   <div class="overlay" id="overlay" aria-hidden="true"></div>
 
   <script>
@@ -502,7 +602,9 @@
     const totalPages = pages.length;
     let pageIdx = 0;
     let pageAnimating = false;
-    let navLocked = false; // used during tweet intro
+
+    // Tweet UI needs to intercept arrows while on that page
+    let navLocked = false; // locks nav during intro unless user clicks left/right rules apply
 
     const leftArrow = document.getElementById('leftArrow');
     const rightArrow = document.getElementById('rightArrow');
@@ -512,27 +614,18 @@
     }
 
     function updateArrowDisabled(){
-      // During tweet intro we lock nav entirely
-      if(navLocked){
-        leftArrow.toggleAttribute('disabled', true);
-        rightArrow.toggleAttribute('disabled', true);
+      // During tweet intro, arrows should still work (special behavior),
+      // so we don't hard-disable them here.
+      if(currentPageKey() === 'tweets'){
+        // tweet controller sets these
         return;
       }
-
-      const key = currentPageKey();
-
-      // On tweets page, arrows are handled by tweet carousel state:
-      if(key === 'tweets'){
-        // We'll set disabled states inside tweet controller.
-        return;
-      }
-
       leftArrow.toggleAttribute('disabled', pageIdx === 0);
       rightArrow.toggleAttribute('disabled', pageIdx === totalPages - 1);
     }
 
     function goToPage(next){
-      if(pageAnimating || navLocked) return;
+      if(pageAnimating) return;
       if(next === pageIdx) return;
       if(next < 0 || next >= totalPages) return;
 
@@ -540,7 +633,6 @@
       const current = pages[pageIdx];
       const incoming = pages[next];
 
-      // Leaving tweets page: reset tweet state immediately
       if(current?.dataset?.page === 'tweets'){
         tweetReset();
       }
@@ -554,7 +646,6 @@
         pageIdx = next;
         pageAnimating = false;
 
-        // Enter hooks
         if(incoming?.dataset?.page === 'tweets'){
           tweetEnter();
         }else{
@@ -571,9 +662,12 @@
     // =========================
     const tweetIntro = document.getElementById('tweetIntro');
     const tweetStage = document.getElementById('tweetStage');
-    const tweetImg = document.getElementById('tweetImg');
     const tweetDim = document.getElementById('tweetDim');
     const tweetHint = document.getElementById('tweetHint');
+
+    const tweetCollage = document.getElementById('tweetCollage');
+    const tweetCollageGrid = document.getElementById('tweetCollageGrid');
+    const collageHint = document.getElementById('collageHint');
 
     const tweets = [
       "assets/ZeeNYTweet1.png",
@@ -586,95 +680,248 @@
       "assets/ZeeNYTweet8.png",
     ];
 
+    // Modes inside tweet page:
+    // - "intro" (3s) -> user can left=prev page, right=skip to tweets
+    // - "carousel" (single tweet with transitions)
+    // - "collage" (all 8 shown)
+    let tweetMode = "idle";
     let tweetIdx = 0;
-    let tweetReady = false;
     let tweetTimers = [];
+    let tweetAnimating = false;
 
     function clearTweetTimers(){
       tweetTimers.forEach(t => clearTimeout(t));
       tweetTimers = [];
     }
 
-    function tweetReset(){
-      clearTweetTimers();
-      navLocked = false;
-      tweetReady = false;
-      tweetIdx = 0;
-
-      // Hide everything
-      tweetIntro.classList.remove('show');
-      tweetStage.classList.remove('on');
-      tweetDim.classList.remove('on');
-      tweetHint.classList.remove('on');
-
-      // Restore normal page arrow behavior
-      updateArrowDisabled();
-    }
-
-    function tweetSetArrowDisabled(){
-      // When tweetReady: left at first -> go prev section, right at end -> go next section
-      // So we keep arrows enabled always, unless navLocked.
-      if(navLocked){
-        leftArrow.toggleAttribute('disabled', true);
-        rightArrow.toggleAttribute('disabled', true);
-        return;
-      }
+    function tweetSetArrowState(){
+      // Always keep arrows enabled on tweet page; behavior is contextual.
       leftArrow.toggleAttribute('disabled', false);
       rightArrow.toggleAttribute('disabled', false);
     }
 
-    function showTweet(index){
-      tweetIdx = Math.max(0, Math.min(tweets.length - 1, index));
-      tweetImg.src = tweets[tweetIdx];
+    function tweetReset(){
+      clearTweetTimers();
+      navLocked = false;
+      tweetMode = "idle";
+      tweetIdx = 0;
+      tweetAnimating = false;
 
-      // Highlight tweet, dim rest of screen
-      tweetDim.classList.add('on');
+      tweetIntro.classList.remove('show');
+      tweetStage.innerHTML = "";
+      tweetStage.classList.remove('on');
+      tweetStage.setAttribute('aria-hidden','true');
+
+      tweetDim.classList.remove('on');
+      tweetHint.classList.remove('on');
+
+      tweetCollage.classList.remove('on');
+      tweetCollage.setAttribute('aria-hidden','true');
+      collageHint.classList.remove('on');
+      tweetCollageGrid.innerHTML = "";
+
+      updateArrowDisabled();
+    }
+
+    function buildTweetCard(src){
+      const card = document.createElement('div');
+      card.className = 'tweetCard';
+      card.innerHTML = `<img src="${src}" alt="Top tweet" />`;
+      return card;
+    }
+
+    function showTweetCarousel(startIndex = 0, {instant=false} = {}){
+      tweetMode = "carousel";
+      tweetIdx = Math.max(0, Math.min(tweets.length - 1, startIndex));
       tweetStage.classList.add('on');
+      tweetStage.setAttribute('aria-hidden','false');
+
+      tweetCollage.classList.remove('on');
+      tweetCollage.setAttribute('aria-hidden','true');
+      collageHint.classList.remove('on');
+
+      tweetDim.classList.add('on');
       tweetHint.classList.add('on');
 
-      tweetSetArrowDisabled();
+      tweetSetArrowState();
+
+      // clear stage and mount current card
+      tweetStage.innerHTML = "";
+      const card = buildTweetCard(tweets[tweetIdx]);
+      tweetStage.appendChild(card);
+
+      if(instant){
+        // no slide-in on first render
+        card.classList.add('active');
+      }else{
+        requestAnimationFrame(()=> card.classList.add('active'));
+      }
+    }
+
+    function animateToTweet(nextIndex){
+      if(tweetAnimating) return;
+      if(tweetMode !== "carousel") return;
+
+      const clamped = Math.max(0, Math.min(tweets.length - 1, nextIndex));
+      if(clamped === tweetIdx) return;
+
+      tweetAnimating = true;
+
+      const oldCard = tweetStage.querySelector('.tweetCard');
+      const newCard = buildTweetCard(tweets[clamped]);
+      // New tweet starts off-screen right; becomes active to slide in
+      tweetStage.appendChild(newCard);
+
+      // Force reflow so transitions apply
+      void newCard.offsetWidth;
+
+      // Start animation:
+      // - old shrinks away into background
+      // - new slides in over it
+      oldCard.classList.remove('active');
+      oldCard.classList.add('shrinkAway');
+
+      requestAnimationFrame(() => {
+        newCard.classList.add('active');
+      });
+
+      // Cleanup after transition
+      setTimeout(() => {
+        oldCard.remove();
+        tweetIdx = clamped;
+        tweetAnimating = false;
+      }, 560);
+    }
+
+    function showTweetCollage(){
+      tweetMode = "collage";
+      tweetAnimating = false;
+
+      // Keep a faint dim to feel like spotlight is gone? We'll turn off dim
+      tweetDim.classList.remove('on');
+      tweetHint.classList.remove('on');
+
+      tweetStage.classList.remove('on');
+      tweetStage.setAttribute('aria-hidden','true');
+      tweetStage.innerHTML = "";
+
+      tweetCollageGrid.innerHTML = "";
+
+      // Scrappy layout: pick some varied spans
+      const layout = [
+        {w:'tw_w7', h:'tw_h5'},
+        {w:'tw_w5', h:'tw_h5'},
+        {w:'tw_w4', h:'tw_h4'},
+        {w:'tw_w8', h:'tw_h4'},
+        {w:'tw_w6', h:'tw_h4'},
+        {w:'tw_w6', h:'tw_h3'},
+        {w:'tw_w5', h:'tw_h3'},
+        {w:'tw_w7', h:'tw_h3'},
+      ];
+
+      tweets.forEach((src, i) => {
+        const item = document.createElement('div');
+        const l = layout[i] || {w:'tw_w6', h:'tw_h4'};
+        item.className = `tweetThumb ${l.w} ${l.h}`;
+        item.dataset.src = src;
+        item.innerHTML = `<img src="${src}" alt="Tweet ${i+1}" />`;
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          // Zoom to view one (reuse overlay zoom)
+          openZoomFromElement(item.querySelector('img'), src);
+        });
+        tweetCollageGrid.appendChild(item);
+      });
+
+      tweetCollage.classList.add('on');
+      tweetCollage.setAttribute('aria-hidden','false');
+      collageHint.classList.add('on');
+
+      tweetSetArrowState();
     }
 
     function tweetEnter(){
-      tweetReset(); // ensure clean state
+      tweetReset();
+      tweetMode = "intro";
       navLocked = true;
-      updateArrowDisabled();
 
-      // Start intro: fade in, hold, fade out, then show first tweet
+      tweetSetArrowState();
+
+      // Show intro immediately
       tweetIntro.classList.add('show');
 
-      // Total “box time” = 5s, with fade in/out baked in
-      // - fade in starts now (CSS 700ms)
-      // - hold until ~4.3s
-      // - fade out for 700ms
+      // Auto proceed after 3s
       tweetTimers.push(setTimeout(() => {
-        tweetIntro.classList.remove('show'); // fade out
-      }, 4300));
-
-      tweetTimers.push(setTimeout(() => {
+        // fade out intro, then show carousel
+        tweetIntro.classList.remove('show');
+        tweetMode = "carousel";
         navLocked = false;
-        tweetReady = true;
-        showTweet(0);
-      }, 5000));
+
+        // small delay so fade-out feels clean
+        setTimeout(() => {
+          showTweetCarousel(0, {instant:false});
+        }, 220);
+      }, 3000));
+    }
+
+    function tweetSkipIntroToCarousel(){
+      if(tweetMode !== "intro") return;
+      clearTweetTimers();
+      tweetIntro.classList.remove('show');
+      tweetMode = "carousel";
+      navLocked = false;
+      showTweetCarousel(0, {instant:true});
     }
 
     function tweetPrev(){
-      if(!tweetReady) return;
-      if(tweetIdx === 0){
-        // go to previous SECTION
+      if(tweetMode === "intro"){
+        // left while text is shown -> previous section
+        clearTweetTimers();
+        tweetIntro.classList.remove('show');
+        navLocked = false;
         prevPage();
-      }else{
-        showTweet(tweetIdx - 1);
+        return;
+      }
+
+      if(tweetMode === "carousel"){
+        if(tweetIdx === 0){
+          // go to previous section
+          prevPage();
+        }else{
+          animateToTweet(tweetIdx - 1);
+        }
+        return;
+      }
+
+      if(tweetMode === "collage"){
+        // from collage, left goes back to carousel last tweet (feels natural)
+        showTweetCarousel(tweets.length - 1, {instant:true});
+        return;
       }
     }
 
     function tweetNext(){
-      if(!tweetReady) return;
-      if(tweetIdx === tweets.length - 1){
-        // clicking right after last tweet advances to next SECTION
+      if(tweetMode === "intro"){
+        // right while text is shown -> skip cooldown and go to tweets
+        tweetSkipIntroToCarousel();
+        return;
+      }
+
+      if(tweetMode === "carousel"){
+        if(tweetIdx === tweets.length - 1){
+          // last tweet: right closes out and shows all 8 in scrapbook format
+          showTweetCollage();
+        }else{
+          animateToTweet(tweetIdx + 1);
+        }
+        return;
+      }
+
+      if(tweetMode === "collage"){
+        // right again advances to next section
         nextPage();
-      }else{
-        showTweet(tweetIdx + 1);
+        return;
       }
     }
 
@@ -682,24 +929,19 @@
     // Arrow handlers (context-aware)
     // =========================
     leftArrow.addEventListener('click', () => {
-      if(navLocked) return;
       if(currentPageKey() === 'tweets') tweetPrev();
       else prevPage();
     });
 
     rightArrow.addEventListener('click', () => {
-      if(navLocked) return;
       if(currentPageKey() === 'tweets') tweetNext();
       else nextPage();
     });
 
     window.addEventListener('keydown', (e) => {
-      // don't hijack typing
       const a = document.activeElement;
       const tag = (a && a.tagName ? a.tagName.toLowerCase() : '');
       if(tag === 'textarea') return;
-
-      if(navLocked) return;
 
       if(e.key === 'ArrowRight' || e.key === 'PageDown'){
         if(currentPageKey() === 'tweets') tweetNext();
@@ -715,22 +957,18 @@
 
     updateArrowDisabled();
 
-    // If initial page is tweets (not the case), trigger:
-    if(currentPageKey() === 'tweets') tweetEnter();
-
     // =========================
-    // Board zoom (pick up + zoom)
+    // Board zoom (reused for boards + collage)
     // =========================
     const overlay = document.getElementById('overlay');
     let zoomEl = null;
     let zoomFromRect = null;
     let zoomOpen = false;
 
-    function openZoom(imgEl){
+    function openZoomFromElement(imgEl, srcOverride=null){
       if(zoomOpen) return;
 
-      const board = imgEl.closest('.board');
-      const src = board?.dataset?.src || imgEl.src;
+      const src = srcOverride || imgEl.src;
       const rect = imgEl.getBoundingClientRect();
       zoomFromRect = rect;
 
@@ -741,7 +979,7 @@
       zoomEl.style.width = rect.width + 'px';
       zoomEl.style.height = rect.height + 'px';
       zoomEl.style.transform = 'translateZ(0)';
-      zoomEl.innerHTML = `<img src="${src}" alt="Zoomed board" />`;
+      zoomEl.innerHTML = `<img src="${src}" alt="Zoomed item" />`;
       document.body.appendChild(zoomEl);
 
       overlay.classList.add('open');
@@ -754,33 +992,28 @@
       const maxW = vw - pad * 2;
       const maxH = vh - pad * 2;
 
-      let ratio = rect.width / rect.height;
-      let w = Math.min(maxW, maxH * ratio);
-      let h = w / ratio;
-      if(h > maxH){ h = maxH; w = h * ratio; }
-
-      const top = (vh - h) / 2;
-      const left = (vw - w) / 2;
-
-      requestAnimationFrame(() => {
-        zoomEl.style.top = top + 'px';
-        zoomEl.style.left = left + 'px';
-        zoomEl.style.width = w + 'px';
-        zoomEl.style.height = h + 'px';
-      });
-
+      // compute target based on natural ratio after load
       const zimg = zoomEl.querySelector('img');
-      zimg.addEventListener('load', () => {
-        const ir = zimg.naturalWidth / zimg.naturalHeight;
-        let ww = Math.min(maxW, maxH * ir);
-        let hh = ww / ir;
-        if(hh > maxH){ hh = maxH; ww = hh * ir; }
+
+      function place(ratio){
+        let ww = Math.min(maxW, maxH * ratio);
+        let hh = ww / ratio;
+        if(hh > maxH){ hh = maxH; ww = hh * ratio; }
         const tt = (vh - hh) / 2;
         const ll = (vw - ww) / 2;
         zoomEl.style.top = tt + 'px';
         zoomEl.style.left = ll + 'px';
         zoomEl.style.width = ww + 'px';
         zoomEl.style.height = hh + 'px';
+      }
+
+      // initial guess
+      const ratioGuess = rect.width / rect.height;
+      requestAnimationFrame(() => place(ratioGuess));
+
+      zimg.addEventListener('load', () => {
+        const ir = zimg.naturalWidth / zimg.naturalHeight;
+        place(ir);
       }, { once: true });
 
       zoomEl.addEventListener('click', closeZoom);
@@ -816,13 +1049,20 @@
       img.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openZoom(img);
+        openZoomFromElement(img);
       });
     });
 
     window.addEventListener('resize', () => {
       if(zoomOpen) closeZoom();
     });
+
+    // =========================
+    // Enter hook for tweets page
+    // =========================
+    // Patch goToPage to call tweetEnter when landing on tweets
+    // (already handled in goToPage), but initial load:
+    if(currentPageKey() === 'tweets') tweetEnter();
   </script>
 </body>
 </html>
