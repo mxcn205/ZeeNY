@@ -13,8 +13,6 @@
       --muted: rgba(25, 18, 22, 0.62);
       --border: rgba(25, 18, 22, 0.14);
 
-      --radius-lg: 18px;
-
       --ease: cubic-bezier(.22, 1, .36, 1);
       --t: 520ms;
     }
@@ -208,7 +206,7 @@
     }
 
     /* =========================
-       Aesthetics (boards) section – same behaviors as tweets
+       Staged sections (intro -> carousel -> collage)
        ========================= */
     .stageSection{
       position: relative;
@@ -257,8 +255,7 @@
       background: rgba(0,0,0,0.18);
     }
 
-    /* IMPORTANT: no surrounding rectangle. Tweet/board should sit directly on background.
-       So stage has NO background/border and cards have NO frame. */
+    /* No surrounding rectangle behind tweet/board. */
     .mediaStage{
       width: 100%;
       height: 100%;
@@ -294,10 +291,7 @@
       filter: blur(0.5px);
     }
 
-    /* Core: show FULL tweet/board, no cropping.
-       We do NOT "fit to fixed aspect ratio" — we size the IMG based on available viewport.
-       For tweets, we want the entire screenshot visible (likes, bottom UI, etc).
-    */
+    /* Show FULL image (no cropping). Also: drop shadow per item. */
     .mediaImg{
       max-width: min(1100px, calc(100vw - 160px));
       max-height: min(820px, calc(100vh - 170px));
@@ -305,13 +299,13 @@
       height: auto;
       display: block;
       object-fit: contain;
-      border-radius: 18px; /* keep rounded corners on the image itself */
-      box-shadow: 0 34px 90px rgba(0,0,0,0.30);
+      border-radius: 18px;
+      /* per-item shadow (not a section rectangle) */
+      filter: drop-shadow(0 24px 42px rgba(0,0,0,0.22));
       user-select: none;
       -webkit-user-drag: none;
     }
 
-    /* Hint pill */
     .hintPill{
       position: absolute;
       bottom: 16px;
@@ -332,7 +326,7 @@
     }
     .hintPill.on{ opacity: 1; }
 
-    /* Collage mode (scattered within screen) */
+    /* Collage mode */
     .collage{
       position: absolute;
       inset: 0;
@@ -369,35 +363,48 @@
     }
     .collageHint.on{ opacity: 1; }
 
-    /* Absolutely-positioned scattered items */
+    /* Scattered items (tweets) — NO rectangle background shadow. Each item gets its own drop shadow. */
     .scatter{
       position: absolute;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 22px 60px rgba(0,0,0,0.22);
-      border: 1px solid rgba(25,18,22,0.12);
-      background: rgba(255,255,255,0.18);
+      overflow: visible;
+      background: transparent;
+      border: none;
+      box-shadow: none;
       cursor: zoom-in;
-      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      transition: transform 160ms ease;
+      will-change: transform;
     }
     .scatter:hover{
       transform: translateY(-2px) rotate(var(--rot));
-      box-shadow: 0 30px 72px rgba(0,0,0,0.26);
-      border-color: rgba(25,18,22,0.20);
     }
     .scatter img{
       width: 100%;
       height: 100%;
-      object-fit: cover;
       display: block;
+      object-fit: contain; /* IMPORTANT: no cropping */
+      border-radius: 18px;
+      filter: drop-shadow(0 22px 40px rgba(0,0,0,0.20));
+      background: transparent;
     }
 
-    /* Aesthetic collage (attachment 4-like) */
-    .aestheticCollage .scatter{
-      border-radius: 14px;
-      box-shadow: 0 26px 70px rgba(0,0,0,0.26);
+    /* EXACT aesthetics collage layout (matches your screenshot) */
+    .aestheticCollageExact .boardItem{
+      position: absolute;
+      cursor: zoom-in;
+      transform-origin: center center;
+      will-change: transform, width, height, top, left;
     }
-
+    .aestheticCollageExact .boardItem img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* no crop */
+      display: block;
+      border-radius: 0px; /* screenshot has clean edges; change to 12px if you want */
+      filter: drop-shadow(0 26px 44px rgba(0,0,0,0.22));
+      background: transparent;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
   </style>
 </head>
 
@@ -421,7 +428,7 @@
         </div>
       </section>
 
-      <!-- PAGE 2: 2025 Aesthetics (La vie en rose -> Noir -> Burgundy -> collage of 3) -->
+      <!-- PAGE 2: 2025 Aesthetics (La vie en rose -> Noir -> Burgundy -> exact collage of 3) -->
       <section class="page" data-page="aesthetics">
         <div class="stageSection" id="aestheticSection">
           <div class="dim" id="aestheticDim"></div>
@@ -433,13 +440,13 @@
           <div class="mediaStage" id="aestheticStage" aria-hidden="true"></div>
           <div class="hintPill" id="aestheticHint">← → to scroll • last → shows scrapbook</div>
 
-          <div class="collage aestheticCollage" id="aestheticCollage" aria-hidden="true">
+          <div class="collage aestheticCollageExact" id="aestheticCollage" aria-hidden="true">
             <div class="collageHint" id="aestheticCollageHint">click a board to zoom • → continues</div>
           </div>
         </div>
       </section>
 
-      <!-- PAGE 3: The good times board (kept as a single page you can zoom) -->
+      <!-- PAGE 3: The good times board -->
       <section class="page" data-page="good-times">
         <div class="stageSection">
           <div class="mediaStage on" aria-hidden="false">
@@ -512,7 +519,6 @@
     function currentPageKey(){ return pages[pageIdx]?.dataset?.page || ''; }
 
     function updateArrowDisabled(){
-      // For "aesthetics" and "tweets", arrows are contextual, keep enabled.
       const k = currentPageKey();
       if(k === 'aesthetics' || k === 'tweets'){
         leftArrow.toggleAttribute('disabled', false);
@@ -533,7 +539,6 @@
       const current = pages[pageIdx];
       const incoming = pages[next];
 
-      // reset staged sections when leaving them
       if(current?.dataset?.page === 'tweets') tweetReset();
       if(current?.dataset?.page === 'aesthetics') aestheticReset();
 
@@ -546,7 +551,6 @@
         pageIdx = next;
         pageAnimating = false;
 
-        // enter staged sections when arriving
         if(incoming?.dataset?.page === 'tweets') tweetEnter();
         if(incoming?.dataset?.page === 'aesthetics') aestheticEnter();
 
@@ -558,7 +562,7 @@
     function prevPage(){ goToPage(Math.max(0, pageIdx - 1)); }
 
     // =========================
-    // Shared staged-section helpers (intro -> carousel -> collage)
+    // Shared helpers
     // =========================
     function clearTimers(list){ list.forEach(t => clearTimeout(t)); list.length = 0; }
 
@@ -578,13 +582,11 @@
       return card;
     }
 
-    // Scattered layout generator: ensures items cover the screen (fixes Attachment 3)
-    function scatterInto(container, sources, {kind="tweet"} = {}){
+    // Tweets collage scatter (no crop, full image visible)
+    function scatterTweets(container, sources){
       container.innerHTML = "";
 
-      // Define per-item transforms so they cover the viewport, not just bottom.
-      // Values are in percentages of viewport for robust resizing.
-      const layouts = (kind === "tweet") ? [
+      const layouts = [
         {x:6,  y:10,  w:34, rot:-6},
         {x:54, y:8,   w:40, rot:5},
         {x:10, y:48,  w:38, rot:4},
@@ -593,11 +595,6 @@
         {x:2,  y:68,  w:32, rot:-3},
         {x:66, y:66,  w:30, rot:6},
         {x:36, y:72,  w:34, rot:-2},
-      ] : [
-        // 3-board layout like Attachment 4
-        {x:6,  y:18, w:36, rot:-8},
-        {x:32, y:8,  w:40, rot:0},
-        {x:58, y:18, w:34, rot:10},
       ];
 
       sources.forEach((src, i) => {
@@ -608,16 +605,11 @@
         item.style.left = l.x + 'vw';
         item.style.top  = l.y + 'vh';
         item.style.width = l.w + 'vw';
+        item.style.height = `min(${Math.max(28, l.w * 0.78)}vw, 44vh)`; // sized box; IMG is contain (no crop)
         item.style.setProperty('--rot', (l.rot||0) + 'deg');
         item.style.transform = `rotate(${l.rot||0}deg)`;
 
-        // Height: tweets are tall-ish; boards are more square-ish
-        item.style.height = (kind === "tweet")
-          ? `min(${Math.max(28, l.w * 0.78)}vw, 44vh)`
-          : `min(${Math.max(26, l.w * 0.62)}vw, 54vh)`;
-
-        item.dataset.src = src;
-        item.innerHTML = `<img src="${src}" alt="${kind} ${i+1}" />`;
+        item.innerHTML = `<img src="${src}" alt="tweet ${i+1}" />`;
         item.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -630,7 +622,7 @@
     }
 
     // =========================
-    // AESTHETICS section (La vie en rose -> Noir -> Burgundy -> collage)
+    // AESTHETICS section (exact scrapbook layout in collage mode)
     // =========================
     const aestheticIntro = document.getElementById('aestheticIntro');
     const aestheticStage = document.getElementById('aestheticStage');
@@ -640,9 +632,9 @@
     const aestheticCollageHint = document.getElementById('aestheticCollageHint');
 
     const aesthetics = [
-      "assets/ZeeNYBoardCoquette.png", // La vie en rose (first)
-      "assets/ZeeNYBoardVogue.png",    // Noir
-      "assets/ZeeNYBoardBurgundy.png", // Burgundy
+      "assets/ZeeNYBoardCoquette.png", // La vie en rose (left)
+      "assets/ZeeNYBoardVogue.png",    // Noir (center)
+      "assets/ZeeNYBoardBurgundy.png", // Burgundy (right)
     ];
 
     let aestheticMode = "idle"; // intro | carousel | collage
@@ -666,7 +658,6 @@
 
       aestheticCollage.classList.remove('on');
       aestheticCollage.setAttribute('aria-hidden','true');
-      aestheticCollageHint.classList.remove('on');
       aestheticCollage.innerHTML = `<div class="collageHint" id="aestheticCollageHint">click a board to zoom • → continues</div>`;
     }
 
@@ -717,6 +708,77 @@
       }, 560);
     }
 
+    // EXACT collage: keep original aspect ratios, no crop, match screenshot layout
+    function renderAestheticCollageExact(){
+      aestheticCollage.innerHTML = `<div class="collageHint on" id="aestheticCollageHint">click a board to zoom • → continues</div>`;
+
+      // Positions/rotations tuned to match your screenshot.
+      // NOTE: Width is set in vw; height is computed from each image's natural aspect ratio.
+      const items = [
+        // left board (La vie en rose)
+        { src: aesthetics[0], left: "3.5vw",  top: "34vh", width: "44vw", rotate: "-10deg", z: 1 },
+        // center board (Noir)
+        { src: aesthetics[1], left: "26vw",   top: "6vh",  width: "48vw", rotate: "-6deg",  z: 2 },
+        // right board (Burgundy)
+        { src: aesthetics[2], left: "61vw",   top: "20vh", width: "34vw", rotate: "12deg",  z: 3 },
+      ];
+
+      const created = [];
+
+      items.forEach((it) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'boardItem';
+        wrap.style.left = it.left;
+        wrap.style.top = it.top;
+        wrap.style.width = it.width;
+        wrap.style.zIndex = String(it.z);
+        wrap.style.transform = `rotate(${it.rotate})`;
+        wrap.dataset.src = it.src;
+
+        const img = document.createElement('img');
+        img.src = it.src;
+        img.alt = "Aesthetic board";
+        img.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openZoomFromElement(img, it.src);
+        });
+
+        wrap.appendChild(img);
+        aestheticCollage.appendChild(wrap);
+        created.push({wrap, img});
+      });
+
+      // Compute heights from natural aspect ratios so NOTHING is cropped.
+      function applyHeights(){
+        created.forEach(({wrap, img}) => {
+          const w = wrap.getBoundingClientRect().width;
+          const nw = img.naturalWidth || 1;
+          const nh = img.naturalHeight || 1;
+          const ratio = nw / nh; // w / h
+          const h = w / ratio;
+          wrap.style.height = h + "px";
+        });
+      }
+
+      // Wait until all images loaded (or already cached), then size.
+      let pending = created.length;
+      created.forEach(({img}) => {
+        if(img.complete && img.naturalWidth){
+          pending--;
+          if(pending === 0) applyHeights();
+        } else {
+          img.addEventListener('load', () => {
+            pending--;
+            if(pending === 0) applyHeights();
+          }, {once:true});
+        }
+      });
+
+      // Resize handler
+      window.addEventListener('resize', applyHeights, {passive:true});
+    }
+
     function aestheticShowCollage(){
       aestheticMode = "collage";
       aestheticAnimating = false;
@@ -728,9 +790,7 @@
       aestheticStage.setAttribute('aria-hidden','true');
       aestheticStage.innerHTML = "";
 
-      // scatter 3 boards like Attachment 4
-      aestheticCollage.innerHTML = `<div class="collageHint on" id="aestheticCollageHint">click a board to zoom • → continues</div>`;
-      scatterInto(aestheticCollage, aesthetics, {kind:"board"});
+      renderAestheticCollageExact();
 
       aestheticCollage.classList.add('on');
       aestheticCollage.setAttribute('aria-hidden','false');
@@ -741,7 +801,6 @@
       aestheticMode = "intro";
       aestheticIntro.classList.add('show');
 
-      // 3s cooldown, then fade out, then show first board
       aestheticTimers.push(setTimeout(() => {
         aestheticIntro.classList.remove('show');
         aestheticMode = "carousel";
@@ -759,7 +818,6 @@
 
     function aestheticPrev(){
       if(aestheticMode === "intro"){
-        // left during intro: go previous page
         clearTimers(aestheticTimers);
         aestheticIntro.classList.remove('show');
         prevPage();
@@ -771,7 +829,6 @@
         return;
       }
       if(aestheticMode === "collage"){
-        // go back to last board
         aestheticShowCarousel(aesthetics.length - 1, {instant:true});
         return;
       }
@@ -779,13 +836,11 @@
 
     function aestheticNext(){
       if(aestheticMode === "intro"){
-        // right during intro: skip cooldown
         aestheticSkipIntro();
         return;
       }
       if(aestheticMode === "carousel"){
         if(aestheticIdx === aesthetics.length - 1){
-          // after Burgundy -> show 3-board collage
           aestheticShowCollage();
         }else{
           aestheticAnimateTo(aestheticIdx + 1);
@@ -793,7 +848,6 @@
         return;
       }
       if(aestheticMode === "collage"){
-        // advance to next page (good times)
         nextPage();
         return;
       }
@@ -807,7 +861,6 @@
     const tweetDim = document.getElementById('tweetDim');
     const tweetHint = document.getElementById('tweetHint');
     const tweetCollage = document.getElementById('tweetCollage');
-    const tweetCollageHint = document.getElementById('tweetCollageHint');
 
     const tweets = [
       "assets/ZeeNYTweet1.png",
@@ -903,9 +956,8 @@
       tweetStage.setAttribute('aria-hidden','true');
       tweetStage.innerHTML = "";
 
-      // scatter all 8 across screen (fix Attachment 3)
       tweetCollage.innerHTML = `<div class="collageHint on" id="tweetCollageHint">click a tweet to zoom • → continues</div>`;
-      scatterInto(tweetCollage, tweets, {kind:"tweet"});
+      scatterTweets(tweetCollage, tweets);
 
       tweetCollage.classList.add('on');
       tweetCollage.setAttribute('aria-hidden','false');
@@ -1004,6 +1056,7 @@
       }
       if(e.key === 'Home') goToPage(0);
       if(e.key === 'End') goToPage(totalPages - 1);
+      if(e.key === 'Escape') closeZoom();
     });
 
     updateArrowDisabled();
@@ -1090,7 +1143,6 @@
     }
 
     overlay.addEventListener('click', closeZoom);
-    window.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeZoom(); });
     window.addEventListener('resize', () => { if(zoomOpen) closeZoom(); });
 
     // Initial staged page hooks
