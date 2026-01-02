@@ -3,1034 +3,787 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Year Wrapped — Web App</title>
+  <title>Scrapbook Wrapped</title>
 
   <style>
-    /* =========================
-       QUICK CUSTOMIZATION
-       ========================= */
     :root{
-      /* change these to match your aesthetic */
-      --bg1: #0b0d12;
-      --bg2: #111827;
-      --card: rgba(255,255,255,0.08);
-      --card2: rgba(255,255,255,0.10);
-      --border: rgba(255,255,255,0.14);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.70);
-      --muted2: rgba(255,255,255,0.55);
+      /* Solid pink background for now */
+      --bg: #f7c7d9;
 
-      --accent1: #a78bfa; /* lavender */
-      --accent2: #fb7185; /* rose */
-      --accent3: #22c55e; /* green */
-      --shadow: 0 20px 60px rgba(0,0,0,0.55);
+      --ink: rgba(25, 18, 22, 0.92);
+      --muted: rgba(25, 18, 22, 0.62);
+
+      --paper: rgba(255,255,255,0.66);
+      --paper2: rgba(255,255,255,0.42);
+      --border: rgba(25, 18, 22, 0.12);
+
+      --shadow: 0 24px 70px rgba(0,0,0,0.22);
+      --shadow2: 0 18px 40px rgba(0,0,0,0.18);
 
       --radius-xl: 26px;
       --radius-lg: 18px;
       --radius-md: 14px;
 
-      --maxw: 980px;
-
-      /* transition speed */
+      --maxw: 1100px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
       --t: 520ms;
-      --t2: 900ms;
-      --ease: cubic-bezier(.2,.9,.2,1);
     }
 
-    /* =========================
-       BASE
-       ========================= */
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
-      background: radial-gradient(1200px 600px at 15% 10%, rgba(167,139,250,0.22), transparent 60%),
-                  radial-gradient(900px 700px at 85% 20%, rgba(251,113,133,0.18), transparent 55%),
-                  linear-gradient(180deg, var(--bg1), var(--bg2));
-      overflow:hidden;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      overflow: hidden;
     }
 
-    /* soft moving grain */
-    .grain{
-      pointer-events:none;
-      position:fixed; inset:-30%;
-      opacity:0.12;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
-      background-size:220px 220px;
-      transform: translate3d(0,0,0);
-      animation: grainMove 8s linear infinite;
-    }
-    @keyframes grainMove{
-      0%{transform:translate3d(-2%, -2%, 0)}
-      50%{transform:translate3d(2%, 1%, 0)}
-      100%{transform:translate3d(-2%, -2%, 0)}
+    /* subtle paper-y overlay (still works even on solid bg) */
+    .paperWash{
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(1200px 700px at 18% 10%, rgba(255,255,255,0.26), transparent 60%),
+        radial-gradient(900px 700px at 85% 15%, rgba(255,255,255,0.18), transparent 55%),
+        radial-gradient(700px 600px at 55% 90%, rgba(255,255,255,0.16), transparent 60%);
+      mix-blend-mode: soft-light;
+      opacity: 0.7;
     }
 
-    /* =========================
-       APP LAYOUT
-       ========================= */
     .app{
-      height:100%;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 16px;
     }
 
     .frame{
-      width:min(var(--maxw), 100%);
-      height:min(680px, calc(100vh - 150px));
+      width: min(var(--maxw), 100%);
+      height: min(760px, calc(100vh - 120px));
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.22);
       box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
+      overflow: hidden;
+      position: relative;
       backdrop-filter: blur(10px);
     }
 
-    /* top bar */
+    /* Header */
     .topbar{
-      position:absolute; inset:0 0 auto 0;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.06));
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(25, 18, 22, 0.10);
+      background: linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.18));
       z-index: 10;
     }
 
     .brand{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 220px;
     }
     .brand .title{
-      font-weight: 700;
-      letter-spacing: 0.2px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
       font-size: 14px;
-      color: rgba(255,255,255,0.92);
+      line-height: 1.1;
     }
     .brand .sub{
       font-size: 12px;
-      color: var(--muted2);
+      color: var(--muted);
     }
 
     .controls{
-      display:flex;
-      align-items:center;
-      gap:8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .btn{
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.92);
+      border: 1px solid rgba(25, 18, 22, 0.16);
+      background: rgba(255,255,255,0.42);
+      color: var(--ink);
       padding: 9px 12px;
       border-radius: 999px;
-      cursor:pointer;
-      font-weight: 650;
+      cursor: pointer;
+      font-weight: 750;
       font-size: 12px;
-      letter-spacing: 0.15px;
       transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
-      user-select:none;
+      user-select: none;
     }
-    .btn:hover{ background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.20); }
+    .btn:hover{
+      background: rgba(255,255,255,0.58);
+      border-color: rgba(25, 18, 22, 0.22);
+    }
     .btn:active{ transform: translateY(1px) scale(0.99); }
 
-    .hint{
-      margin-top: 10px;
-      width:min(var(--maxw), 100%);
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      color: var(--muted2);
-      font-size: 12px;
-      padding: 0 4px;
-      user-select:none;
-    }
-
-    /* =========================
-       SLIDES ENGINE
-       ========================= */
     .slides{
-      position:absolute;
-      inset: 56px 0 0 0; /* below topbar */
-      height: calc(100% - 56px);
-      overflow:hidden;
+      position: absolute;
+      inset: 58px 0 0 0;
+      height: calc(100% - 58px);
+      overflow: hidden;
     }
 
-    .slide{
-      position:absolute;
-      inset:0;
-      padding: 26px;
-      display:grid;
+    /* Page/Section transitions (page lift) */
+    .page{
+      position: absolute;
+      inset: 0;
+      padding: 18px;
+      display: grid;
       grid-template-rows: auto 1fr auto;
-      gap: 18px;
+      gap: 12px;
 
-      opacity:0;
-      transform: translateX(24px) scale(0.985);
+      opacity: 0;
+      transform: translateY(18px) scale(0.985);
       filter: blur(2px);
-      pointer-events:none;
+      pointer-events: none;
 
-      transition: opacity var(--t) var(--ease),
-                  transform var(--t) var(--ease),
-                  filter var(--t) var(--ease);
+      transition:
+        opacity var(--t) var(--ease),
+        transform var(--t) var(--ease),
+        filter var(--t) var(--ease);
     }
 
-    .slide.active{
-      opacity:1;
-      transform: translateX(0) scale(1);
+    .page.active{
+      opacity: 1;
+      transform: translateY(0) scale(1);
       filter: blur(0);
-      pointer-events:auto;
+      pointer-events: auto;
     }
 
-    .slide.exiting-left{
-      opacity:0;
-      transform: translateX(-26px) scale(0.985);
+    .page.exiting{
+      opacity: 0;
+      transform: translateY(-16px) scale(0.985);
       filter: blur(2px);
-    }
-    .slide.exiting-right{
-      opacity:0;
-      transform: translateX(26px) scale(0.985);
-      filter: blur(2px);
+      pointer-events: none;
     }
 
-    /* slide header */
-    .s-header{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
+    .phead{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
     }
-    .s-title{
-      font-size: 28px;
-      line-height: 1.08;
-      letter-spacing: -0.6px;
-      margin:0;
+
+    .phead .hgroup{
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
-    .s-kicker{
-      margin:0;
-      font-size: 13px;
+
+    .ptitle{
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.8px;
+      line-height: 1.06;
+      font-weight: 900;
+    }
+    .pkicker{
+      margin: 0;
       color: var(--muted);
-      max-width: 60ch;
+      font-size: 13px;
+      max-width: 70ch;
+      line-height: 1.35;
     }
 
-    .pill{
-      flex: 0 0 auto;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: linear-gradient(90deg, rgba(167,139,250,0.18), rgba(251,113,133,0.12));
-      padding: 8px 12px;
+    .chip{
+      border: 1px solid rgba(25, 18, 22, 0.14);
+      background: rgba(255,255,255,0.38);
+      padding: 7px 10px;
       border-radius: 999px;
       font-size: 12px;
-      color: rgba(255,255,255,0.86);
-      user-select:none;
-      white-space:nowrap;
+      color: rgba(25, 18, 22, 0.86);
+      user-select: none;
+      white-space: nowrap;
     }
 
-    /* =========================
-       COMMON CARDS / GRIDS
-       ========================= */
+    /* Content area */
     .panel{
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(25, 18, 22, 0.12);
+      background: rgba(255,255,255,0.30);
       border-radius: var(--radius-xl);
-      padding: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow2);
+      overflow: hidden;
+      min-height: 0;
     }
 
-    .two-col{
-      display:grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 16px;
+    /* Board layout (mixed aspect ratios) */
+    .boardGrid{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 110px;
       height: 100%;
       min-height: 0;
     }
 
-    @media (max-width: 860px){
-      .two-col{ grid-template-columns: 1fr; }
-      .slide{ padding: 18px; }
-      .s-title{ font-size: 24px; }
-      .frame{ height: min(720px, calc(100vh - 150px)); }
-    }
-
-    /* quote cards */
-    .cards{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 12px;
+    /* Responsive grid */
+    @media (max-width: 980px){
+      .frame{ height: min(820px, calc(100vh - 120px)); }
+      .ptitle{ font-size: 22px; }
+      .page{ padding: 14px; }
+      .boardGrid{ grid-auto-rows: 96px; }
     }
     @media (max-width: 640px){
-      .cards{ grid-template-columns: 1fr; }
-    }
-    .qcard{
-      border: 1px solid rgba(255,255,255,0.12);
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      min-height: 86px;
-      position:relative;
-      overflow:hidden;
-    }
-    .qcard::before{
-      content:"";
-      position:absolute; inset:-40% -40% auto auto;
-      width: 220px; height: 220px;
-      background: radial-gradient(circle at 30% 30%, rgba(167,139,250,0.22), transparent 55%),
-                  radial-gradient(circle at 70% 60%, rgba(251,113,133,0.18), transparent 60%);
-      transform: rotate(18deg);
-      opacity:0.9;
-      pointer-events:none;
-    }
-    .qtext{
-      position:relative;
-      margin:0;
-      font-size: 15px;
-      line-height: 1.35;
-      color: rgba(255,255,255,0.88);
-      font-weight: 650;
-      letter-spacing: -0.1px;
-    }
-    .qsub{
-      position:relative;
-      margin: 8px 0 0 0;
-      font-size: 12px;
-      color: var(--muted2);
+      .brand{ min-width: 150px; }
+      .boardGrid{ grid-auto-rows: 88px; }
     }
 
-    /* collage grid placeholders */
-    .collage{
-      display:grid;
-      grid-template-columns: repeat(6, minmax(0,1fr));
-      grid-auto-rows: 92px;
-      gap: 10px;
-      height: 100%;
-      min-height: 0;
-    }
-    .tile{
-      border: 1px dashed rgba(255,255,255,0.20);
+    .board{
+      grid-column: span 6;
+      grid-row: span 3;
+
+      position: relative;
       border-radius: var(--radius-lg);
-      background: rgba(255,255,255,0.04);
-      position:relative;
-      overflow:hidden;
-      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+      overflow: hidden;
+      border: 1px solid rgba(25, 18, 22, 0.12);
+      background: rgba(255,255,255,0.24);
+      cursor: zoom-in;
+
+      transform: translateZ(0);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
     }
-    .tile:hover{
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(255,255,255,0.30);
+    .board:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(0,0,0,0.18);
+      border-color: rgba(25, 18, 22, 0.20);
     }
-    .tile .label{
-      position:absolute;
-      left:10px; bottom:10px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.75);
-      background: rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 6px 8px;
+
+    /* Size variants */
+    .w5{ grid-column: span 5; }
+    .w6{ grid-column: span 6; }
+    .w7{ grid-column: span 7; }
+    .w8{ grid-column: span 8; }
+    .h3{ grid-row: span 3; }
+    .h4{ grid-row: span 4; }
+    .h5{ grid-row: span 5; }
+
+    /* Make it mobile-friendly: stack */
+    @media (max-width: 760px){
+      .board{ grid-column: span 12 !important; grid-row: span 4 !important; }
+      .boardGrid{ grid-auto-rows: 86px; }
+    }
+
+    .board img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .board .tag{
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: rgba(25,18,22,0.92);
+      background: rgba(255,255,255,0.70);
+      border: 1px solid rgba(25, 18, 22, 0.10);
+      padding: 7px 10px;
       border-radius: 999px;
       backdrop-filter: blur(8px);
-    }
-    /* collage sizing helpers */
-    .span2{ grid-column: span 2; }
-    .span3{ grid-column: span 3; }
-    .span4{ grid-column: span 4; }
-    .row2{ grid-row: span 2; }
-    .row3{ grid-row: span 3; }
-
-    /* moments layout */
-    .moments{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      height: 100%;
-      min-height: 0;
-    }
-    @media (max-width: 860px){
-      .moments{ grid-template-columns: 1fr; }
-    }
-    .moment{
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
-      border-radius: var(--radius-xl);
-      padding: 16px;
-      display:flex;
-      flex-direction:column;
-      gap: 10px;
-      position:relative;
-      overflow:hidden;
-    }
-    .moment::after{
-      content:"";
-      position:absolute; inset:auto -20% -40% auto;
-      width: 260px; height: 260px;
-      background: radial-gradient(circle at 30% 30%, rgba(34,197,94,0.16), transparent 60%),
-                  radial-gradient(circle at 70% 60%, rgba(167,139,250,0.16), transparent 62%);
-      transform: rotate(-10deg);
-      opacity:0.85;
-      pointer-events:none;
-    }
-    .moment h3{
-      margin:0;
-      font-size: 14px;
-      letter-spacing: 0.1px;
-      color: rgba(255,255,255,0.88);
-      position:relative;
-      z-index:1;
-    }
-    .moment p{
-      margin:0;
-      font-size: 12px;
-      color: var(--muted2);
-      line-height: 1.4;
-      position:relative;
-      z-index:1;
-    }
-    .moment .slot{
-      flex:1;
-      border: 1px dashed rgba(255,255,255,0.20);
-      border-radius: var(--radius-lg);
-      background: rgba(0,0,0,0.18);
-      position:relative;
-      overflow:hidden;
-      min-height: 150px;
-      z-index:1;
-    }
-    .moment .slot::before{
-      content:"Drop an image here (optional)\Aor replace this div with <img>";
-      white-space:pre;
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding: 14px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.45);
+      user-select: none;
     }
 
-    /* summary note */
-    .note{
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
-      border-radius: var(--radius-xl);
-      padding: 18px;
-      height: 100%;
-      min-height: 0;
-      display:flex;
-      flex-direction:column;
-      gap: 12px;
-    }
-    .note textarea{
-      width:100%;
-      height:100%;
-      resize:none;
-      border:none;
-      outline:none;
-      background: transparent;
-      color: rgba(255,255,255,0.92);
-      font-size: 14px;
-      line-height: 1.55;
-      padding: 0;
-      font-family: inherit;
-    }
-    .note .small{
-      font-size: 12px;
-      color: var(--muted2);
-    }
-
-    /* footer nav */
+    /* Footer nav */
     .footer{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 10px;
-      user-select:none;
+      user-select: none;
     }
+
     .dots{
-      display:flex; gap: 8px;
-      align-items:center;
-      justify-content:center;
-      flex-wrap:wrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .dot{
-      width: 9px; height: 9px;
+      width: 9px;
+      height: 9px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.16);
-      cursor:pointer;
-      transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
+      background: rgba(25, 18, 22, 0.18);
+      border: 1px solid rgba(25, 18, 22, 0.12);
+      cursor: pointer;
+      transition: transform 150ms ease, background 150ms ease;
     }
     .dot.active{
-      background: linear-gradient(90deg, rgba(167,139,250,0.95), rgba(251,113,133,0.85));
-      border-color: rgba(255,255,255,0.22);
-      transform: scale(1.22);
+      background: rgba(25, 18, 22, 0.78);
+      transform: scale(1.25);
     }
+
     .progress{
       font-size: 12px;
-      color: var(--muted2);
-      min-width: 90px;
-      text-align:right;
+      color: var(--muted);
+      min-width: 92px;
+      text-align: right;
     }
 
-    /* little floating accent on each slide */
-    .floaty{
-      position:absolute;
-      right: 18px;
-      bottom: 16px;
-      width: 130px;
-      height: 130px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 35%, rgba(251,113,133,0.24), transparent 60%),
-                  radial-gradient(circle at 70% 60%, rgba(167,139,250,0.22), transparent 62%),
-                  radial-gradient(circle at 45% 70%, rgba(34,197,94,0.14), transparent 58%);
-      filter: blur(0px);
-      opacity: 0.95;
-      animation: drift 6s var(--ease) infinite;
-      pointer-events:none;
-    }
-    @keyframes drift{
-      0%,100%{ transform: translateY(0px) translateX(0px) scale(1); }
-      50%{ transform: translateY(-8px) translateX(-6px) scale(1.03); }
-    }
-
-    /* print/export hint */
-    .exportTip{
+    /* ================
+       Board Zoom Modal
+       ================ */
+    .overlay{
       position: fixed;
-      left: 50%;
-      bottom: 14px;
-      transform: translateX(-50%);
+      inset: 0;
+      background: rgba(0,0,0,0.00); /* animated to subtle */
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 260ms ease, background 260ms ease;
+      z-index: 1000;
+    }
+    .overlay.open{
+      opacity: 1;
+      pointer-events: auto;
+      background: rgba(0,0,0,0.10); /* subtle highlight */
+    }
+
+    /* The animated “picked up” element */
+    .zoomImg{
+      position: fixed;
+      z-index: 1001;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 34px 90px rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+
+      will-change: transform, width, height, top, left;
+      transition:
+        top 520ms var(--ease),
+        left 520ms var(--ease),
+        width 520ms var(--ease),
+        height 520ms var(--ease),
+        transform 520ms var(--ease);
+      cursor: zoom-out;
+    }
+    .zoomImg img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* show full board when zoomed */
+      display: block;
+      background: rgba(0,0,0,0.06);
+    }
+
+    /* subtle instruction */
+    .hint{
+      width: min(var(--maxw), 100%);
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 4px;
+      color: rgba(25,18,22,0.58);
       font-size: 12px;
-      color: rgba(255,255,255,0.65);
-      background: rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 8px 10px;
+      user-select: none;
+    }
+
+    /* Title page styling */
+    .titleCard{
+      height: 100%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+    }
+    .titleCard .big{
+      font-size: clamp(34px, 5vw, 56px);
+      font-weight: 950;
+      letter-spacing: -1.4px;
+      line-height: 1.02;
+      margin: 0;
+    }
+    .titleCard .small{
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 70ch;
+    }
+    .titleCard .startPill{
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
       border-radius: 999px;
-      backdrop-filter: blur(8px);
-      user-select:none;
+      background: rgba(255,255,255,0.54);
+      border: 1px solid rgba(25, 18, 22, 0.12);
+      color: rgba(25,18,22,0.86);
+      font-weight: 850;
+      font-size: 12px;
+      user-select: none;
     }
   </style>
 </head>
 
 <body>
-  <div class="grain"></div>
+  <div class="paperWash"></div>
 
   <div class="app">
     <div class="frame" id="frame">
       <div class="topbar">
         <div class="brand">
           <div class="title" contenteditable="true">2025, Wrapped</div>
-          <div class="sub" contenteditable="true">A year, collected — tap or use arrow keys</div>
+          <div class="sub" contenteditable="true">a scrapbook you can click into</div>
         </div>
-
         <div class="controls">
-          <button class="btn" id="prevBtn" aria-label="Previous slide">← Prev</button>
-          <button class="btn" id="nextBtn" aria-label="Next slide">Next →</button>
+          <button class="btn" id="prevBtn">← Prev</button>
+          <button class="btn" id="nextBtn">Next →</button>
         </div>
       </div>
 
       <div class="slides" id="slides">
-        <!-- =========================
-             SLIDE 1 — TITLE
-             ========================= -->
-        <section class="slide active" data-title="Title">
-          <div class="s-header">
-            <div>
-              <h1 class="s-title" contenteditable="true">2025, Wrapped</h1>
-              <p class="s-kicker" contenteditable="true">
-                (Leave this as a short, editorial line. Keep it simple.)
+        <!-- PAGE 1: Title -->
+        <section class="page active" data-title="Cover">
+          <div class="phead">
+            <div class="hgroup">
+              <h2 class="ptitle" contenteditable="true">Some things, collected.</h2>
+              <p class="pkicker" contenteditable="true">
+                Click any board to zoom in. Use ← → to turn pages.
               </p>
             </div>
-            <div class="pill" contenteditable="true">Slide 1 / Title</div>
+            <div class="chip">Cover</div>
           </div>
 
-          <div class="two-col">
-            <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
-              <div style="font-size:12px; color:var(--muted2);" contenteditable="true">
-                OPTIONAL SUBHEADERS (examples you can replace):
-                <br/>• “A Year, Collected” • “In Small Pieces” • “No Rankings, Just Moments”
-              </div>
-
-              <!-- Title collage space -->
-              <div class="collage" aria-label="Title collage placeholder">
-                <div class="tile span4 row2"><span class="label" contenteditable="true">Texture / Image</span></div>
-                <div class="tile span2 row2"><span class="label" contenteditable="true">Accent</span></div>
-                <div class="tile span3"><span class="label" contenteditable="true">Detail</span></div>
-                <div class="tile span3"><span class="label" contenteditable="true">Detail</span></div>
-              </div>
-            </div>
-
-            <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
-              <div style="font-weight:700; font-size:13px; color:rgba(255,255,255,0.88);" contenteditable="true">
-                Notes to self (won’t show unless you leave it):
-              </div>
-              <div style="font-size:12px; color:var(--muted2); line-height:1.55;" contenteditable="true">
-                • Keep it curated, not heavy.<br/>
-                • Short text blocks, lots of whitespace.<br/>
-                • Avoid “future promises” lines.<br/>
-                • Let the visuals do the talking.
-              </div>
-
-              <div style="flex:1; border:1px dashed rgba(255,255,255,0.20); border-radius: var(--radius-xl); background: rgba(0,0,0,0.18); padding:14px;">
-                <div style="font-size:12px; color:rgba(255,255,255,0.55);" contenteditable="true">
-                  Put a short “opening line” here.
-                  <br/><br/>
-                  Example vibe: “A year, in textures + tiny things.”
+          <div class="panel">
+            <div class="titleCard">
+              <div>
+                <h1 class="big" contenteditable="true">2025<br/>Wrapped</h1>
+                <div class="small" contenteditable="true">
+                  Each page is a theme. Each board is a little “kept” moment.<br/>
+                  (You can customize this text.)
                 </div>
+                <div class="startPill" contenteditable="true">Press Next → to begin</div>
               </div>
             </div>
           </div>
 
           <div class="footer">
-            <div class="dots" id="dots1"></div>
-            <div class="progress" id="progress1">1 / 7</div>
+            <div class="dots"></div>
+            <div class="progress"></div>
           </div>
-
-          <div class="floaty"></div>
         </section>
 
-        <!-- =========================
-             SLIDE 2 — OBSERVATIONS (CARDS)
-             ========================= -->
-        <section class="slide" data-title="Observations">
-          <div class="s-header">
-            <div>
-              <h2 class="s-title" contenteditable="true">Observations</h2>
-              <p class="s-kicker" contenteditable="true">
-                (Short, specific, “noticing” statements. No pressure, no explanation.)
+        <!-- PAGE 2: Style / Burgundy -->
+        <section class="page" data-title="Style Notes">
+          <div class="phead">
+            <div class="hgroup">
+              <h2 class="ptitle" contenteditable="true">Style notes</h2>
+              <p class="pkicker" contenteditable="true">
+                A page for “taste” — click a board to pick it up.
               </p>
             </div>
-            <div class="pill" contenteditable="true">Slide 2 / Cards</div>
+            <div class="chip" contenteditable="true">Page 1</div>
           </div>
 
-          <div class="panel" style="height:100%; min-height:0;">
-            <div class="cards">
-              <!-- Edit these freely -->
-              <div class="qcard">
-                <p class="qtext" contenteditable="true">You always notice details first.</p>
-                <p class="qsub" contenteditable="true">Optional tiny subline</p>
-              </div>
-              <div class="qcard">
-                <p class="qtext" contenteditable="true">You’re intentional with what you keep.</p>
-                <p class="qsub" contenteditable="true">Optional tiny subline</p>
-              </div>
-              <div class="qcard">
-                <p class="qtext" contenteditable="true">You know when something is enough.</p>
-                <p class="qsub" contenteditable="true">Optional tiny subline</p>
-              </div>
-              <div class="qcard">
-                <p class="qtext" contenteditable="true">You have a quiet confidence.</p>
-                <p class="qsub" contenteditable="true">Optional tiny subline</p>
-              </div>
-            </div>
+          <div class="panel">
+            <div class="boardGrid">
+              <figure class="board w7 h5" data-src="assets/ZeeNYBoardVogue.png" data-label="(edit label)">
+                <img src="assets/ZeeNYBoardVogue.png" alt="Board: Vogue" />
+                <figcaption class="tag" contenteditable="true">EN NOIR</figcaption>
+              </figure>
 
-            <div style="margin-top:12px; font-size:12px; color:var(--muted2);" contenteditable="true">
-              Tip: 3–5 cards is ideal. Keep each line short.
+              <figure class="board w5 h5" data-src="assets/ZeeNYBoardBurgundy.png" data-label="(edit label)">
+                <img src="assets/ZeeNYBoardBurgundy.png" alt="Board: Burgundy" />
+                <figcaption class="tag" contenteditable="true">UNE QUESTION DE GOÛT</figcaption>
+              </figure>
             </div>
           </div>
 
           <div class="footer">
-            <div class="dots" id="dots2"></div>
-            <div class="progress" id="progress2">2 / 7</div>
+            <div class="dots"></div>
+            <div class="progress"></div>
           </div>
-
-          <div class="floaty"></div>
         </section>
 
-        <!-- =========================
-             SLIDE 3 — OUTFITS / PINTEREST MOODBOARD
-             ========================= -->
-        <section class="slide" data-title="Outfits">
-          <div class="s-header">
-            <div>
-              <h2 class="s-title" contenteditable="true">Outfits / Aesthetic</h2>
-              <p class="s-kicker" contenteditable="true">
-                (Pinterest mood board energy. Use silhouettes, textures, accessories, makeup close-ups.)
+        <!-- PAGE 3: The good times -->
+        <section class="page" data-title="Good Times">
+          <div class="phead">
+            <div class="hgroup">
+              <h2 class="ptitle" contenteditable="true">The good times :)</h2>
+              <p class="pkicker" contenteditable="true">
+                Photos like a page you’d tape in — not a timeline, just a feeling.
               </p>
             </div>
-            <div class="pill" contenteditable="true">Slide 3 / Moodboard</div>
+            <div class="chip" contenteditable="true">Page 2</div>
           </div>
 
-          <div class="two-col">
-            <div class="panel" style="height:100%; min-height:0;">
-              <div class="collage" aria-label="Outfits collage placeholder">
-                <div class="tile span3 row2"><span class="label" contenteditable="true">Hero outfit</span></div>
-                <div class="tile span3 row2"><span class="label" contenteditable="true">Makeup detail</span></div>
-                <div class="tile span2 row2"><span class="label" contenteditable="true">Accessory</span></div>
-                <div class="tile span4"><span class="label" contenteditable="true">Palette / texture</span></div>
-                <div class="tile span3"><span class="label" contenteditable="true">Silhouette</span></div>
-                <div class="tile span3"><span class="label" contenteditable="true">Detail</span></div>
-              </div>
+          <div class="panel">
+            <div class="boardGrid">
+              <figure class="board w8 h5" data-src="assets/ZeeNYBoardGoodTimes.png">
+                <img src="assets/ZeeNYBoardGoodTimes.png" alt="Board: The good times" />
+                <figcaption class="tag" contenteditable="true">GOOD TIMES</figcaption>
+              </figure>
+
+              <figure class="board w4 h5" data-src="assets/ZeeNYBoardCoquette.png">
+                <img src="assets/ZeeNYBoardCoquette.png" alt="Board: La vie en rose" />
+                <figcaption class="tag" contenteditable="true">LA VIE EN ROSE</figcaption>
+              </figure>
             </div>
+          </div>
 
-            <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
-              <div style="font-weight:800; font-size:13px;" contenteditable="true">Tiny labels (optional)</div>
-              <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                <span class="pill" contenteditable="true">Off-duty</span>
-                <span class="pill" contenteditable="true">Sharp</span>
-                <span class="pill" contenteditable="true">Soft structure</span>
-                <span class="pill" contenteditable="true">Night look</span>
-              </div>
+          <div class="footer">
+            <div class="dots"></div>
+            <div class="progress"></div>
+          </div>
+        </section>
 
-              <div style="flex:1; border:1px dashed rgba(255,255,255,0.20); border-radius: var(--radius-xl); background: rgba(0,0,0,0.18); padding:14px;">
-                <div style="font-size:12px; color:rgba(255,255,255,0.55);" contenteditable="true">
-                  Add a short caption here if you want.
-                  <br/><br/>
-                  Keep it editorial (not “this reminds me of you”).
+        <!-- PAGE 4: End -->
+        <section class="page" data-title="End">
+          <div class="phead">
+            <div class="hgroup">
+              <h2 class="ptitle" contenteditable="true">That’s the wrap.</h2>
+              <p class="pkicker" contenteditable="true">
+                Keep it simple. Keep it yours.
+              </p>
+            </div>
+            <div class="chip">End</div>
+          </div>
+
+          <div class="panel">
+            <div class="titleCard">
+              <div>
+                <h1 class="big" contenteditable="true">End of file.</h1>
+                <div class="small" contenteditable="true">
+                  (Write a final one-liner here.)<br/>
+                  Optional: “Open anytime.”
                 </div>
+                <div class="startPill" contenteditable="true">Press ← to revisit pages</div>
               </div>
             </div>
           </div>
 
           <div class="footer">
-            <div class="dots" id="dots3"></div>
-            <div class="progress" id="progress3">3 / 7</div>
+            <div class="dots"></div>
+            <div class="progress"></div>
           </div>
-
-          <div class="floaty"></div>
-        </section>
-
-        <!-- =========================
-             SLIDE 4 — FAVORITE MOMENTS (LDR VISUALS)
-             ========================= -->
-        <section class="slide" data-title="Favorite Moments">
-          <div class="s-header">
-            <div>
-              <h2 class="s-title" contenteditable="true">Favorite Moments</h2>
-              <p class="s-kicker" contenteditable="true">
-                (LDR-friendly: objects, time, or abstract “screens” — not faces. Keep captions minimal.)
-              </p>
-            </div>
-            <div class="pill" contenteditable="true">Slide 4 / Moments</div>
-          </div>
-
-          <div class="moments">
-            <div class="moment">
-              <h3 contenteditable="true">Moment 1</h3>
-              <p contenteditable="true">Minimal caption (e.g., “Late nights”)</p>
-              <div class="slot" aria-label="Moment image slot"></div>
-            </div>
-            <div class="moment">
-              <h3 contenteditable="true">Moment 2</h3>
-              <p contenteditable="true">Minimal caption (e.g., “Different hours, same day”)</p>
-              <div class="slot" aria-label="Moment image slot"></div>
-            </div>
-            <div class="moment">
-              <h3 contenteditable="true">Moment 3</h3>
-              <p contenteditable="true">Minimal caption (e.g., “Parallel days”)</p>
-              <div class="slot" aria-label="Moment image slot"></div>
-            </div>
-            <div class="moment">
-              <h3 contenteditable="true">Moment 4</h3>
-              <p contenteditable="true">Minimal caption (e.g., “Small routines”)</p>
-              <div class="slot" aria-label="Moment image slot"></div>
-            </div>
-          </div>
-
-          <div class="footer">
-            <div class="dots" id="dots4"></div>
-            <div class="progress" id="progress4">4 / 7</div>
-          </div>
-
-          <div class="floaty"></div>
-        </section>
-
-        <!-- =========================
-             SLIDE 5 — COMMENTS THAT STUCK
-             ========================= -->
-        <section class="slide" data-title="Comments">
-          <div class="s-header">
-            <div>
-              <h2 class="s-title" contenteditable="true">Comments That Stuck</h2>
-              <p class="s-kicker" contenteditable="true">
-                (3–4 lines max. No long context. Fragments are perfect.)
-              </p>
-            </div>
-            <div class="pill" contenteditable="true">Slide 5 / Notes</div>
-          </div>
-
-          <div class="two-col">
-            <div class="panel" style="height:100%; min-height:0; display:flex; flex-direction:column; gap:12px;">
-              <div class="qcard">
-                <p class="qtext" contenteditable="true">“You called me steady.”</p>
-                <p class="qsub" contenteditable="true">Optional: small note</p>
-              </div>
-              <div class="qcard">
-                <p class="qtext" contenteditable="true">“You once said I notice patterns.”</p>
-                <p class="qsub" contenteditable="true">Optional: small note</p>
-              </div>
-              <div class="qcard">
-                <p class="qtext" contenteditable="true">“You said I overthink — kindly.”</p>
-                <p class="qsub" contenteditable="true">Optional: small note</p>
-              </div>
-            </div>
-
-            <div class="panel" style="height:100%; min-height:0;">
-              <div style="font-weight:800; font-size:13px;" contenteditable="true">Visual space</div>
-              <div style="margin-top:10px; font-size:12px; color:var(--muted2);" contenteditable="true">
-                Add a small collage / texture / screenshot-style abstract here if you want.
-              </div>
-              <div style="margin-top:12px;" class="collage" aria-label="Comments collage placeholder">
-                <div class="tile span3 row2"><span class="label" contenteditable="true">Texture</span></div>
-                <div class="tile span3"><span class="label" contenteditable="true">Detail</span></div>
-                <div class="tile span3"><span class="label" contenteditable="true">Detail</span></div>
-                <div class="tile span6"><span class="label" contenteditable="true">Long strip</span></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="footer">
-            <div class="dots" id="dots5"></div>
-            <div class="progress" id="progress5">5 / 7</div>
-          </div>
-
-          <div class="floaty"></div>
-        </section>
-
-        <!-- =========================
-             SLIDE 6 — SUMMARY NOTE
-             ========================= -->
-        <section class="slide" data-title="Summary">
-          <div class="s-header">
-            <div>
-              <h2 class="s-title" contenteditable="true">Summary</h2>
-              <p class="s-kicker" contenteditable="true">
-                (Write like short lines, not a big paragraph. Keep it calm + complete.)
-              </p>
-            </div>
-            <div class="pill" contenteditable="true">Slide 6 / Note</div>
-          </div>
-
-          <div class="two-col">
-            <div class="note">
-              <div class="small" contenteditable="true">
-                Tip: 6–12 short lines is usually perfect.
-              </div>
-              <textarea spellcheck="false">
-(Leave space open here — customize freely.)
-
-Example structure:
-This year wasn’t loud.
-It was specific.
-
-I liked noticing things
-without needing to name them.
-
-Thank you for being part of it.
-              </textarea>
-            </div>
-
-            <div class="panel" style="height:100%; min-height:0;">
-              <div style="font-weight:800; font-size:13px;" contenteditable="true">Optional visual</div>
-              <div style="margin-top:10px; font-size:12px; color:var(--muted2);" contenteditable="true">
-                Put a single strong image / texture here, or keep it minimal.
-              </div>
-              <div style="margin-top:12px; height: calc(100% - 64px); border: 1px dashed rgba(255,255,255,0.20); border-radius: var(--radius-xl); background: rgba(0,0,0,0.18); position:relative; overflow:hidden;">
-                <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:14px; font-size:12px; color:rgba(255,255,255,0.45);" contenteditable="true">
-                  Optional hero image placeholder
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="footer">
-            <div class="dots" id="dots6"></div>
-            <div class="progress" id="progress6">6 / 7</div>
-          </div>
-
-          <div class="floaty"></div>
-        </section>
-
-        <!-- =========================
-             SLIDE 7 — END
-             ========================= -->
-        <section class="slide" data-title="End">
-          <div class="s-header">
-            <div>
-              <h2 class="s-title" contenteditable="true">That’s the wrap.</h2>
-              <p class="s-kicker" contenteditable="true">
-                (End cleanly. No big future promises unless you truly want them.)
-              </p>
-            </div>
-            <div class="pill" contenteditable="true">Slide 7 / End</div>
-          </div>
-
-          <div class="panel" style="height:100%; min-height:0; display:flex; align-items:center; justify-content:center; text-align:center; position:relative; overflow:hidden;">
-            <div style="max-width: 66ch; padding: 10px;">
-              <div style="font-size: 42px; letter-spacing:-1px; font-weight: 800; margin-bottom: 10px;"
-                   contenteditable="true">End of file.</div>
-              <div style="font-size: 14px; color: var(--muted); line-height: 1.6;" contenteditable="true">
-                Put a final one-liner here. Keep it simple.
-              </div>
-
-              <div style="margin-top: 18px; font-size: 12px; color: var(--muted2);" contenteditable="true">
-                (Optional) “Open anytime.”
-              </div>
-            </div>
-
-            <!-- extra glow -->
-            <div style="position:absolute; inset:-20% -20%;
-                        background: radial-gradient(circle at 30% 30%, rgba(167,139,250,0.22), transparent 55%),
-                                    radial-gradient(circle at 70% 60%, rgba(251,113,133,0.18), transparent 60%),
-                                    radial-gradient(circle at 50% 80%, rgba(34,197,94,0.12), transparent 55%);
-                        opacity:0.95; pointer-events:none; animation: drift 8s var(--ease) infinite;"></div>
-          </div>
-
-          <div class="footer">
-            <div class="dots" id="dots7"></div>
-            <div class="progress" id="progress7">7 / 7</div>
-          </div>
-
         </section>
       </div>
     </div>
 
     <div class="hint">
-      <div>Tips: ← → keys • swipe • click dots • edit text inline</div>
-      <div>Export: use your browser’s print to PDF (optional)</div>
+      <div>Navigation: ← → keys • click dots • click boards to zoom</div>
+      <div>Tip: edit any text directly on the page</div>
     </div>
   </div>
 
-  <div class="exportTip">Pro tip: Replace collage tiles with images later (see comments in code).</div>
+  <!-- Zoom overlay -->
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
 
   <script>
     // =========================
-    // SLIDE NAV + TRANSITIONS
+    // Page navigation (page lift)
     // =========================
-    const slides = Array.from(document.querySelectorAll('.slide'));
-    const total = slides.length;
-    let idx = 0;
-    let isAnimating = false;
+    const pages = Array.from(document.querySelectorAll('.page'));
+    const totalPages = pages.length;
+    let pageIdx = 0;
+    let pageAnimating = false;
 
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
-    // Build dot nav for each slide footer (so it's present on every slide)
-    function buildDots(){
-      slides.forEach((s, i) => {
-        const footerDots = s.querySelector('.dots');
-        if(!footerDots) return;
-        footerDots.innerHTML = "";
-        for(let k=0;k<total;k++){
+    function syncFooter(){
+      pages.forEach((p, i) => {
+        const dotsWrap = p.querySelector('.dots');
+        const prog = p.querySelector('.progress');
+        if(!dotsWrap) return;
+        dotsWrap.innerHTML = '';
+        for(let k = 0; k < totalPages; k++){
           const d = document.createElement('div');
-          d.className = 'dot' + (k===i ? ' active' : '');
-          d.title = `Go to slide ${k+1}`;
-          d.addEventListener('click', () => goTo(k));
-          footerDots.appendChild(d);
+          d.className = 'dot' + (k === i ? ' active' : '');
+          d.title = `Go to page ${k+1}`;
+          d.addEventListener('click', () => goToPage(k));
+          dotsWrap.appendChild(d);
         }
+        if(prog) prog.textContent = `${i+1} / ${totalPages}`;
       });
-
-      slides.forEach((s, i) => {
-        const prog = s.querySelector('.progress');
-        if (prog) prog.textContent = `${i+1} / ${total}`;
-      });
+      setDotStates(pageIdx);
     }
 
-    function setDotStates(activeIndex){
-      slides.forEach((s, i) => {
-        const dots = s.querySelectorAll('.dot');
-        dots.forEach((d, k) => {
-          d.classList.toggle('active', k === activeIndex);
+    function setDotStates(active){
+      pages.forEach(p => {
+        p.querySelectorAll('.dot').forEach((d, k) => {
+          d.classList.toggle('active', k === active);
         });
       });
     }
 
-    function goTo(nextIndex){
-      if(isAnimating) return;
-      if(nextIndex === idx) return;
-      if(nextIndex < 0 || nextIndex >= total) return;
+    function goToPage(next){
+      if(pageAnimating) return;
+      if(next === pageIdx) return;
+      if(next < 0 || next >= totalPages) return;
 
-      isAnimating = true;
+      pageAnimating = true;
+      const current = pages[pageIdx];
+      const incoming = pages[next];
 
-      const current = slides[idx];
-      const next = slides[nextIndex];
-
-      // determine direction for exit class
-      const dir = nextIndex > idx ? 'right' : 'left';
       current.classList.remove('active');
-      current.classList.add(dir === 'right' ? 'exiting-left' : 'exiting-right');
+      current.classList.add('exiting');
 
-      // activate next
-      next.classList.add('active');
+      incoming.classList.add('active');
 
-      // cleanup exiting classes after transition ends
       window.setTimeout(() => {
-        current.classList.remove('exiting-left', 'exiting-right');
-        idx = nextIndex;
-        setDotStates(idx);
-        isAnimating = false;
-      }, 560); // slightly above --t
+        current.classList.remove('exiting');
+        pageIdx = next;
+        setDotStates(pageIdx);
+        pageAnimating = false;
+      }, 560);
     }
 
-    function next(){ goTo(Math.min(total - 1, idx + 1)); }
-    function prev(){ goTo(Math.max(0, idx - 1)); }
+    function nextPage(){ goToPage(Math.min(totalPages - 1, pageIdx + 1)); }
+    function prevPage(){ goToPage(Math.max(0, pageIdx - 1)); }
 
-    prevBtn.addEventListener('click', prev);
-    nextBtn.addEventListener('click', next);
+    prevBtn.addEventListener('click', prevPage);
+    nextBtn.addEventListener('click', nextPage);
 
-    // Keyboard controls
     window.addEventListener('keydown', (e) => {
-      // don't hijack keys when typing in textarea
-      const tag = (document.activeElement && document.activeElement.tagName || "").toLowerCase();
+      // don’t hijack typing
+      const a = document.activeElement;
+      const tag = (a && a.tagName ? a.tagName.toLowerCase() : '');
       if(tag === 'textarea') return;
 
-      if(e.key === 'ArrowRight' || e.key === 'PageDown') next();
-      if(e.key === 'ArrowLeft'  || e.key === 'PageUp') prev();
-      if(e.key === 'Home') goTo(0);
-      if(e.key === 'End') goTo(total - 1);
+      if(e.key === 'ArrowRight' || e.key === 'PageDown') nextPage();
+      if(e.key === 'ArrowLeft' || e.key === 'PageUp') prevPage();
+      if(e.key === 'Home') goToPage(0);
+      if(e.key === 'End') goToPage(totalPages - 1);
     });
 
-    // Touch swipe for mobile
-    let startX = null, startY = null, startT = null;
-    const frame = document.getElementById('frame');
-
-    frame.addEventListener('touchstart', (e) => {
-      const t = e.touches[0];
-      startX = t.clientX; startY = t.clientY; startT = Date.now();
-    }, {passive:true});
-
-    frame.addEventListener('touchend', (e) => {
-      if(startX === null) return;
-      const t = e.changedTouches[0];
-      const dx = t.clientX - startX;
-      const dy = t.clientY - startY;
-      const dt = Date.now() - startT;
-
-      // ignore vertical scroll-like gestures
-      if(Math.abs(dy) > Math.abs(dx)) { startX=null; startY=null; return; }
-
-      // quick swipe threshold
-      if(dt < 600 && Math.abs(dx) > 50){
-        if(dx < 0) next();
-        else prev();
-      }
-      startX=null; startY=null;
-    }, {passive:true});
-
-    // Initialize
-    buildDots();
-    setDotStates(idx);
+    syncFooter();
 
     // =========================
-    // OPTIONAL: HOW TO ADD IMAGES
+    // Board zoom (pick up + zoom)
     // =========================
-    // Easiest: replace a tile's contents with an <img> tag:
-    //   <div class="tile span3 row2">
-    //     <img src="img/outfit1.jpg" style="width:100%;height:100%;object-fit:cover;" />
-    //     <span class="label">Hero outfit</span>
-    //   </div>
-    //
-    // Or set a background image in CSS inline:
-    //   <div class="tile span3 row2" style="background:url('img/outfit1.jpg') center/cover no-repeat;">
-    //
-    // For Moment slots, replace the .slot div with:
-    //   <div class="slot"><img ... /></div>
+    const overlay = document.getElementById('overlay');
+    let zoomEl = null;
+    let zoomFromRect = null;
+    let zoomOpen = false;
+
+    function openZoom(imgEl){
+      if(zoomOpen) return;
+
+      const src = imgEl.closest('.board')?.dataset?.src || imgEl.src;
+      const rect = imgEl.getBoundingClientRect();
+      zoomFromRect = rect;
+
+      // Create floating element positioned over thumbnail
+      zoomEl = document.createElement('div');
+      zoomEl.className = 'zoomImg';
+      zoomEl.style.top = rect.top + 'px';
+      zoomEl.style.left = rect.left + 'px';
+      zoomEl.style.width = rect.width + 'px';
+      zoomEl.style.height = rect.height + 'px';
+      zoomEl.style.transform = 'translateZ(0)';
+
+      zoomEl.innerHTML = `<img src="${src}" alt="Zoomed board" />`;
+      document.body.appendChild(zoomEl);
+
+      // Open overlay
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+      zoomOpen = true;
+
+      // Target size: fit within viewport with margins
+      const pad = 34;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const maxW = vw - pad * 2;
+      const maxH = vh - pad * 2;
+
+      // We don't know intrinsic ratio reliably right away; approximate from rect ratio,
+      // then adjust after image loads.
+      let ratio = rect.width / rect.height;
+      let w = Math.min(maxW, maxH * ratio);
+      let h = w / ratio;
+      if(h > maxH){ h = maxH; w = h * ratio; }
+
+      const top = (vh - h) / 2;
+      const left = (vw - w) / 2;
+
+      // Animate to center next frame
+      requestAnimationFrame(() => {
+        zoomEl.style.top = top + 'px';
+        zoomEl.style.left = left + 'px';
+        zoomEl.style.width = w + 'px';
+        zoomEl.style.height = h + 'px';
+      });
+
+      // After image loads, re-fit using actual ratio (prevents distortion if needed)
+      const zimg = zoomEl.querySelector('img');
+      zimg.addEventListener('load', () => {
+        const ir = zimg.naturalWidth / zimg.naturalHeight;
+        let ww = Math.min(maxW, maxH * ir);
+        let hh = ww / ir;
+        if(hh > maxH){ hh = maxH; ww = hh * ir; }
+        const tt = (vh - hh) / 2;
+        const ll = (vw - ww) / 2;
+        zoomEl.style.top = tt + 'px';
+        zoomEl.style.left = ll + 'px';
+        zoomEl.style.width = ww + 'px';
+        zoomEl.style.height = hh + 'px';
+      }, { once: true });
+
+      // Click to close
+      zoomEl.addEventListener('click', closeZoom);
+    }
+
+    function closeZoom(){
+      if(!zoomOpen || !zoomEl || !zoomFromRect) return;
+
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+
+      // Animate back to original thumb position
+      zoomEl.style.top = zoomFromRect.top + 'px';
+      zoomEl.style.left = zoomFromRect.left + 'px';
+      zoomEl.style.width = zoomFromRect.width + 'px';
+      zoomEl.style.height = zoomFromRect.height + 'px';
+
+      // Remove after transition
+      window.setTimeout(() => {
+        if(zoomEl){
+          zoomEl.remove();
+          zoomEl = null;
+        }
+        zoomOpen = false;
+        zoomFromRect = null;
+      }, 560);
+    }
+
+    overlay.addEventListener('click', closeZoom);
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeZoom();
+    });
+
+    // Attach click handlers to boards
+    document.querySelectorAll('.board img').forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openZoom(img);
+      });
+    });
+
+    // Keep zoom centered on resize
+    window.addEventListener('resize', () => {
+      if(!zoomOpen || !zoomEl) return;
+      // Close on resize for simplicity (avoids weird rect mapping)
+      closeZoom();
+    });
   </script>
 </body>
 </html>
