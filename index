@@ -13,8 +13,7 @@
       --ink: rgba(25, 18, 22, 0.92);
       --muted: rgba(25, 18, 22, 0.62);
 
-      --paper: rgba(255,255,255,0.66);
-      --paper2: rgba(255,255,255,0.42);
+      --paper: rgba(255,255,255,0.32);
       --border: rgba(25, 18, 22, 0.12);
 
       --shadow: 0 24px 70px rgba(0,0,0,0.22);
@@ -22,9 +21,8 @@
 
       --radius-xl: 26px;
       --radius-lg: 18px;
-      --radius-md: 14px;
 
-      --maxw: 1100px;
+      --maxw: 1180px;
       --ease: cubic-bezier(.22, 1, .36, 1);
       --t: 520ms;
     }
@@ -39,7 +37,7 @@
       overflow: hidden;
     }
 
-    /* subtle paper-y overlay (still works even on solid bg) */
+    /* Optional soft wash so the background isn’t flat */
     .paperWash{
       pointer-events: none;
       position: fixed;
@@ -52,16 +50,20 @@
       opacity: 0.7;
     }
 
-    .app{
+    /* The scrapbook area now fills the page */
+    .scrapbook{
+      position: relative;
       height: 100%;
+      width: 100%;
       display: grid;
       place-items: center;
-      padding: 16px;
+      padding: 18px;
     }
 
-    .frame{
+    /* This is the ONLY “innermost box” */
+    .pageFrame{
       width: min(var(--maxw), 100%);
-      height: min(760px, calc(100vh - 120px));
+      height: min(820px, calc(100vh - 64px));
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       background: rgba(255,255,255,0.22);
@@ -71,78 +73,18 @@
       backdrop-filter: blur(10px);
     }
 
-    /* Header */
-    .topbar{
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 58px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(25, 18, 22, 0.10);
-      background: linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.18));
-      z-index: 10;
-    }
-
-    .brand{
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 220px;
-    }
-    .brand .title{
-      font-weight: 800;
-      letter-spacing: -0.2px;
-      font-size: 14px;
-      line-height: 1.1;
-    }
-    .brand .sub{
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .controls{
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn{
-      border: 1px solid rgba(25, 18, 22, 0.16);
-      background: rgba(255,255,255,0.42);
-      color: var(--ink);
-      padding: 9px 12px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 750;
-      font-size: 12px;
-      transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
-      user-select: none;
-    }
-    .btn:hover{
-      background: rgba(255,255,255,0.58);
-      border-color: rgba(25, 18, 22, 0.22);
-    }
-    .btn:active{ transform: translateY(1px) scale(0.99); }
-
+    /* Slides container */
     .slides{
       position: absolute;
-      inset: 58px 0 0 0;
-      height: calc(100% - 58px);
+      inset: 0;
       overflow: hidden;
     }
 
-    /* Page/Section transitions (page lift) */
+    /* Page transitions (page lift) */
     .page{
       position: absolute;
       inset: 0;
-      padding: 18px;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 12px;
-
+      padding: 16px;
       opacity: 0;
       transform: translateY(18px) scale(0.985);
       filter: blur(2px);
@@ -168,47 +110,9 @@
       pointer-events: none;
     }
 
-    .phead{
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .phead .hgroup{
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .ptitle{
-      margin: 0;
-      font-size: 26px;
-      letter-spacing: -0.8px;
-      line-height: 1.06;
-      font-weight: 900;
-    }
-    .pkicker{
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      max-width: 70ch;
-      line-height: 1.35;
-    }
-
-    .chip{
-      border: 1px solid rgba(25, 18, 22, 0.14);
-      background: rgba(255,255,255,0.38);
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: rgba(25, 18, 22, 0.86);
-      user-select: none;
-      white-space: nowrap;
-    }
-
-    /* Content area */
+    /* The content card inside each page */
     .panel{
+      height: 100%;
       border: 1px solid rgba(25, 18, 22, 0.12);
       background: rgba(255,255,255,0.30);
       border-radius: var(--radius-xl);
@@ -216,183 +120,10 @@
       box-shadow: var(--shadow2);
       overflow: hidden;
       min-height: 0;
-    }
-
-    /* Board layout (mixed aspect ratios) */
-    .boardGrid{
       display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(12, 1fr);
-      grid-auto-rows: 110px;
-      height: 100%;
-      min-height: 0;
     }
 
-    /* Responsive grid */
-    @media (max-width: 980px){
-      .frame{ height: min(820px, calc(100vh - 120px)); }
-      .ptitle{ font-size: 22px; }
-      .page{ padding: 14px; }
-      .boardGrid{ grid-auto-rows: 96px; }
-    }
-    @media (max-width: 640px){
-      .brand{ min-width: 150px; }
-      .boardGrid{ grid-auto-rows: 88px; }
-    }
-
-    .board{
-      grid-column: span 6;
-      grid-row: span 3;
-
-      position: relative;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid rgba(25, 18, 22, 0.12);
-      background: rgba(255,255,255,0.24);
-      cursor: zoom-in;
-
-      transform: translateZ(0);
-      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-    }
-    .board:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 14px 34px rgba(0,0,0,0.18);
-      border-color: rgba(25, 18, 22, 0.20);
-    }
-
-    /* Size variants */
-    .w5{ grid-column: span 5; }
-    .w6{ grid-column: span 6; }
-    .w7{ grid-column: span 7; }
-    .w8{ grid-column: span 8; }
-    .h3{ grid-row: span 3; }
-    .h4{ grid-row: span 4; }
-    .h5{ grid-row: span 5; }
-
-    /* Make it mobile-friendly: stack */
-    @media (max-width: 760px){
-      .board{ grid-column: span 12 !important; grid-row: span 4 !important; }
-      .boardGrid{ grid-auto-rows: 86px; }
-    }
-
-    .board img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .board .tag{
-      position: absolute;
-      left: 10px;
-      bottom: 10px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-      color: rgba(25,18,22,0.92);
-      background: rgba(255,255,255,0.70);
-      border: 1px solid rgba(25, 18, 22, 0.10);
-      padding: 7px 10px;
-      border-radius: 999px;
-      backdrop-filter: blur(8px);
-      user-select: none;
-    }
-
-    /* Footer nav */
-    .footer{
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      user-select: none;
-    }
-
-    .dots{
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .dot{
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      background: rgba(25, 18, 22, 0.18);
-      border: 1px solid rgba(25, 18, 22, 0.12);
-      cursor: pointer;
-      transition: transform 150ms ease, background 150ms ease;
-    }
-    .dot.active{
-      background: rgba(25, 18, 22, 0.78);
-      transform: scale(1.25);
-    }
-
-    .progress{
-      font-size: 12px;
-      color: var(--muted);
-      min-width: 92px;
-      text-align: right;
-    }
-
-    /* ================
-       Board Zoom Modal
-       ================ */
-    .overlay{
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.00); /* animated to subtle */
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 260ms ease, background 260ms ease;
-      z-index: 1000;
-    }
-    .overlay.open{
-      opacity: 1;
-      pointer-events: auto;
-      background: rgba(0,0,0,0.10); /* subtle highlight */
-    }
-
-    /* The animated “picked up” element */
-    .zoomImg{
-      position: fixed;
-      z-index: 1001;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 34px 90px rgba(0,0,0,0.30);
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
-
-      will-change: transform, width, height, top, left;
-      transition:
-        top 520ms var(--ease),
-        left 520ms var(--ease),
-        width 520ms var(--ease),
-        height 520ms var(--ease),
-        transform 520ms var(--ease);
-      cursor: zoom-out;
-    }
-    .zoomImg img{
-      width: 100%;
-      height: 100%;
-      object-fit: contain; /* show full board when zoomed */
-      display: block;
-      background: rgba(0,0,0,0.06);
-    }
-
-    /* subtle instruction */
-    .hint{
-      width: min(var(--maxw), 100%);
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 0 4px;
-      color: rgba(25,18,22,0.58);
-      font-size: 12px;
-      user-select: none;
-    }
-
-    /* Title page styling */
+    /* Title page inside panel */
     .titleCard{
       height: 100%;
       display: grid;
@@ -428,106 +159,241 @@
       font-size: 12px;
       user-select: none;
     }
+
+    /* Boards grid (mixed aspect ratios) */
+    .boardGrid{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 110px;
+      height: 100%;
+      min-height: 0;
+      align-content: start;
+    }
+
+    @media (max-width: 980px){
+      .pageFrame{ height: min(860px, calc(100vh - 64px)); }
+      .boardGrid{ grid-auto-rows: 96px; }
+    }
+    @media (max-width: 760px){
+      .boardGrid{ grid-auto-rows: 88px; }
+    }
+
+    .board{
+      grid-column: span 6;
+      grid-row: span 3;
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid rgba(25, 18, 22, 0.12);
+      background: rgba(255,255,255,0.24);
+      cursor: zoom-in;
+
+      transform: translateZ(0);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+    .board:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(0,0,0,0.18);
+      border-color: rgba(25, 18, 22, 0.20);
+    }
+
+    /* Size variants */
+    .w4{ grid-column: span 4; }
+    .w5{ grid-column: span 5; }
+    .w6{ grid-column: span 6; }
+    .w7{ grid-column: span 7; }
+    .w8{ grid-column: span 8; }
+    .h3{ grid-row: span 3; }
+    .h4{ grid-row: span 4; }
+    .h5{ grid-row: span 5; }
+
+    /* Mobile: stack boards */
+    @media (max-width: 760px){
+      .board{ grid-column: span 12 !important; grid-row: span 4 !important; }
+    }
+
+    .board img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .board .tag{
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: rgba(25,18,22,0.92);
+      background: rgba(255,255,255,0.70);
+      border: 1px solid rgba(25, 18, 22, 0.10);
+      padding: 7px 10px;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+      user-select: none;
+    }
+
+    /* =================
+       Left/Right arrows
+       ================= */
+    .navArrow{
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: 1px solid rgba(25, 18, 22, 0.18);
+      background: rgba(255,255,255,0.58);
+      box-shadow: 0 14px 34px rgba(0,0,0,0.14);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      user-select: none;
+      z-index: 50;
+      transition: transform 150ms ease, background 150ms ease, border-color 150ms ease, opacity 150ms ease;
+    }
+    .navArrow:hover{
+      background: rgba(255,255,255,0.74);
+      border-color: rgba(25, 18, 22, 0.24);
+      transform: translateY(-50%) scale(1.03);
+    }
+    .navArrow:active{
+      transform: translateY(-50%) scale(0.99);
+    }
+
+    .navArrow.left{ left: 14px; }
+    .navArrow.right{ right: 14px; }
+
+    .navArrow[disabled]{
+      opacity: 0.35;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .navArrow svg{
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: rgba(25,18,22,0.88);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ================
+       Board Zoom Modal
+       ================ */
+    .overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.00);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 260ms ease, background 260ms ease;
+      z-index: 1000;
+    }
+    .overlay.open{
+      opacity: 1;
+      pointer-events: auto;
+      background: rgba(0,0,0,0.10); /* subtle highlight */
+    }
+
+    .zoomImg{
+      position: fixed;
+      z-index: 1001;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 34px 90px rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+
+      will-change: transform, width, height, top, left;
+      transition:
+        top 520ms var(--ease),
+        left 520ms var(--ease),
+        width 520ms var(--ease),
+        height 520ms var(--ease),
+        transform 520ms var(--ease);
+      cursor: zoom-out;
+    }
+    .zoomImg img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: rgba(0,0,0,0.06);
+    }
+
+    /* Optional tiny progress (can delete if you want zero UI) */
+    .cornerProg{
+      position: absolute;
+      right: 16px;
+      bottom: 14px;
+      font-size: 12px;
+      color: rgba(25,18,22,0.58);
+      background: rgba(255,255,255,0.52);
+      border: 1px solid rgba(25,18,22,0.12);
+      padding: 8px 10px;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+      z-index: 40;
+      user-select: none;
+    }
   </style>
 </head>
 
 <body>
   <div class="paperWash"></div>
 
-  <div class="app">
-    <div class="frame" id="frame">
-      <div class="topbar">
-        <div class="brand">
-          <div class="title" contenteditable="true">2025, Wrapped</div>
-          <div class="sub" contenteditable="true">a scrapbook you can click into</div>
-        </div>
-        <div class="controls">
-          <button class="btn" id="prevBtn">← Prev</button>
-          <button class="btn" id="nextBtn">Next →</button>
-        </div>
-      </div>
-
+  <main class="scrapbook">
+    <!-- ONLY the scrapbook inner box -->
+    <section class="pageFrame" id="pageFrame">
       <div class="slides" id="slides">
+
         <!-- PAGE 1: Title -->
         <section class="page active" data-title="Cover">
-          <div class="phead">
-            <div class="hgroup">
-              <h2 class="ptitle" contenteditable="true">Some things, collected.</h2>
-              <p class="pkicker" contenteditable="true">
-                Click any board to zoom in. Use ← → to turn pages.
-              </p>
-            </div>
-            <div class="chip">Cover</div>
-          </div>
-
           <div class="panel">
             <div class="titleCard">
               <div>
                 <h1 class="big" contenteditable="true">2025<br/>Wrapped</h1>
                 <div class="small" contenteditable="true">
-                  Each page is a theme. Each board is a little “kept” moment.<br/>
-                  (You can customize this text.)
+                  Click any board to zoom in.<br/>
+                  Use the arrows (or ← → keys) to turn pages.
                 </div>
-                <div class="startPill" contenteditable="true">Press Next → to begin</div>
+                <div class="startPill" contenteditable="true">Next →</div>
               </div>
             </div>
           </div>
-
-          <div class="footer">
-            <div class="dots"></div>
-            <div class="progress"></div>
-          </div>
         </section>
 
-        <!-- PAGE 2: Style / Burgundy -->
-        <section class="page" data-title="Style Notes">
-          <div class="phead">
-            <div class="hgroup">
-              <h2 class="ptitle" contenteditable="true">Style notes</h2>
-              <p class="pkicker" contenteditable="true">
-                A page for “taste” — click a board to pick it up.
-              </p>
-            </div>
-            <div class="chip" contenteditable="true">Page 1</div>
-          </div>
-
+        <!-- PAGE 2: Style boards -->
+        <section class="page" data-title="Style">
           <div class="panel">
             <div class="boardGrid">
-              <figure class="board w7 h5" data-src="assets/ZeeNYBoardVogue.png" data-label="(edit label)">
+              <figure class="board w7 h5" data-src="assets/ZeeNYBoardVogue.png">
                 <img src="assets/ZeeNYBoardVogue.png" alt="Board: Vogue" />
                 <figcaption class="tag" contenteditable="true">EN NOIR</figcaption>
               </figure>
 
-              <figure class="board w5 h5" data-src="assets/ZeeNYBoardBurgundy.png" data-label="(edit label)">
+              <figure class="board w5 h5" data-src="assets/ZeeNYBoardBurgundy.png">
                 <img src="assets/ZeeNYBoardBurgundy.png" alt="Board: Burgundy" />
                 <figcaption class="tag" contenteditable="true">UNE QUESTION DE GOÛT</figcaption>
               </figure>
             </div>
           </div>
-
-          <div class="footer">
-            <div class="dots"></div>
-            <div class="progress"></div>
-          </div>
         </section>
 
-        <!-- PAGE 3: The good times -->
+        <!-- PAGE 3: Good times + coquette -->
         <section class="page" data-title="Good Times">
-          <div class="phead">
-            <div class="hgroup">
-              <h2 class="ptitle" contenteditable="true">The good times :)</h2>
-              <p class="pkicker" contenteditable="true">
-                Photos like a page you’d tape in — not a timeline, just a feeling.
-              </p>
-            </div>
-            <div class="chip" contenteditable="true">Page 2</div>
-          </div>
-
           <div class="panel">
             <div class="boardGrid">
               <figure class="board w8 h5" data-src="assets/ZeeNYBoardGoodTimes.png">
                 <img src="assets/ZeeNYBoardGoodTimes.png" alt="Board: The good times" />
-                <figcaption class="tag" contenteditable="true">GOOD TIMES</figcaption>
+                <figcaption class="tag" contenteditable="true">THE GOOD TIMES :)</figcaption>
               </figure>
 
               <figure class="board w4 h5" data-src="assets/ZeeNYBoardCoquette.png">
@@ -536,91 +402,60 @@
               </figure>
             </div>
           </div>
-
-          <div class="footer">
-            <div class="dots"></div>
-            <div class="progress"></div>
-          </div>
         </section>
 
         <!-- PAGE 4: End -->
         <section class="page" data-title="End">
-          <div class="phead">
-            <div class="hgroup">
-              <h2 class="ptitle" contenteditable="true">That’s the wrap.</h2>
-              <p class="pkicker" contenteditable="true">
-                Keep it simple. Keep it yours.
-              </p>
-            </div>
-            <div class="chip">End</div>
-          </div>
-
           <div class="panel">
             <div class="titleCard">
               <div>
                 <h1 class="big" contenteditable="true">End of file.</h1>
                 <div class="small" contenteditable="true">
-                  (Write a final one-liner here.)<br/>
+                  Add a final one-liner here.<br/>
                   Optional: “Open anytime.”
                 </div>
-                <div class="startPill" contenteditable="true">Press ← to revisit pages</div>
+                <div class="startPill" contenteditable="true">← Back</div>
               </div>
             </div>
           </div>
-
-          <div class="footer">
-            <div class="dots"></div>
-            <div class="progress"></div>
-          </div>
         </section>
-      </div>
-    </div>
 
-    <div class="hint">
-      <div>Navigation: ← → keys • click dots • click boards to zoom</div>
-      <div>Tip: edit any text directly on the page</div>
-    </div>
-  </div>
+      </div>
+
+      <!-- Left/Right arrows for navigation -->
+      <button class="navArrow left" id="leftArrow" aria-label="Previous page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+
+      <button class="navArrow right" id="rightArrow" aria-label="Next page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+
+      <!-- Optional progress pill (remove if you want absolutely no UI) -->
+      <div class="cornerProg" id="cornerProg">1 / 4</div>
+    </section>
+  </main>
 
   <!-- Zoom overlay -->
   <div class="overlay" id="overlay" aria-hidden="true"></div>
 
   <script>
     // =========================
-    // Page navigation (page lift)
+    // Page navigation (arrows + keys)
     // =========================
     const pages = Array.from(document.querySelectorAll('.page'));
     const totalPages = pages.length;
     let pageIdx = 0;
     let pageAnimating = false;
 
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
+    const leftArrow = document.getElementById('leftArrow');
+    const rightArrow = document.getElementById('rightArrow');
+    const cornerProg = document.getElementById('cornerProg');
 
-    function syncFooter(){
-      pages.forEach((p, i) => {
-        const dotsWrap = p.querySelector('.dots');
-        const prog = p.querySelector('.progress');
-        if(!dotsWrap) return;
-        dotsWrap.innerHTML = '';
-        for(let k = 0; k < totalPages; k++){
-          const d = document.createElement('div');
-          d.className = 'dot' + (k === i ? ' active' : '');
-          d.title = `Go to page ${k+1}`;
-          d.addEventListener('click', () => goToPage(k));
-          dotsWrap.appendChild(d);
-        }
-        if(prog) prog.textContent = `${i+1} / ${totalPages}`;
-      });
-      setDotStates(pageIdx);
-    }
-
-    function setDotStates(active){
-      pages.forEach(p => {
-        p.querySelectorAll('.dot').forEach((d, k) => {
-          d.classList.toggle('active', k === active);
-        });
-      });
+    function updateNavUI(){
+      leftArrow.toggleAttribute('disabled', pageIdx === 0);
+      rightArrow.toggleAttribute('disabled', pageIdx === totalPages - 1);
+      if (cornerProg) cornerProg.textContent = `${pageIdx + 1} / ${totalPages}`;
     }
 
     function goToPage(next){
@@ -629,6 +464,7 @@
       if(next < 0 || next >= totalPages) return;
 
       pageAnimating = true;
+
       const current = pages[pageIdx];
       const incoming = pages[next];
 
@@ -640,7 +476,7 @@
       window.setTimeout(() => {
         current.classList.remove('exiting');
         pageIdx = next;
-        setDotStates(pageIdx);
+        updateNavUI();
         pageAnimating = false;
       }, 560);
     }
@@ -648,22 +484,22 @@
     function nextPage(){ goToPage(Math.min(totalPages - 1, pageIdx + 1)); }
     function prevPage(){ goToPage(Math.max(0, pageIdx - 1)); }
 
-    prevBtn.addEventListener('click', prevPage);
-    nextBtn.addEventListener('click', nextPage);
+    leftArrow.addEventListener('click', prevPage);
+    rightArrow.addEventListener('click', nextPage);
 
     window.addEventListener('keydown', (e) => {
-      // don’t hijack typing
+      // don't hijack typing
       const a = document.activeElement;
       const tag = (a && a.tagName ? a.tagName.toLowerCase() : '');
       if(tag === 'textarea') return;
 
       if(e.key === 'ArrowRight' || e.key === 'PageDown') nextPage();
-      if(e.key === 'ArrowLeft' || e.key === 'PageUp') prevPage();
+      if(e.key === 'ArrowLeft'  || e.key === 'PageUp') prevPage();
       if(e.key === 'Home') goToPage(0);
       if(e.key === 'End') goToPage(totalPages - 1);
     });
 
-    syncFooter();
+    updateNavUI();
 
     // =========================
     // Board zoom (pick up + zoom)
@@ -676,11 +512,11 @@
     function openZoom(imgEl){
       if(zoomOpen) return;
 
-      const src = imgEl.closest('.board')?.dataset?.src || imgEl.src;
+      const board = imgEl.closest('.board');
+      const src = board?.dataset?.src || imgEl.src;
       const rect = imgEl.getBoundingClientRect();
       zoomFromRect = rect;
 
-      // Create floating element positioned over thumbnail
       zoomEl = document.createElement('div');
       zoomEl.className = 'zoomImg';
       zoomEl.style.top = rect.top + 'px';
@@ -688,24 +524,20 @@
       zoomEl.style.width = rect.width + 'px';
       zoomEl.style.height = rect.height + 'px';
       zoomEl.style.transform = 'translateZ(0)';
-
       zoomEl.innerHTML = `<img src="${src}" alt="Zoomed board" />`;
       document.body.appendChild(zoomEl);
 
-      // Open overlay
       overlay.classList.add('open');
       overlay.setAttribute('aria-hidden','false');
       zoomOpen = true;
 
-      // Target size: fit within viewport with margins
       const pad = 34;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const maxW = vw - pad * 2;
       const maxH = vh - pad * 2;
 
-      // We don't know intrinsic ratio reliably right away; approximate from rect ratio,
-      // then adjust after image loads.
+      // approximate ratio, then refine after load
       let ratio = rect.width / rect.height;
       let w = Math.min(maxW, maxH * ratio);
       let h = w / ratio;
@@ -714,7 +546,6 @@
       const top = (vh - h) / 2;
       const left = (vw - w) / 2;
 
-      // Animate to center next frame
       requestAnimationFrame(() => {
         zoomEl.style.top = top + 'px';
         zoomEl.style.left = left + 'px';
@@ -722,7 +553,6 @@
         zoomEl.style.height = h + 'px';
       });
 
-      // After image loads, re-fit using actual ratio (prevents distortion if needed)
       const zimg = zoomEl.querySelector('img');
       zimg.addEventListener('load', () => {
         const ir = zimg.naturalWidth / zimg.naturalHeight;
@@ -737,7 +567,6 @@
         zoomEl.style.height = hh + 'px';
       }, { once: true });
 
-      // Click to close
       zoomEl.addEventListener('click', closeZoom);
     }
 
@@ -747,13 +576,11 @@
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden','true');
 
-      // Animate back to original thumb position
       zoomEl.style.top = zoomFromRect.top + 'px';
       zoomEl.style.left = zoomFromRect.left + 'px';
       zoomEl.style.width = zoomFromRect.width + 'px';
       zoomEl.style.height = zoomFromRect.height + 'px';
 
-      // Remove after transition
       window.setTimeout(() => {
         if(zoomEl){
           zoomEl.remove();
@@ -769,7 +596,6 @@
       if(e.key === 'Escape') closeZoom();
     });
 
-    // Attach click handlers to boards
     document.querySelectorAll('.board img').forEach(img => {
       img.addEventListener('click', (e) => {
         e.preventDefault();
@@ -778,11 +604,8 @@
       });
     });
 
-    // Keep zoom centered on resize
     window.addEventListener('resize', () => {
-      if(!zoomOpen || !zoomEl) return;
-      // Close on resize for simplicity (avoids weird rect mapping)
-      closeZoom();
+      if(zoomOpen) closeZoom();
     });
   </script>
 </body>
