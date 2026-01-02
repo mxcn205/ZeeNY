@@ -7,22 +7,16 @@
 
   <style>
     :root{
-      /* Solid pink background for now */
       --bg: #f7c7d9;
 
       --ink: rgba(25, 18, 22, 0.92);
       --muted: rgba(25, 18, 22, 0.62);
 
-      --paper: rgba(255,255,255,0.32);
-      --border: rgba(25, 18, 22, 0.12);
+      --border: rgba(25, 18, 22, 0.14);
 
-      --shadow: 0 24px 70px rgba(0,0,0,0.22);
-      --shadow2: 0 18px 40px rgba(0,0,0,0.18);
-
-      --radius-xl: 26px;
       --radius-lg: 18px;
+      --radius-md: 14px;
 
-      --maxw: 1180px;
       --ease: cubic-bezier(.22, 1, .36, 1);
       --t: 520ms;
     }
@@ -43,37 +37,21 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(1200px 700px at 18% 10%, rgba(255,255,255,0.26), transparent 60%),
-        radial-gradient(900px 700px at 85% 15%, rgba(255,255,255,0.18), transparent 55%),
-        radial-gradient(700px 600px at 55% 90%, rgba(255,255,255,0.16), transparent 60%);
+        radial-gradient(1200px 700px at 18% 10%, rgba(255,255,255,0.22), transparent 60%),
+        radial-gradient(900px 700px at 85% 15%, rgba(255,255,255,0.16), transparent 55%),
+        radial-gradient(700px 600px at 55% 90%, rgba(255,255,255,0.14), transparent 60%);
       mix-blend-mode: soft-light;
       opacity: 0.7;
     }
 
-    /* The scrapbook area now fills the page */
+    /* FULL PAGE scrapbook: removed outer rounded rectangles */
     .scrapbook{
       position: relative;
       height: 100%;
       width: 100%;
-      display: grid;
-      place-items: center;
-      padding: 18px;
-    }
-
-    /* This is the ONLY “innermost box” */
-    .pageFrame{
-      width: min(var(--maxw), 100%);
-      height: min(820px, calc(100vh - 64px));
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      background: rgba(255,255,255,0.22);
-      box-shadow: var(--shadow);
       overflow: hidden;
-      position: relative;
-      backdrop-filter: blur(10px);
     }
 
-    /* Slides container */
     .slides{
       position: absolute;
       inset: 0;
@@ -84,7 +62,8 @@
     .page{
       position: absolute;
       inset: 0;
-      padding: 16px;
+      padding: clamp(14px, 2.4vw, 28px);
+
       opacity: 0;
       transform: translateY(18px) scale(0.985);
       filter: blur(2px);
@@ -95,14 +74,12 @@
         transform var(--t) var(--ease),
         filter var(--t) var(--ease);
     }
-
     .page.active{
       opacity: 1;
       transform: translateY(0) scale(1);
       filter: blur(0);
       pointer-events: auto;
     }
-
     .page.exiting{
       opacity: 0;
       transform: translateY(-16px) scale(0.985);
@@ -110,20 +87,7 @@
       pointer-events: none;
     }
 
-    /* The content card inside each page */
-    .panel{
-      height: 100%;
-      border: 1px solid rgba(25, 18, 22, 0.12);
-      background: rgba(255,255,255,0.30);
-      border-radius: var(--radius-xl);
-      padding: 14px;
-      box-shadow: var(--shadow2);
-      overflow: hidden;
-      min-height: 0;
-      display: grid;
-    }
-
-    /* Title page inside panel */
+    /* Title page */
     .titleCard{
       height: 100%;
       display: grid;
@@ -132,7 +96,7 @@
       padding: 18px;
     }
     .titleCard .big{
-      font-size: clamp(34px, 5vw, 56px);
+      font-size: clamp(34px, 5vw, 60px);
       font-weight: 950;
       letter-spacing: -1.4px;
       line-height: 1.02;
@@ -152,32 +116,27 @@
       gap: 8px;
       padding: 10px 14px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.54);
-      border: 1px solid rgba(25, 18, 22, 0.12);
+      background: rgba(255,255,255,0.50);
+      border: 1px solid var(--border);
       color: rgba(25,18,22,0.86);
       font-weight: 850;
       font-size: 12px;
       user-select: none;
+      backdrop-filter: blur(8px);
     }
 
-    /* Boards grid (mixed aspect ratios) */
+    /* Boards grid (no outer frames) */
     .boardGrid{
+      height: 100%;
+      min-height: 0;
       display: grid;
       gap: 12px;
       grid-template-columns: repeat(12, 1fr);
       grid-auto-rows: 110px;
-      height: 100%;
-      min-height: 0;
       align-content: start;
     }
-
-    @media (max-width: 980px){
-      .pageFrame{ height: min(860px, calc(100vh - 64px)); }
-      .boardGrid{ grid-auto-rows: 96px; }
-    }
-    @media (max-width: 760px){
-      .boardGrid{ grid-auto-rows: 88px; }
-    }
+    @media (max-width: 980px){ .boardGrid{ grid-auto-rows: 96px; } }
+    @media (max-width: 760px){ .boardGrid{ grid-auto-rows: 88px; } }
 
     .board{
       grid-column: span 6;
@@ -186,7 +145,7 @@
       border-radius: var(--radius-lg);
       overflow: hidden;
       border: 1px solid rgba(25, 18, 22, 0.12);
-      background: rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.22);
       cursor: zoom-in;
 
       transform: translateZ(0);
@@ -194,7 +153,7 @@
     }
     .board:hover{
       transform: translateY(-2px);
-      box-shadow: 0 14px 34px rgba(0,0,0,0.18);
+      box-shadow: 0 18px 46px rgba(0,0,0,0.18);
       border-color: rgba(25, 18, 22, 0.20);
     }
 
@@ -219,7 +178,6 @@
       object-fit: cover;
       display: block;
     }
-
     .board .tag{
       position: absolute;
       left: 10px;
@@ -240,7 +198,7 @@
        Left/Right arrows
        ================= */
     .navArrow{
-      position: absolute;
+      position: fixed;
       top: 50%;
       transform: translateY(-50%);
       width: 46px;
@@ -284,6 +242,114 @@
       stroke-linejoin: round;
     }
 
+    /* =========================
+       Tweet section presentation
+       ========================= */
+    .tweetSection{
+      position: relative;
+      height: 100%;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      padding: clamp(12px, 2vw, 26px);
+    }
+
+    /* Intro text (5s) */
+    .tweetIntro{
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 700ms var(--ease);
+    }
+    .tweetIntro.show{ opacity: 1; }
+    .tweetIntro .box{
+      background: rgba(255,255,255,0.60);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-weight: 900;
+      letter-spacing: -0.4px;
+      font-size: 16px;
+      color: rgba(25,18,22,0.90);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.14);
+      text-transform: lowercase;
+    }
+
+    /* Dim rest of screen while tweet is highlighted */
+    .tweetDim{
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.00);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 420ms ease, background 420ms ease;
+    }
+    .tweetDim.on{
+      opacity: 1;
+      background: rgba(0,0,0,0.14); /* subtle */
+    }
+
+    .tweetStage{
+      width: min(980px, 100%);
+      height: min(720px, calc(100vh - 120px));
+      display: grid;
+      place-items: center;
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(10px) scale(0.99);
+      transition: opacity 520ms var(--ease), transform 520ms var(--ease);
+      pointer-events: none;
+    }
+    .tweetStage.on{
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .tweetCard{
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.10);
+      box-shadow: 0 34px 90px rgba(0,0,0,0.30);
+      display: grid;
+      place-items: center;
+    }
+    .tweetCard img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: rgba(0,0,0,0.05);
+    }
+
+    .tweetHint{
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: rgba(25,18,22,0.62);
+      background: rgba(255,255,255,0.46);
+      border: 1px solid rgba(25,18,22,0.12);
+      padding: 8px 10px;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+      user-select: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 320ms ease;
+      pointer-events: none;
+    }
+    .tweetHint.on{ opacity: 1; }
+
     /* ================
        Board Zoom Modal
        ================ */
@@ -299,7 +365,7 @@
     .overlay.open{
       opacity: 1;
       pointer-events: auto;
-      background: rgba(0,0,0,0.10); /* subtle highlight */
+      background: rgba(0,0,0,0.10);
     }
 
     .zoomImg{
@@ -327,22 +393,6 @@
       display: block;
       background: rgba(0,0,0,0.06);
     }
-
-    /* Optional tiny progress (can delete if you want zero UI) */
-    .cornerProg{
-      position: absolute;
-      right: 16px;
-      bottom: 14px;
-      font-size: 12px;
-      color: rgba(25,18,22,0.58);
-      background: rgba(255,255,255,0.52);
-      border: 1px solid rgba(25,18,22,0.12);
-      padding: 8px 10px;
-      border-radius: 999px;
-      backdrop-filter: blur(8px);
-      z-index: 40;
-      user-select: none;
-    }
   </style>
 </head>
 
@@ -350,142 +400,298 @@
   <div class="paperWash"></div>
 
   <main class="scrapbook">
-    <!-- ONLY the scrapbook inner box -->
-    <section class="pageFrame" id="pageFrame">
-      <div class="slides" id="slides">
+    <div class="slides" id="slides">
 
-        <!-- PAGE 1: Title -->
-        <section class="page active" data-title="Cover">
-          <div class="panel">
-            <div class="titleCard">
-              <div>
-                <h1 class="big" contenteditable="true">2025<br/>Wrapped</h1>
-                <div class="small" contenteditable="true">
-                  Click any board to zoom in.<br/>
-                  Use the arrows (or ← → keys) to turn pages.
-                </div>
-                <div class="startPill" contenteditable="true">Next →</div>
-              </div>
+      <!-- PAGE 1: Title -->
+      <section class="page active" data-page="cover">
+        <div class="titleCard">
+          <div>
+            <h1 class="big" contenteditable="true">2025<br/>Wrapped</h1>
+            <div class="small" contenteditable="true">
+              Click any board to zoom in.<br/>
+              Use the arrows (or ← → keys) to turn pages.
+            </div>
+            <div class="startPill" contenteditable="true">Next →</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 2: Style boards -->
+      <section class="page" data-page="boards-style">
+        <div class="boardGrid">
+          <figure class="board w7 h5" data-src="assets/ZeeNYBoardVogue.png">
+            <img src="assets/ZeeNYBoardVogue.png" alt="Board: Vogue" />
+            <figcaption class="tag" contenteditable="true">EN NOIR</figcaption>
+          </figure>
+
+          <figure class="board w5 h5" data-src="assets/ZeeNYBoardBurgundy.png">
+            <img src="assets/ZeeNYBoardBurgundy.png" alt="Board: Burgundy" />
+            <figcaption class="tag" contenteditable="true">UNE QUESTION DE GOÛT</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- PAGE 3: Good times + coquette -->
+      <section class="page" data-page="boards-good">
+        <div class="boardGrid">
+          <figure class="board w8 h5" data-src="assets/ZeeNYBoardGoodTimes.png">
+            <img src="assets/ZeeNYBoardGoodTimes.png" alt="Board: The good times" />
+            <figcaption class="tag" contenteditable="true">THE GOOD TIMES :)</figcaption>
+          </figure>
+
+          <figure class="board w4 h5" data-src="assets/ZeeNYBoardCoquette.png">
+            <img src="assets/ZeeNYBoardCoquette.png" alt="Board: La vie en rose" />
+            <figcaption class="tag" contenteditable="true">LA VIE EN ROSE</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- PAGE 4: Tweets -->
+      <section class="page" data-page="tweets">
+        <div class="tweetSection" id="tweetSection">
+          <div class="tweetDim" id="tweetDim"></div>
+
+          <div class="tweetIntro" id="tweetIntro">
+            <div class="box">top tweets this year</div>
+          </div>
+
+          <div class="tweetStage" id="tweetStage">
+            <div class="tweetCard">
+              <img id="tweetImg" src="" alt="Top tweet" />
             </div>
           </div>
-        </section>
 
-        <!-- PAGE 2: Style boards -->
-        <section class="page" data-title="Style">
-          <div class="panel">
-            <div class="boardGrid">
-              <figure class="board w7 h5" data-src="assets/ZeeNYBoardVogue.png">
-                <img src="assets/ZeeNYBoardVogue.png" alt="Board: Vogue" />
-                <figcaption class="tag" contenteditable="true">EN NOIR</figcaption>
-              </figure>
+          <div class="tweetHint" id="tweetHint">← → to scroll • after the last one, → continues</div>
+        </div>
+      </section>
 
-              <figure class="board w5 h5" data-src="assets/ZeeNYBoardBurgundy.png">
-                <img src="assets/ZeeNYBoardBurgundy.png" alt="Board: Burgundy" />
-                <figcaption class="tag" contenteditable="true">UNE QUESTION DE GOÛT</figcaption>
-              </figure>
+      <!-- PAGE 5: End -->
+      <section class="page" data-page="end">
+        <div class="titleCard">
+          <div>
+            <h1 class="big" contenteditable="true">End of file.</h1>
+            <div class="small" contenteditable="true">
+              Add a final one-liner here.<br/>
+              Optional: “Open anytime.”
             </div>
+            <div class="startPill" contenteditable="true">← Back</div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- PAGE 3: Good times + coquette -->
-        <section class="page" data-title="Good Times">
-          <div class="panel">
-            <div class="boardGrid">
-              <figure class="board w8 h5" data-src="assets/ZeeNYBoardGoodTimes.png">
-                <img src="assets/ZeeNYBoardGoodTimes.png" alt="Board: The good times" />
-                <figcaption class="tag" contenteditable="true">THE GOOD TIMES :)</figcaption>
-              </figure>
-
-              <figure class="board w4 h5" data-src="assets/ZeeNYBoardCoquette.png">
-                <img src="assets/ZeeNYBoardCoquette.png" alt="Board: La vie en rose" />
-                <figcaption class="tag" contenteditable="true">LA VIE EN ROSE</figcaption>
-              </figure>
-            </div>
-          </div>
-        </section>
-
-        <!-- PAGE 4: End -->
-        <section class="page" data-title="End">
-          <div class="panel">
-            <div class="titleCard">
-              <div>
-                <h1 class="big" contenteditable="true">End of file.</h1>
-                <div class="small" contenteditable="true">
-                  Add a final one-liner here.<br/>
-                  Optional: “Open anytime.”
-                </div>
-                <div class="startPill" contenteditable="true">← Back</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      </div>
-
-      <!-- Left/Right arrows for navigation -->
-      <button class="navArrow left" id="leftArrow" aria-label="Previous page">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-
-      <button class="navArrow right" id="rightArrow" aria-label="Next page">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-      </button>
-
-      <!-- Optional progress pill (remove if you want absolutely no UI) -->
-      <div class="cornerProg" id="cornerProg">1 / 4</div>
-    </section>
+    </div>
   </main>
 
-  <!-- Zoom overlay -->
+  <!-- Left/Right arrows for navigation -->
+  <button class="navArrow left" id="leftArrow" aria-label="Previous">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+
+  <button class="navArrow right" id="rightArrow" aria-label="Next">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+
+  <!-- Zoom overlay (for boards) -->
   <div class="overlay" id="overlay" aria-hidden="true"></div>
 
   <script>
     // =========================
-    // Page navigation (arrows + keys)
+    // Page navigation
     // =========================
     const pages = Array.from(document.querySelectorAll('.page'));
     const totalPages = pages.length;
     let pageIdx = 0;
     let pageAnimating = false;
+    let navLocked = false; // used during tweet intro
 
     const leftArrow = document.getElementById('leftArrow');
     const rightArrow = document.getElementById('rightArrow');
-    const cornerProg = document.getElementById('cornerProg');
 
-    function updateNavUI(){
+    function currentPageKey(){
+      return pages[pageIdx]?.dataset?.page || '';
+    }
+
+    function updateArrowDisabled(){
+      // During tweet intro we lock nav entirely
+      if(navLocked){
+        leftArrow.toggleAttribute('disabled', true);
+        rightArrow.toggleAttribute('disabled', true);
+        return;
+      }
+
+      const key = currentPageKey();
+
+      // On tweets page, arrows are handled by tweet carousel state:
+      if(key === 'tweets'){
+        // We'll set disabled states inside tweet controller.
+        return;
+      }
+
       leftArrow.toggleAttribute('disabled', pageIdx === 0);
       rightArrow.toggleAttribute('disabled', pageIdx === totalPages - 1);
-      if (cornerProg) cornerProg.textContent = `${pageIdx + 1} / ${totalPages}`;
     }
 
     function goToPage(next){
-      if(pageAnimating) return;
+      if(pageAnimating || navLocked) return;
       if(next === pageIdx) return;
       if(next < 0 || next >= totalPages) return;
 
       pageAnimating = true;
-
       const current = pages[pageIdx];
       const incoming = pages[next];
 
+      // Leaving tweets page: reset tweet state immediately
+      if(current?.dataset?.page === 'tweets'){
+        tweetReset();
+      }
+
       current.classList.remove('active');
       current.classList.add('exiting');
-
       incoming.classList.add('active');
 
       window.setTimeout(() => {
         current.classList.remove('exiting');
         pageIdx = next;
-        updateNavUI();
         pageAnimating = false;
+
+        // Enter hooks
+        if(incoming?.dataset?.page === 'tweets'){
+          tweetEnter();
+        }else{
+          updateArrowDisabled();
+        }
       }, 560);
     }
 
     function nextPage(){ goToPage(Math.min(totalPages - 1, pageIdx + 1)); }
     function prevPage(){ goToPage(Math.max(0, pageIdx - 1)); }
 
-    leftArrow.addEventListener('click', prevPage);
-    rightArrow.addEventListener('click', nextPage);
+    // =========================
+    // Tweets controller
+    // =========================
+    const tweetIntro = document.getElementById('tweetIntro');
+    const tweetStage = document.getElementById('tweetStage');
+    const tweetImg = document.getElementById('tweetImg');
+    const tweetDim = document.getElementById('tweetDim');
+    const tweetHint = document.getElementById('tweetHint');
+
+    const tweets = [
+      "assets/ZeeNYTweet1.png",
+      "assets/ZeeNYTweet2.png",
+      "assets/ZeeNYTweet3.png",
+      "assets/ZeeNYTweet4.png",
+      "assets/ZeeNYTweet5.png",
+      "assets/ZeeNYTweet6.png",
+      "assets/ZeeNYTweet7.png",
+      "assets/ZeeNYTweet8.png",
+    ];
+
+    let tweetIdx = 0;
+    let tweetReady = false;
+    let tweetTimers = [];
+
+    function clearTweetTimers(){
+      tweetTimers.forEach(t => clearTimeout(t));
+      tweetTimers = [];
+    }
+
+    function tweetReset(){
+      clearTweetTimers();
+      navLocked = false;
+      tweetReady = false;
+      tweetIdx = 0;
+
+      // Hide everything
+      tweetIntro.classList.remove('show');
+      tweetStage.classList.remove('on');
+      tweetDim.classList.remove('on');
+      tweetHint.classList.remove('on');
+
+      // Restore normal page arrow behavior
+      updateArrowDisabled();
+    }
+
+    function tweetSetArrowDisabled(){
+      // When tweetReady: left at first -> go prev section, right at end -> go next section
+      // So we keep arrows enabled always, unless navLocked.
+      if(navLocked){
+        leftArrow.toggleAttribute('disabled', true);
+        rightArrow.toggleAttribute('disabled', true);
+        return;
+      }
+      leftArrow.toggleAttribute('disabled', false);
+      rightArrow.toggleAttribute('disabled', false);
+    }
+
+    function showTweet(index){
+      tweetIdx = Math.max(0, Math.min(tweets.length - 1, index));
+      tweetImg.src = tweets[tweetIdx];
+
+      // Highlight tweet, dim rest of screen
+      tweetDim.classList.add('on');
+      tweetStage.classList.add('on');
+      tweetHint.classList.add('on');
+
+      tweetSetArrowDisabled();
+    }
+
+    function tweetEnter(){
+      tweetReset(); // ensure clean state
+      navLocked = true;
+      updateArrowDisabled();
+
+      // Start intro: fade in, hold, fade out, then show first tweet
+      tweetIntro.classList.add('show');
+
+      // Total “box time” = 5s, with fade in/out baked in
+      // - fade in starts now (CSS 700ms)
+      // - hold until ~4.3s
+      // - fade out for 700ms
+      tweetTimers.push(setTimeout(() => {
+        tweetIntro.classList.remove('show'); // fade out
+      }, 4300));
+
+      tweetTimers.push(setTimeout(() => {
+        navLocked = false;
+        tweetReady = true;
+        showTweet(0);
+      }, 5000));
+    }
+
+    function tweetPrev(){
+      if(!tweetReady) return;
+      if(tweetIdx === 0){
+        // go to previous SECTION
+        prevPage();
+      }else{
+        showTweet(tweetIdx - 1);
+      }
+    }
+
+    function tweetNext(){
+      if(!tweetReady) return;
+      if(tweetIdx === tweets.length - 1){
+        // clicking right after last tweet advances to next SECTION
+        nextPage();
+      }else{
+        showTweet(tweetIdx + 1);
+      }
+    }
+
+    // =========================
+    // Arrow handlers (context-aware)
+    // =========================
+    leftArrow.addEventListener('click', () => {
+      if(navLocked) return;
+      if(currentPageKey() === 'tweets') tweetPrev();
+      else prevPage();
+    });
+
+    rightArrow.addEventListener('click', () => {
+      if(navLocked) return;
+      if(currentPageKey() === 'tweets') tweetNext();
+      else nextPage();
+    });
 
     window.addEventListener('keydown', (e) => {
       // don't hijack typing
@@ -493,13 +699,24 @@
       const tag = (a && a.tagName ? a.tagName.toLowerCase() : '');
       if(tag === 'textarea') return;
 
-      if(e.key === 'ArrowRight' || e.key === 'PageDown') nextPage();
-      if(e.key === 'ArrowLeft'  || e.key === 'PageUp') prevPage();
+      if(navLocked) return;
+
+      if(e.key === 'ArrowRight' || e.key === 'PageDown'){
+        if(currentPageKey() === 'tweets') tweetNext();
+        else nextPage();
+      }
+      if(e.key === 'ArrowLeft' || e.key === 'PageUp'){
+        if(currentPageKey() === 'tweets') tweetPrev();
+        else prevPage();
+      }
       if(e.key === 'Home') goToPage(0);
       if(e.key === 'End') goToPage(totalPages - 1);
     });
 
-    updateNavUI();
+    updateArrowDisabled();
+
+    // If initial page is tweets (not the case), trigger:
+    if(currentPageKey() === 'tweets') tweetEnter();
 
     // =========================
     // Board zoom (pick up + zoom)
@@ -537,7 +754,6 @@
       const maxW = vw - pad * 2;
       const maxH = vh - pad * 2;
 
-      // approximate ratio, then refine after load
       let ratio = rect.width / rect.height;
       let w = Math.min(maxW, maxH * ratio);
       let h = w / ratio;
