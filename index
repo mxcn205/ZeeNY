@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>2025 Wrapped — The Good Times</title>
+  <title>2025 Wrapped</title>
 
   <style>
     :root{
       --shadow: 0 18px 55px rgba(0,0,0,.28);
-      --shadow-strong: 0 26px 75px rgba(0,0,0,.36);
+      --shadow-strong: 0 28px 85px rgba(0,0,0,.36);
       --glow: 0 0 0 3px rgba(255,255,255,.35), 0 0 40px rgba(255,160,205,.40);
       --ui: rgba(255,255,255,.78);
       --ui2: rgba(255,255,255,.92);
@@ -23,28 +23,66 @@
       background:#ffd3e3;
     }
 
-    /* Background image */
+    /* ====== GLOBAL BACKGROUND ====== */
     .bg{
       position:fixed; inset:0;
-      background:
-        url("ZeeNYbg.png") center / cover no-repeat;
+      background: url("assets/ZeeNYbg.png") center / cover no-repeat;
       transform: translateZ(0);
+      z-index:0;
     }
     .bg::after{
       content:"";
       position:absolute; inset:0;
-      background: radial-gradient(ellipse at center, rgba(255,255,255,.12) 0%, rgba(255,255,255,.02) 55%, rgba(0,0,0,.08) 100%);
+      background: radial-gradient(ellipse at center, rgba(255,255,255,.10) 0%, rgba(255,255,255,.02) 55%, rgba(0,0,0,.10) 100%);
       pointer-events:none;
     }
 
-    /* Intro text overlay */
-    .intro{
+    /* ====== SECTION SYSTEM ====== */
+    .app{
       position:fixed; inset:0;
+      z-index:1;
+    }
+    .section{
+      position:absolute; inset:0;
+      display:none;
+      overflow:hidden;
+    }
+    .section.active{ display:block; }
+
+    /* ====== GLOBAL NAV ARROWS (between sections) ====== */
+    .navArrow{
+      position:fixed;
+      top:50%;
+      transform: translateY(-50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.55);
+      background: rgba(255,255,255,.18);
+      color: white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 28px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
+      z-index: 30;
+      box-shadow: 0 20px 60px rgba(0,0,0,.18);
+    }
+    .navArrow:hover{ background: rgba(255,255,255,.28); }
+    .navArrow:active{ transform: translateY(-50%) scale(.97); }
+    .navArrow.left{ left: 18px; }
+    .navArrow.right{ right: 18px; }
+
+    /* ====== INTRO / PLACEHOLDER CARD ====== */
+    .intro{
+      position:absolute; inset:0;
       display:flex;
       align-items:center;
       justify-content:center;
       pointer-events:none;
-      z-index:10;
+      z-index: 10;
     }
     .intro .card{
       padding: 18px 22px;
@@ -56,10 +94,10 @@
       color: rgba(30,30,30,.88);
       letter-spacing:.2px;
       font-size: 20px;
-      font-weight: 600;
+      font-weight: 700;
       opacity: 0;
       transform: translateY(10px) scale(.98);
-      transition: opacity .7s ease, transform .7s ease, filter .7s ease;
+      transition: opacity .6s ease, transform .6s ease, filter .6s ease;
       filter: blur(1px);
     }
     .intro.show .card{
@@ -73,19 +111,35 @@
       filter: blur(2px);
     }
 
-    /* Main stage */
+    /* ====== COMMON COLLAGE STAGE ====== */
     .stage{
-      position:fixed; inset:0;
+      position:absolute; inset:0;
       z-index:2;
-      display:block;
     }
+    .hint{
+      position:absolute;
+      left:50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      z-index:3;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.45);
+      border: 1px solid rgba(255,255,255,.55);
+      box-shadow: 0 10px 35px rgba(0,0,0,.12);
+      color: rgba(40,40,40,.82);
+      font-size: 13px;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 500ms ease;
+      pointer-events:none;
+    }
+    .ready .hint{ opacity: 1; }
 
-    /* Boards (collage images) */
+    /* ====== BOARDS (AESTHETICS / GOOD TIMES) ====== */
     .board{
       position:absolute;
       display:block;
-      width: min(60vw, 900px);
-      max-width: 92vw;
       height:auto;
       border-radius: 10px;
       box-shadow: var(--shadow);
@@ -95,72 +149,40 @@
       transition:
         transform 800ms cubic-bezier(.2,.9,.2,1),
         filter 220ms ease,
-        box-shadow 220ms ease;
+        box-shadow 220ms ease,
+        opacity 600ms ease;
       will-change: transform;
       filter: saturate(1.02) contrast(1.02);
-    }
-
-    /* Ensure corners stay in-bounds by keeping boards inside safe margins */
-    .board.wrap{
-      /* "pushed into screen" starting pose */
-      transform: translate3d(0, 90px, 0) scale(.88) rotate(0deg);
       opacity: 0;
     }
+    .ready .board{ opacity: 1; }
 
-    .ready .board.wrap{
-      opacity: 1;
-    }
-
-    /* Position + final transforms (slight rotations) */
-    #boardGood{
-      left: 6vw;
-      top: 14vh;
-      width: min(62vw, 980px);
-      transform: translate3d(-40px, 120px, 0) scale(.86) rotate(-6deg);
-    }
-    #boardThoughts{
-      right: 6vw;
-      top: 12vh;
-      width: min(56vw, 880px);
-      transform: translate3d(40px, 120px, 0) scale(.86) rotate(6deg);
-    }
-
-    /* After intro: push boards into place */
-    .ready #boardGood{
-      transform: translate3d(0,0,0) scale(1) rotate(-6deg);
-    }
-    .ready #boardThoughts{
-      transform: translate3d(0,0,0) scale(1) rotate(6deg);
-    }
-
-    /* Hover glow */
     .board:hover{
       box-shadow: var(--shadow-strong), var(--glow);
       filter: saturate(1.08) contrast(1.06);
     }
 
-    /* Modal viewer */
+    /* ====== MODAL VIEWER (for boards + tweets) ====== */
     .modal{
       position:fixed; inset:0;
-      z-index:50;
+      z-index:80;
       display:none;
       align-items:center;
       justify-content:center;
       padding: 24px;
-      background: rgba(0,0,0,.48);
+      background: rgba(0,0,0,.50);
       backdrop-filter: blur(4px);
     }
     .modal.open{ display:flex; }
 
     .modal-inner{
       position:relative;
-      width: min(92vw, 1100px);
-      height: min(88vh, 760px);
+      width: min(92vw, 1200px);
+      height: min(88vh, 820px);
       display:flex;
       align-items:center;
       justify-content:center;
     }
-
     .modal-img{
       max-width: 100%;
       max-height: 100%;
@@ -170,8 +192,6 @@
       box-shadow: 0 30px 95px rgba(0,0,0,.55);
       background: rgba(255,255,255,.02);
     }
-
-    /* Arrows (modal) */
     .arrow{
       position:absolute;
       top:50%;
@@ -195,41 +215,79 @@
     .arrow.left{ left: -10px; }
     .arrow.right{ right: -10px; }
 
-    /* Small helper hint */
-    .hint{
-      position:fixed;
-      left:50%;
-      bottom: 16px;
-      transform: translateX(-50%);
-      z-index:3;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.45);
-      border: 1px solid rgba(255,255,255,.55);
-      box-shadow: 0 10px 35px rgba(0,0,0,.12);
-      color: rgba(40,40,40,.82);
-      font-size: 13px;
-      backdrop-filter: blur(10px);
-      opacity: 0;
-      transition: opacity 500ms ease;
-      pointer-events:none;
+    /* ====== TITLE PAGE ====== */
+    .titleWrap{
+      position:absolute; inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 24px;
+      z-index:2;
     }
-    .ready .hint{ opacity: 1; }
+    .titleCard{
+      width:min(900px, 92vw);
+      border-radius: 28px;
+      background: rgba(255,255,255,.50);
+      border: 1px solid rgba(255,255,255,.62);
+      box-shadow: 0 30px 95px rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+      padding: 28px 26px;
+      text-align:center;
+    }
+    .titleCard h1{
+      margin: 0 0 8px 0;
+      font-size: clamp(34px, 4.2vw, 54px);
+      letter-spacing: .2px;
+      color: rgba(30,30,30,.88);
+    }
+    .titleCard p{
+      margin: 0;
+      font-size: 16px;
+      color: rgba(40,40,40,.72);
+      line-height: 1.45;
+    }
+    .pill{
+      display:inline-block;
+      margin-top: 16px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.65);
+      color: rgba(40,40,40,.78);
+      font-size: 13px;
+    }
 
-    /* Responsive tweaks */
+    /* ====== TWEETS: POLAROID SHUFFLE ====== */
+    .polaroid{
+      position:absolute;
+      width: min(34vw, 360px);
+      max-width: 42vw;
+      height:auto;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      cursor:pointer;
+      user-select:none;
+      transform-origin: 50% 60%;
+      opacity: 0;
+      transition:
+        transform 800ms cubic-bezier(.2,.9,.2,1),
+        opacity 500ms ease,
+        box-shadow 220ms ease,
+        filter 220ms ease;
+      will-change: transform;
+      filter: saturate(1.02) contrast(1.02);
+    }
+    .ready .polaroid{ opacity: 1; }
+
+    .polaroid:hover{
+      box-shadow: var(--shadow-strong), var(--glow);
+      filter: saturate(1.08) contrast(1.06);
+    }
+
+    /* keep everything within bounds on small screens */
     @media (max-width: 900px){
-      #boardGood{
-        left: 4vw; top: 12vh;
-        width: min(92vw, 980px);
-        transform: translate3d(-20px, 120px, 0) scale(.86) rotate(-5deg);
-      }
-      #boardThoughts{
-        left: 10vw; right:auto;
-        top: 54vh;
-        width: min(86vw, 880px);
-        transform: translate3d(20px, 120px, 0) scale(.86) rotate(4deg);
-      }
-      .ready #boardThoughts{ transform: translate3d(0,0,0) scale(1) rotate(4deg); }
+      .navArrow{ width:52px; height:52px; }
+      .polaroid{ width: min(56vw, 360px); max-width: 72vw; }
     }
   </style>
 </head>
@@ -237,132 +295,488 @@
 <body>
   <div class="bg" aria-hidden="true"></div>
 
-  <!-- Intro placeholder text (keep it if you want; remove if not needed) -->
-  <div class="intro" id="intro">
-    <div class="card">The good times :)</div>
+  <!-- Global section nav -->
+  <div class="navArrow left" id="sectionPrev" aria-label="Previous section">‹</div>
+  <div class="navArrow right" id="sectionNext" aria-label="Next section">›</div>
+
+  <div class="app" id="app">
+
+    <!-- ===================== 0) TITLE PAGE ===================== -->
+    <section class="section active" id="sec-title" data-sec="title">
+      <div class="titleWrap">
+        <div class="titleCard">
+          <h1 id="titleText">2025, wrapped</h1>
+          <p id="subtitleText">A scrapbook you can click into.</p>
+          <div class="pill">Use the arrows (or ← / →) to move through sections</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 1) AESTHETICS ===================== -->
+    <section class="section" id="sec-aesthetics" data-sec="aesthetics">
+      <div class="intro" id="intro-aesthetics"><div class="card" id="aestheticsIntroText">2025 Aesthetics</div></div>
+      <div class="stage" id="stage-aesthetics">
+        <!-- Boards (kept within screen bounds; overlap OK) -->
+        <img id="aest-rose" class="board" src="assets/ZeeNYBoardCoquette.png" alt="La Vie En Rose board" />
+        <img id="aest-noir" class="board" src="assets/ZeeNYBoardVogue.png" alt="Noir board" />
+        <img id="aest-burg" class="board" src="assets/ZeeNYBoardBurgundy.png" alt="Burgundy board" />
+        <div class="hint">Hover to glow • Click to view • In viewer: ⟵ / ⟶ loops</div>
+      </div>
+    </section>
+
+    <!-- ===================== 2) THE GOOD TIMES ===================== -->
+    <section class="section" id="sec-goodtimes" data-sec="goodtimes">
+      <div class="intro" id="intro-good"><div class="card" id="goodIntroText">The good times :)</div></div>
+      <div class="stage" id="stage-good">
+        <img id="good-left" class="board" src="assets/ZeeNYBoardGoodTimes.png" alt="The Good Times board" />
+        <img id="good-right" class="board" src="assets/ZeeNYBoardThoughts.png" alt="Thoughts board" />
+        <div class="hint">Hover to glow • Click to view • In viewer: ⟵ / ⟶ loops</div>
+      </div>
+    </section>
+
+    <!-- ===================== 3) TWEETS (POLAROID SHUFFLE) ===================== -->
+    <section class="section" id="sec-tweets" data-sec="tweets">
+      <div class="intro" id="intro-tweets"><div class="card" id="tweetsIntroText">Top tweets this year</div></div>
+      <div class="stage" id="stage-tweets">
+        <!-- polaroids are positioned by JS so they stay inside screen -->
+        <img class="polaroid" data-i="1" src="assets/ZeeNYPolaroid1.png" alt="Polaroid 1" />
+        <img class="polaroid" data-i="2" src="assets/ZeeNYPolaroid2.png" alt="Polaroid 2" />
+        <img class="polaroid" data-i="3" src="assets/ZeeNYPolaroid3.png" alt="Polaroid 3" />
+        <img class="polaroid" data-i="4" src="assets/ZeeNYPolaroid4.png" alt="Polaroid 4" />
+        <img class="polaroid" data-i="5" src="assets/ZeeNYPolaroid5.png" alt="Polaroid 5" />
+        <img class="polaroid" data-i="6" src="assets/ZeeNYPolaroid6.png" alt="Polaroid 6" />
+        <img class="polaroid" data-i="7" src="assets/ZeeNYPolaroid7.png" alt="Polaroid 7" />
+        <img class="polaroid" data-i="8" src="assets/ZeeNYPolaroid8.png" alt="Polaroid 8" />
+        <div class="hint">Click a polaroid to view the full tweet • Press R to reshuffle</div>
+      </div>
+    </section>
+
   </div>
 
-  <div class="stage" id="stage">
-    <!-- Good Times board -->
-    <img
-      id="boardGood"
-      class="board wrap"
-      src="ZeeNYBoardGoodTimes.png"
-      alt="The Good Times board"
-      data-order="0"
-    />
-
-    <!-- Added Thoughts board -->
-    <img
-      id="boardThoughts"
-      class="board wrap"
-      src="ZeeNYBoardThoughts.png"
-      alt="Thoughts board"
-      data-order="1"
-    />
-
-    <div class="hint">Hover to glow • Click a board to view • In viewer: ⟵ / ⟶ loops</div>
-  </div>
-
-  <!-- Modal viewer -->
+  <!-- Modal viewer (reused for boards + full tweets) -->
   <div class="modal" id="modal" aria-hidden="true">
     <div class="modal-inner" id="modalInner">
-      <div class="arrow left" id="prevBtn" aria-label="Previous">‹</div>
-      <img class="modal-img" id="modalImg" alt="Full board view" />
-      <div class="arrow right" id="nextBtn" aria-label="Next">›</div>
+      <div class="arrow left" id="modalPrev" aria-label="Previous">‹</div>
+      <img class="modal-img" id="modalImg" alt="Full view" />
+      <div class="arrow right" id="modalNext" aria-label="Next">›</div>
     </div>
   </div>
 
   <script>
-    // Board order = left-to-right the same way it appears on the main screen.
-    const boards = [
-      { id: "boardGood", src: "ZeeNYBoardGoodTimes.png" },
-      { id: "boardThoughts", src: "ZeeNYBoardThoughts.png" },
-    ];
+    /* ============================================================
+       CONFIG (customize text + asset ordering here)
+    ============================================================ */
 
-    const intro = document.getElementById("intro");
-    const stage = document.getElementById("stage");
+    const CONFIG = {
+      title: {
+        titleText: "2025, wrapped",
+        subtitleText: "A scrapbook you can click into."
+      },
+
+      // Section order (left/right arrows move between these)
+      sections: ["title","aesthetics","goodtimes","tweets"],
+
+      // 3-second placeholder behavior (click right skips immediately; click left returns to previous section)
+      placeholderSeconds: 3,
+
+      aesthetics: {
+        introText: "2025 Aesthetics",
+        // Order left-to-right for viewer looping
+        items: [
+          { id: "aest-rose", src: "assets/ZeeNYBoardCoquette.png" },  // La vie en rose
+          { id: "aest-noir", src: "assets/ZeeNYBoardVogue.png" },     // Noir
+          { id: "aest-burg", src: "assets/ZeeNYBoardBurgundy.png" }   // Burgundy
+        ]
+      },
+
+      goodtimes: {
+        introText: "The good times :)",
+        items: [
+          { id: "good-left",  src: "assets/ZeeNYBoardGoodTimes.png" },
+          { id: "good-right", src: "assets/ZeeNYBoardThoughts.png" }
+        ]
+      },
+
+      tweets: {
+        introText: "Top tweets this year",
+        // polaroid -> full tweet mapping (click polaroid opens ZeeNYTweetX.png)
+        items: [
+          { polaroid: "assets/ZeeNYPolaroid1.png", tweet: "assets/ZeeNYTweet1.png" },
+          { polaroid: "assets/ZeeNYPolaroid2.png", tweet: "assets/ZeeNYTweet2.png" },
+          { polaroid: "assets/ZeeNYPolaroid3.png", tweet: "assets/ZeeNYTweet3.png" },
+          { polaroid: "assets/ZeeNYPolaroid4.png", tweet: "assets/ZeeNYTweet4.png" },
+          { polaroid: "assets/ZeeNYPolaroid5.png", tweet: "assets/ZeeNYTweet5.png" },
+          { polaroid: "assets/ZeeNYPolaroid6.png", tweet: "assets/ZeeNYTweet6.png" },
+          { polaroid: "assets/ZeeNYPolaroid7.png", tweet: "assets/ZeeNYTweet7.png" },
+          { polaroid: "assets/ZeeNYPolaroid8.png", tweet: "assets/ZeeNYTweet8.png" },
+        ]
+      }
+    };
+
+    /* ============================================================
+       SECTION NAV
+    ============================================================ */
+
+    const app = document.getElementById("app");
+    const sectionPrev = document.getElementById("sectionPrev");
+    const sectionNext = document.getElementById("sectionNext");
+
+    const sections = Array.from(document.querySelectorAll(".section"));
+    const secByKey = new Map(sections.map(s => [s.dataset.sec, s]));
+
+    let activeSecIndex = 0;
+    let placeholderTimer = null;
+
+    function showSection(key){
+      // clear placeholder timers
+      if (placeholderTimer) {
+        clearTimeout(placeholderTimer);
+        placeholderTimer = null;
+      }
+
+      sections.forEach(s => s.classList.remove("active"));
+      const sec = secByKey.get(key);
+      if (!sec) return;
+      sec.classList.add("active");
+      document.body.classList.remove("ready"); // each section will flip to ready after placeholder
+
+      // kick off placeholder flow if section has intro
+      if (key === "aesthetics") runPlaceholder("intro-aesthetics", "aestheticsIntroText", CONFIG.aesthetics.introText, () => mountAesthetics());
+      else if (key === "goodtimes") runPlaceholder("intro-good", "goodIntroText", CONFIG.goodtimes.introText, () => mountGoodTimes());
+      else if (key === "tweets") runPlaceholder("intro-tweets", "tweetsIntroText", CONFIG.tweets.introText, () => mountTweets());
+      else {
+        // title: no placeholder needed
+        document.body.classList.add("ready");
+      }
+    }
+
+    function gotoIndex(i){
+      activeSecIndex = (i + CONFIG.sections.length) % CONFIG.sections.length;
+      showSection(CONFIG.sections[activeSecIndex]);
+    }
+
+    function nextSection(){ gotoIndex(activeSecIndex + 1); }
+    function prevSection(){ gotoIndex(activeSecIndex - 1); }
+
+    sectionNext.addEventListener("click", () => handleSectionRight());
+    sectionPrev.addEventListener("click", () => handleSectionLeft());
+
+    function currentSectionKey(){ return CONFIG.sections[activeSecIndex]; }
+
+    // placeholder rules:
+    // - during placeholder, right skips immediately into content
+    // - during placeholder, left goes to previous section
+    function isPlaceholderShowing(){
+      const key = currentSectionKey();
+      if (key === "aesthetics") return document.getElementById("intro-aesthetics").style.display !== "none";
+      if (key === "goodtimes")  return document.getElementById("intro-good").style.display !== "none";
+      if (key === "tweets")     return document.getElementById("intro-tweets").style.display !== "none";
+      return false;
+    }
+
+    function handleSectionRight(){
+      // if placeholder is showing, skip it (mount immediately)
+      const key = currentSectionKey();
+      if ((key === "aesthetics" || key === "goodtimes" || key === "tweets") && isPlaceholderShowing()){
+        skipPlaceholderNow(key);
+        return;
+      }
+      nextSection();
+    }
+
+    function handleSectionLeft(){
+      const key = currentSectionKey();
+      if ((key === "aesthetics" || key === "goodtimes" || key === "tweets") && isPlaceholderShowing()){
+        prevSection();
+        return;
+      }
+      prevSection();
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (modal.classList.contains("open")) return; // modal handles its own arrows
+      if (e.key === "ArrowRight") handleSectionRight();
+      if (e.key === "ArrowLeft") handleSectionLeft();
+    });
+
+    /* ============================================================
+       PLACEHOLDER / INTRO ANIMATION
+    ============================================================ */
+
+    function runPlaceholder(introId, textId, text, onDone){
+      const intro = document.getElementById(introId);
+      const t = document.getElementById(textId);
+      t.textContent = text;
+
+      intro.style.display = "flex";
+      intro.classList.remove("hide");
+      intro.classList.add("show");
+
+      // show -> hide after ~2.2s, done after 3s
+      placeholderTimer = setTimeout(() => {
+        intro.classList.add("hide");
+      }, Math.max(0, (CONFIG.placeholderSeconds * 1000) - 800));
+
+      placeholderTimer = setTimeout(() => {
+        intro.style.display = "none";
+        document.body.classList.add("ready");
+        onDone();
+      }, CONFIG.placeholderSeconds * 1000);
+    }
+
+    function skipPlaceholderNow(key){
+      if (placeholderTimer) {
+        clearTimeout(placeholderTimer);
+        placeholderTimer = null;
+      }
+      if (key === "aesthetics"){
+        const intro = document.getElementById("intro-aesthetics");
+        intro.style.display = "none";
+        document.body.classList.add("ready");
+        mountAesthetics(true);
+      } else if (key === "goodtimes"){
+        const intro = document.getElementById("intro-good");
+        intro.style.display = "none";
+        document.body.classList.add("ready");
+        mountGoodTimes(true);
+      } else if (key === "tweets"){
+        const intro = document.getElementById("intro-tweets");
+        intro.style.display = "none";
+        document.body.classList.add("ready");
+        mountTweets(true);
+      }
+    }
+
+    /* ============================================================
+       MODAL VIEWER (boards + tweets)
+    ============================================================ */
+
     const modal = document.getElementById("modal");
     const modalInner = document.getElementById("modalInner");
     const modalImg = document.getElementById("modalImg");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    const modalPrev = document.getElementById("modalPrev");
+    const modalNext = document.getElementById("modalNext");
 
-    let currentIndex = 0;
+    let modalList = [];
+    let modalIndex = 0;
 
-    function setModalImage(index){
-      currentIndex = (index + boards.length) % boards.length; // loop
-      modalImg.src = boards[currentIndex].src;
-    }
-
-    function openModal(index){
-      setModalImage(index);
+    function openModal(list, index){
+      modalList = list.slice();
+      modalIndex = (index + modalList.length) % modalList.length;
+      modalImg.src = modalList[modalIndex];
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
     }
 
     function closeModal(){
       modal.classList.remove("open");
       modal.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "hidden";
     }
 
-    function next(){
-      setModalImage(currentIndex + 1);
+    function modalGo(delta){
+      modalIndex = (modalIndex + delta + modalList.length) % modalList.length;
+      modalImg.src = modalList[modalIndex];
     }
 
-    function prev(){
-      setModalImage(currentIndex - 1);
-    }
+    modalPrev.addEventListener("click", (e) => { e.stopPropagation(); modalGo(-1); });
+    modalNext.addEventListener("click", (e) => { e.stopPropagation(); modalGo(1); });
 
-    // Click boards -> open modal
-    boards.forEach((b, idx) => {
-      const el = document.getElementById(b.id);
-      el.addEventListener("click", () => openModal(idx));
-    });
-
-    // Close modal by clicking outside the image (but not on arrows / image)
     modal.addEventListener("click", (e) => {
       if (e.target === modal) closeModal();
     });
-    // Also treat clicking the dim area inside as close (outside content)
     modalInner.addEventListener("click", (e) => {
-      // If they clicked the inner container but not the image or arrows
-      const isArrow = e.target === prevBtn || e.target === nextBtn;
-      const isImage = e.target === modalImg;
-      if (!isArrow && !isImage) {
-        // Clicking the padding around the image inside the modal closes
-        closeModal();
-      }
+      const isArrow = (e.target === modalPrev || e.target === modalNext);
+      const isImage = (e.target === modalImg);
+      if (!isArrow && !isImage) closeModal();
     });
 
-    prevBtn.addEventListener("click", (e) => { e.stopPropagation(); prev(); });
-    nextBtn.addEventListener("click", (e) => { e.stopPropagation(); next(); });
-
-    // Keyboard nav in modal
     window.addEventListener("keydown", (e) => {
       if (!modal.classList.contains("open")) return;
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") modalGo(-1);
+      if (e.key === "ArrowRight") modalGo(1);
       if (e.key === "Escape") closeModal();
     });
 
-    // Intro fade then boards "push into position" together (no slideshow)
-    function startIntro(){
-      intro.classList.add("show");
-      // show text briefly, then fade it out
-      setTimeout(() => intro.classList.add("hide"), 2400);
-      // once faded, bring boards in
-      setTimeout(() => {
-        intro.style.display = "none";
-        document.body.classList.add("ready");
-      }, 3200);
+    /* ============================================================
+       AESTHETICS LAYOUT + INTERACTIONS
+    ============================================================ */
+
+    let aestheticsMounted = false;
+
+    function mountAesthetics(force = false){
+      if (aestheticsMounted && !force) return;
+      aestheticsMounted = true;
+
+      // Positioning to match your “3 boards scattered” vibe (in-bounds)
+      const rose = document.getElementById("aest-rose");
+      const noir = document.getElementById("aest-noir");
+      const burg = document.getElementById("aest-burg");
+
+      // size + placement tuned to keep corners on-screen
+      rose.style.width = "min(56vw, 820px)";
+      noir.style.width = "min(60vw, 880px)";
+      burg.style.width = "min(52vw, 760px)";
+
+      rose.style.left = "5vw";
+      rose.style.top  = "20vh";
+      noir.style.left = "30vw";
+      noir.style.top  = "8vh";
+      burg.style.left = "58vw";
+      burg.style.top  = "18vh";
+
+      // initial "push-in"
+      rose.style.transform = "translate3d(-40px,120px,0) scale(.86) rotate(-10deg)";
+      noir.style.transform = "translate3d(0px,120px,0) scale(.86) rotate(3deg)";
+      burg.style.transform = "translate3d(40px,120px,0) scale(.86) rotate(12deg)";
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // settle
+          rose.style.transform = "translate3d(0,0,0) scale(1) rotate(-10deg)";
+          noir.style.transform = "translate3d(0,0,0) scale(1) rotate(3deg)";
+          burg.style.transform = "translate3d(0,0,0) scale(1) rotate(12deg)";
+        });
+      });
+
+      const sources = CONFIG.aesthetics.items.map(x => x.src);
+
+      CONFIG.aesthetics.items.forEach((item, idx) => {
+        const el = document.getElementById(item.id);
+        el.onclick = () => openModal(sources, idx);
+      });
     }
 
-    // If you want it instant (no text), comment startIntro() and just add 'ready' immediately.
-    startIntro();
-    // document.body.classList.add("ready");
+    /* ============================================================
+       GOOD TIMES LAYOUT + INTERACTIONS
+    ============================================================ */
+
+    let goodMounted = false;
+
+    function mountGoodTimes(force = false){
+      if (goodMounted && !force) return;
+      goodMounted = true;
+
+      const left = document.getElementById("good-left");
+      const right = document.getElementById("good-right");
+
+      left.style.width = "min(62vw, 980px)";
+      right.style.width = "min(56vw, 880px)";
+
+      // In-bounds, overlapping, like your screenshot
+      left.style.left = "6vw";
+      left.style.top  = "14vh";
+      right.style.left = "52vw";
+      right.style.top  = "10vh";
+
+      // push-in then settle
+      left.style.transform  = "translate3d(-40px,120px,0) scale(.86) rotate(-6deg)";
+      right.style.transform = "translate3d(40px,120px,0) scale(.86) rotate(6deg)";
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          left.style.transform  = "translate3d(0,0,0) scale(1) rotate(-6deg)";
+          right.style.transform = "translate3d(0,0,0) scale(1) rotate(6deg)";
+        });
+      });
+
+      const sources = CONFIG.goodtimes.items.map(x => x.src);
+      CONFIG.goodtimes.items.forEach((item, idx) => {
+        const el = document.getElementById(item.id);
+        el.onclick = () => openModal(sources, idx);
+      });
+    }
+
+    /* ============================================================
+       TWEETS: POLAROID SHUFFLE + CLICK TO FULL TWEET
+    ============================================================ */
+
+    let tweetsMounted = false;
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+    function mountTweets(force = false){
+      if (tweetsMounted && !force) return;
+      tweetsMounted = true;
+      shufflePolaroids(true);
+
+      // Click polaroid image -> open full tweet
+      const polaroids = Array.from(document.querySelectorAll("#stage-tweets .polaroid"));
+      polaroids.forEach((p) => {
+        const i = Number(p.getAttribute("data-i")) || 1;
+        p.onclick = () => {
+          // Open viewer with all tweets, start on clicked one
+          const tweetSources = CONFIG.tweets.items.map(x => x.tweet);
+          openModal(tweetSources, i - 1);
+        };
+      });
+    }
+
+    function shufflePolaroids(firstTime = false){
+      const stage = document.getElementById("stage-tweets");
+      const polaroids = Array.from(stage.querySelectorAll(".polaroid"));
+
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+
+      // Safe bounds so corners stay on-screen
+      const padX = 80;
+      const padY = 90;
+
+      // Staggered “shuffle” feel
+      polaroids.forEach((p, idx) => {
+        // start collapsed if first time
+        if (firstTime){
+          p.style.opacity = "0";
+          p.style.transform = `translate3d(${W/2}px, ${H/2}px, 0) scale(.65) rotate(0deg)`;
+        }
+
+        // target positions: scattered but within screen
+        const x = rand(padX, W - padX);
+        const y = rand(padY, H - padY);
+        const r = rand(-16, 16);
+        const s = rand(0.92, 1.06);
+
+        // Place by center using translate (-50%,-50%)
+        p.style.left = x + "px";
+        p.style.top  = y + "px";
+
+        // ensure transform includes center offset
+        const settle = `translate3d(-50%, -50%, 0) scale(${s}) rotate(${r}deg)`;
+
+        setTimeout(() => {
+          p.style.opacity = "1";
+          p.style.transform = settle;
+          // z-index so later ones appear on top sometimes
+          p.style.zIndex = String(10 + idx);
+        }, firstTime ? (120 + idx * 90) : (idx * 40));
+      });
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (modal.classList.contains("open")) return;
+      if (currentSectionKey() !== "tweets") return;
+      if (e.key.toLowerCase() === "r") shufflePolaroids(false);
+    });
+
+    window.addEventListener("resize", () => {
+      if (currentSectionKey() === "tweets") shufflePolaroids(false);
+    });
+
+    /* ============================================================
+       TITLE TEXT SETUP
+    ============================================================ */
+    document.getElementById("titleText").textContent = CONFIG.title.titleText;
+    document.getElementById("subtitleText").textContent = CONFIG.title.subtitleText;
+
+    /* ============================================================
+       START APP
+    ============================================================ */
+    showSection(CONFIG.sections[0]);
+
+    // Optional: allow clicking the title card to advance
+    document.querySelector(".titleCard").addEventListener("click", () => nextSection());
   </script>
 </body>
 </html>
