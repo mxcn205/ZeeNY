@@ -3,1151 +3,366 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Scrapbook Wrapped</title>
+  <title>2025 Wrapped — The Good Times</title>
 
   <style>
     :root{
-      --bg: #f7c7d9;
-
-      --ink: rgba(25, 18, 22, 0.92);
-      --muted: rgba(25, 18, 22, 0.62);
-      --border: rgba(25, 18, 22, 0.14);
-
-      --ease: cubic-bezier(.22, 1, .36, 1);
-      --t: 520ms;
+      --shadow: 0 18px 55px rgba(0,0,0,.28);
+      --shadow-strong: 0 26px 75px rgba(0,0,0,.36);
+      --glow: 0 0 0 3px rgba(255,255,255,.35), 0 0 40px rgba(255,160,205,.40);
+      --ui: rgba(255,255,255,.78);
+      --ui2: rgba(255,255,255,.92);
+      --ink: rgba(20,20,20,.85);
     }
 
-    *{ box-sizing: border-box; }
-    html, body { height: 100%; }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
     body{
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      overflow: hidden;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      overflow:hidden;
+      background:#ffd3e3;
     }
 
-    .paperWash{
-      pointer-events: none;
-      position: fixed;
-      inset: 0;
+    /* Background image */
+    .bg{
+      position:fixed; inset:0;
       background:
-        radial-gradient(1200px 700px at 18% 10%, rgba(255,255,255,0.22), transparent 60%),
-        radial-gradient(900px 700px at 85% 15%, rgba(255,255,255,0.16), transparent 55%),
-        radial-gradient(700px 600px at 55% 90%, rgba(255,255,255,0.14), transparent 60%);
-      mix-blend-mode: soft-light;
-      opacity: 0.7;
+        url("ZeeNYbg.png") center / cover no-repeat;
+      transform: translateZ(0);
+    }
+    .bg::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,.12) 0%, rgba(255,255,255,.02) 55%, rgba(0,0,0,.08) 100%);
+      pointer-events:none;
     }
 
-    .scrapbook{
-      position: relative;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
+    /* Intro text overlay */
+    .intro{
+      position:fixed; inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      z-index:10;
     }
-
-    .slides{
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
-
-    /* Page transitions */
-    .page{
-      position: absolute;
-      inset: 0;
-      padding: clamp(14px, 2.4vw, 28px);
-
+    .intro .card{
+      padding: 18px 22px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.6);
+      box-shadow: 0 14px 50px rgba(0,0,0,.16);
+      color: rgba(30,30,30,.88);
+      letter-spacing:.2px;
+      font-size: 20px;
+      font-weight: 600;
       opacity: 0;
-      transform: translateY(18px) scale(0.985);
-      filter: blur(2px);
-      pointer-events: none;
-
-      transition:
-        opacity var(--t) var(--ease),
-        transform var(--t) var(--ease),
-        filter var(--t) var(--ease);
+      transform: translateY(10px) scale(.98);
+      transition: opacity .7s ease, transform .7s ease, filter .7s ease;
+      filter: blur(1px);
     }
-    .page.active{
+    .intro.show .card{
       opacity: 1;
       transform: translateY(0) scale(1);
       filter: blur(0);
-      pointer-events: auto;
     }
-    .page.exiting{
+    .intro.hide .card{
       opacity: 0;
-      transform: translateY(-16px) scale(0.985);
+      transform: translateY(-6px) scale(.99);
       filter: blur(2px);
-      pointer-events: none;
     }
 
-    /* Title page */
-    .titleCard{
-      height: 100%;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 18px;
-    }
-    .titleCard .big{
-      font-size: clamp(34px, 5vw, 60px);
-      font-weight: 950;
-      letter-spacing: -1.4px;
-      line-height: 1.02;
-      margin: 0;
-    }
-    .titleCard .small{
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-      max-width: 70ch;
-    }
-    .titleCard .startPill{
-      margin-top: 18px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.50);
-      border: 1px solid var(--border);
-      color: rgba(25,18,22,0.86);
-      font-weight: 850;
-      font-size: 12px;
-      user-select: none;
-      backdrop-filter: blur(8px);
+    /* Main stage */
+    .stage{
+      position:fixed; inset:0;
+      z-index:2;
+      display:block;
     }
 
-    /* Left/Right arrows */
-    .navArrow{
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 46px;
-      height: 46px;
-      border-radius: 999px;
-      border: 1px solid rgba(25, 18, 22, 0.18);
-      background: rgba(255,255,255,0.58);
-      box-shadow: 0 14px 34px rgba(0,0,0,0.14);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      user-select: none;
-      z-index: 50;
-      transition: transform 150ms ease, background 150ms ease, border-color 150ms ease, opacity 150ms ease;
-    }
-    .navArrow:hover{
-      background: rgba(255,255,255,0.74);
-      border-color: rgba(25, 18, 22, 0.24);
-      transform: translateY(-50%) scale(1.03);
-    }
-    .navArrow:active{
-      transform: translateY(-50%) scale(0.99);
-    }
-    .navArrow.left{ left: 14px; }
-    .navArrow.right{ right: 14px; }
-    .navArrow[disabled]{
-      opacity: 0.35;
-      cursor: default;
-      pointer-events: none;
-    }
-    .navArrow svg{
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: rgba(25,18,22,0.88);
-      stroke-width: 3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* =========================
-       Overlay zoom
-       ========================= */
-    .overlay{
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.00);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 260ms ease, background 260ms ease;
-      z-index: 1000;
-    }
-    .overlay.open{
-      opacity: 1;
-      pointer-events: auto;
-      background: rgba(0,0,0,0.10);
-    }
-    .zoomImg{
-      position: fixed;
-      z-index: 1001;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 34px 90px rgba(0,0,0,0.30);
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
-
-      will-change: transform, width, height, top, left;
+    /* Boards (collage images) */
+    .board{
+      position:absolute;
+      display:block;
+      width: min(60vw, 900px);
+      max-width: 92vw;
+      height:auto;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      cursor:pointer;
+      user-select:none;
+      transform-origin: 50% 55%;
       transition:
-        top 520ms var(--ease),
-        left 520ms var(--ease),
-        width 520ms var(--ease),
-        height 520ms var(--ease),
-        transform 520ms var(--ease);
-      cursor: zoom-out;
-    }
-    .zoomImg img{
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      background: rgba(0,0,0,0.06);
-    }
-
-    /* =========================
-       Staged sections (intro -> carousel -> collage)
-       ========================= */
-    .stageSection{
-      position: relative;
-      height: 100%;
-      width: 100%;
-      display: grid;
-      place-items: center;
-      padding: clamp(12px, 2vw, 26px);
-    }
-
-    .introOverlay{
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 420ms var(--ease);
-      z-index: 5;
-    }
-    .introOverlay.show{ opacity: 1; }
-    .introOverlay .box{
-      background: rgba(255,255,255,0.60);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-      border-radius: 999px;
-      padding: 14px 18px;
-      font-weight: 900;
-      letter-spacing: -0.4px;
-      font-size: 16px;
-      color: rgba(25,18,22,0.90);
-      box-shadow: 0 18px 48px rgba(0,0,0,0.14);
-      text-transform: none;
-    }
-
-    .dim{
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 380ms ease;
-      z-index: 1;
-    }
-    .dim.on{
-      opacity: 1;
-      background: rgba(0,0,0,0.18);
-    }
-
-    /* No surrounding rectangle behind tweet/board. */
-    .mediaStage{
-      width: 100%;
-      height: 100%;
-      position: relative;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .mediaStage.on{ pointer-events: auto; }
-
-    /* Single media card (tweet/board) */
-    .mediaCard{
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-
-      opacity: 0;
-      transform: translateX(40px) scale(0.98);
-      filter: blur(2px);
-      transition:
-        opacity 520ms var(--ease),
-        transform 520ms var(--ease),
-        filter 520ms var(--ease);
-    }
-    .mediaCard.active{
-      opacity: 1;
-      transform: translateX(0) scale(1);
-      filter: blur(0);
-    }
-    .mediaCard.shrinkAway{
-      opacity: 1;
-      transform: translateX(-40px) scale(0.28) rotate(-2deg);
-      filter: blur(0.5px);
-    }
-
-    /* Show FULL image (no cropping). Also: drop shadow per item. */
-    .mediaImg{
-      max-width: min(1100px, calc(100vw - 160px));
-      max-height: min(820px, calc(100vh - 170px));
-      width: auto;
-      height: auto;
-      display: block;
-      object-fit: contain;
-      border-radius: 18px;
-      /* per-item shadow (not a section rectangle) */
-      filter: drop-shadow(0 24px 42px rgba(0,0,0,0.22));
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .hintPill{
-      position: absolute;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 12px;
-      color: rgba(25,18,22,0.62);
-      background: rgba(255,255,255,0.46);
-      border: 1px solid rgba(25,18,22,0.12);
-      padding: 8px 10px;
-      border-radius: 999px;
-      backdrop-filter: blur(8px);
-      user-select: none;
-      z-index: 4;
-      opacity: 0;
-      transition: opacity 320ms ease;
-      pointer-events: none;
-    }
-    .hintPill.on{ opacity: 1; }
-
-    /* Collage mode */
-    .collage{
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      opacity: 0;
-      transform: scale(0.985);
-      filter: blur(1px);
-      pointer-events: none;
-      transition: opacity 520ms var(--ease), transform 520ms var(--ease), filter 520ms var(--ease);
-    }
-    .collage.on{
-      opacity: 1;
-      transform: scale(1);
-      filter: blur(0);
-      pointer-events: auto;
-    }
-    .collageHint{
-      position: absolute;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 12px;
-      color: rgba(25,18,22,0.62);
-      background: rgba(255,255,255,0.46);
-      border: 1px solid rgba(25,18,22,0.12);
-      padding: 8px 10px;
-      border-radius: 999px;
-      backdrop-filter: blur(8px);
-      user-select: none;
-      z-index: 4;
-      opacity: 0;
-      transition: opacity 320ms ease;
-      pointer-events: none;
-    }
-    .collageHint.on{ opacity: 1; }
-
-    /* Scattered items (tweets) — NO rectangle background shadow. Each item gets its own drop shadow. */
-    .scatter{
-      position: absolute;
-      overflow: visible;
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      cursor: zoom-in;
-      transition: transform 160ms ease;
+        transform 800ms cubic-bezier(.2,.9,.2,1),
+        filter 220ms ease,
+        box-shadow 220ms ease;
       will-change: transform;
-    }
-    .scatter:hover{
-      transform: translateY(-2px) rotate(var(--rot));
-    }
-    .scatter img{
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: contain; /* IMPORTANT: no cropping */
-      border-radius: 18px;
-      filter: drop-shadow(0 22px 40px rgba(0,0,0,0.20));
-      background: transparent;
+      filter: saturate(1.02) contrast(1.02);
     }
 
-    /* EXACT aesthetics collage layout (matches your screenshot) */
-    .aestheticCollageExact .boardItem{
-      position: absolute;
-      cursor: zoom-in;
-      transform-origin: center center;
-      will-change: transform, width, height, top, left;
+    /* Ensure corners stay in-bounds by keeping boards inside safe margins */
+    .board.wrap{
+      /* "pushed into screen" starting pose */
+      transform: translate3d(0, 90px, 0) scale(.88) rotate(0deg);
+      opacity: 0;
     }
-    .aestheticCollageExact .boardItem img{
-      width: 100%;
-      height: 100%;
-      object-fit: contain; /* no crop */
-      display: block;
-      border-radius: 0px; /* screenshot has clean edges; change to 12px if you want */
-      filter: drop-shadow(0 26px 44px rgba(0,0,0,0.22));
-      background: transparent;
-      user-select: none;
-      -webkit-user-drag: none;
+
+    .ready .board.wrap{
+      opacity: 1;
+    }
+
+    /* Position + final transforms (slight rotations) */
+    #boardGood{
+      left: 6vw;
+      top: 14vh;
+      width: min(62vw, 980px);
+      transform: translate3d(-40px, 120px, 0) scale(.86) rotate(-6deg);
+    }
+    #boardThoughts{
+      right: 6vw;
+      top: 12vh;
+      width: min(56vw, 880px);
+      transform: translate3d(40px, 120px, 0) scale(.86) rotate(6deg);
+    }
+
+    /* After intro: push boards into place */
+    .ready #boardGood{
+      transform: translate3d(0,0,0) scale(1) rotate(-6deg);
+    }
+    .ready #boardThoughts{
+      transform: translate3d(0,0,0) scale(1) rotate(6deg);
+    }
+
+    /* Hover glow */
+    .board:hover{
+      box-shadow: var(--shadow-strong), var(--glow);
+      filter: saturate(1.08) contrast(1.06);
+    }
+
+    /* Modal viewer */
+    .modal{
+      position:fixed; inset:0;
+      z-index:50;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 24px;
+      background: rgba(0,0,0,.48);
+      backdrop-filter: blur(4px);
+    }
+    .modal.open{ display:flex; }
+
+    .modal-inner{
+      position:relative;
+      width: min(92vw, 1100px);
+      height: min(88vh, 760px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .modal-img{
+      max-width: 100%;
+      max-height: 100%;
+      width:auto;
+      height:auto;
+      border-radius: 14px;
+      box-shadow: 0 30px 95px rgba(0,0,0,.55);
+      background: rgba(255,255,255,.02);
+    }
+
+    /* Arrows (modal) */
+    .arrow{
+      position:absolute;
+      top:50%;
+      transform: translateY(-50%);
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.55);
+      background: rgba(255,255,255,.18);
+      color: white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 26px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
+    }
+    .arrow:hover{ background: rgba(255,255,255,.28); }
+    .arrow:active{ transform: translateY(-50%) scale(.97); }
+    .arrow.left{ left: -10px; }
+    .arrow.right{ right: -10px; }
+
+    /* Small helper hint */
+    .hint{
+      position:fixed;
+      left:50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      z-index:3;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.45);
+      border: 1px solid rgba(255,255,255,.55);
+      box-shadow: 0 10px 35px rgba(0,0,0,.12);
+      color: rgba(40,40,40,.82);
+      font-size: 13px;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 500ms ease;
+      pointer-events:none;
+    }
+    .ready .hint{ opacity: 1; }
+
+    /* Responsive tweaks */
+    @media (max-width: 900px){
+      #boardGood{
+        left: 4vw; top: 12vh;
+        width: min(92vw, 980px);
+        transform: translate3d(-20px, 120px, 0) scale(.86) rotate(-5deg);
+      }
+      #boardThoughts{
+        left: 10vw; right:auto;
+        top: 54vh;
+        width: min(86vw, 880px);
+        transform: translate3d(20px, 120px, 0) scale(.86) rotate(4deg);
+      }
+      .ready #boardThoughts{ transform: translate3d(0,0,0) scale(1) rotate(4deg); }
     }
   </style>
 </head>
 
 <body>
-  <div class="paperWash"></div>
+  <div class="bg" aria-hidden="true"></div>
 
-  <main class="scrapbook">
-    <div class="slides" id="slides">
+  <!-- Intro placeholder text (keep it if you want; remove if not needed) -->
+  <div class="intro" id="intro">
+    <div class="card">The good times :)</div>
+  </div>
 
-      <!-- PAGE 1: Title -->
-      <section class="page active" data-page="cover">
-        <div class="titleCard">
-          <div>
-            <h1 class="big" contenteditable="true">2025<br/>Wrapped</h1>
-            <div class="small" contenteditable="true">
-              Click any board/tweet to zoom in.<br/>
-              Use the arrows (or ← → keys) to turn pages.
-            </div>
-            <div class="startPill" contenteditable="true">Next →</div>
-          </div>
-        </div>
-      </section>
+  <div class="stage" id="stage">
+    <!-- Good Times board -->
+    <img
+      id="boardGood"
+      class="board wrap"
+      src="ZeeNYBoardGoodTimes.png"
+      alt="The Good Times board"
+      data-order="0"
+    />
 
-      <!-- PAGE 2: 2025 Aesthetics (La vie en rose -> Noir -> Burgundy -> exact collage of 3) -->
-      <section class="page" data-page="aesthetics">
-        <div class="stageSection" id="aestheticSection">
-          <div class="dim" id="aestheticDim"></div>
+    <!-- Added Thoughts board -->
+    <img
+      id="boardThoughts"
+      class="board wrap"
+      src="ZeeNYBoardThoughts.png"
+      alt="Thoughts board"
+      data-order="1"
+    />
 
-          <div class="introOverlay" id="aestheticIntro">
-            <div class="box">2025 Aesthetics</div>
-          </div>
+    <div class="hint">Hover to glow • Click a board to view • In viewer: ⟵ / ⟶ loops</div>
+  </div>
 
-          <div class="mediaStage" id="aestheticStage" aria-hidden="true"></div>
-          <div class="hintPill" id="aestheticHint">← → to scroll • last → shows scrapbook</div>
-
-          <div class="collage aestheticCollageExact" id="aestheticCollage" aria-hidden="true">
-            <div class="collageHint" id="aestheticCollageHint">click a board to zoom • → continues</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE 3: The good times board -->
-      <section class="page" data-page="good-times">
-        <div class="stageSection">
-          <div class="mediaStage on" aria-hidden="false">
-            <div class="mediaCard active" style="opacity:1; transform:none; filter:none;">
-              <img class="mediaImg" src="assets/ZeeNYBoardGoodTimes.png" alt="The good times board" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE 4: Tweets -->
-      <section class="page" data-page="tweets">
-        <div class="stageSection" id="tweetSection">
-          <div class="dim" id="tweetDim"></div>
-
-          <div class="introOverlay" id="tweetIntro">
-            <div class="box">top tweets this year</div>
-          </div>
-
-          <div class="mediaStage" id="tweetStage" aria-hidden="true"></div>
-          <div class="hintPill" id="tweetHint">← → to scroll • last → shows scrapbook</div>
-
-          <div class="collage" id="tweetCollage" aria-hidden="true">
-            <div class="collageHint" id="tweetCollageHint">click a tweet to zoom • → continues</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PAGE 5: End -->
-      <section class="page" data-page="end">
-        <div class="titleCard">
-          <div>
-            <h1 class="big" contenteditable="true">End of file.</h1>
-            <div class="small" contenteditable="true">
-              Add a final one-liner here.<br/>
-              Optional: “Open anytime.”
-            </div>
-            <div class="startPill" contenteditable="true">← Back</div>
-          </div>
-        </div>
-      </section>
-
+  <!-- Modal viewer -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-inner" id="modalInner">
+      <div class="arrow left" id="prevBtn" aria-label="Previous">‹</div>
+      <img class="modal-img" id="modalImg" alt="Full board view" />
+      <div class="arrow right" id="nextBtn" aria-label="Next">›</div>
     </div>
-  </main>
-
-  <!-- Left/Right arrows for navigation -->
-  <button class="navArrow left" id="leftArrow" aria-label="Previous">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-  </button>
-
-  <button class="navArrow right" id="rightArrow" aria-label="Next">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-  </button>
-
-  <!-- Zoom overlay -->
-  <div class="overlay" id="overlay" aria-hidden="true"></div>
+  </div>
 
   <script>
-    // =========================
-    // Pages
-    // =========================
-    const pages = Array.from(document.querySelectorAll('.page'));
-    const totalPages = pages.length;
-    let pageIdx = 0;
-    let pageAnimating = false;
-
-    const leftArrow = document.getElementById('leftArrow');
-    const rightArrow = document.getElementById('rightArrow');
-
-    function currentPageKey(){ return pages[pageIdx]?.dataset?.page || ''; }
-
-    function updateArrowDisabled(){
-      const k = currentPageKey();
-      if(k === 'aesthetics' || k === 'tweets'){
-        leftArrow.toggleAttribute('disabled', false);
-        rightArrow.toggleAttribute('disabled', false);
-        return;
-      }
-      leftArrow.toggleAttribute('disabled', pageIdx === 0);
-      rightArrow.toggleAttribute('disabled', pageIdx === totalPages - 1);
-    }
-
-    function goToPage(next){
-      if(pageAnimating) return;
-      if(next === pageIdx) return;
-      if(next < 0 || next >= totalPages) return;
-
-      pageAnimating = true;
-
-      const current = pages[pageIdx];
-      const incoming = pages[next];
-
-      if(current?.dataset?.page === 'tweets') tweetReset();
-      if(current?.dataset?.page === 'aesthetics') aestheticReset();
-
-      current.classList.remove('active');
-      current.classList.add('exiting');
-      incoming.classList.add('active');
-
-      window.setTimeout(() => {
-        current.classList.remove('exiting');
-        pageIdx = next;
-        pageAnimating = false;
-
-        if(incoming?.dataset?.page === 'tweets') tweetEnter();
-        if(incoming?.dataset?.page === 'aesthetics') aestheticEnter();
-
-        updateArrowDisabled();
-      }, 560);
-    }
-
-    function nextPage(){ goToPage(Math.min(totalPages - 1, pageIdx + 1)); }
-    function prevPage(){ goToPage(Math.max(0, pageIdx - 1)); }
-
-    // =========================
-    // Shared helpers
-    // =========================
-    function clearTimers(list){ list.forEach(t => clearTimeout(t)); list.length = 0; }
-
-    function buildMediaCard(src, alt="media"){
-      const card = document.createElement('div');
-      card.className = 'mediaCard';
-      const img = document.createElement('img');
-      img.className = 'mediaImg';
-      img.src = src;
-      img.alt = alt;
-      img.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openZoomFromElement(img, src);
-      });
-      card.appendChild(img);
-      return card;
-    }
-
-    // Tweets collage scatter (no crop, full image visible)
-    function scatterTweets(container, sources){
-      container.innerHTML = "";
-
-      const layouts = [
-        {x:6,  y:10,  w:34, rot:-6},
-        {x:54, y:8,   w:40, rot:5},
-        {x:10, y:48,  w:38, rot:4},
-        {x:58, y:46,  w:34, rot:-5},
-        {x:34, y:28,  w:36, rot:2},
-        {x:2,  y:68,  w:32, rot:-3},
-        {x:66, y:66,  w:30, rot:6},
-        {x:36, y:72,  w:34, rot:-2},
-      ];
-
-      sources.forEach((src, i) => {
-        const l = layouts[i] || layouts[layouts.length - 1];
-
-        const item = document.createElement('div');
-        item.className = 'scatter';
-        item.style.left = l.x + 'vw';
-        item.style.top  = l.y + 'vh';
-        item.style.width = l.w + 'vw';
-        item.style.height = `min(${Math.max(28, l.w * 0.78)}vw, 44vh)`; // sized box; IMG is contain (no crop)
-        item.style.setProperty('--rot', (l.rot||0) + 'deg');
-        item.style.transform = `rotate(${l.rot||0}deg)`;
-
-        item.innerHTML = `<img src="${src}" alt="tweet ${i+1}" />`;
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const img = item.querySelector('img');
-          openZoomFromElement(img, src);
-        });
-
-        container.appendChild(item);
-      });
-    }
-
-    // =========================
-    // AESTHETICS section (exact scrapbook layout in collage mode)
-    // =========================
-    const aestheticIntro = document.getElementById('aestheticIntro');
-    const aestheticStage = document.getElementById('aestheticStage');
-    const aestheticDim = document.getElementById('aestheticDim');
-    const aestheticHint = document.getElementById('aestheticHint');
-    const aestheticCollage = document.getElementById('aestheticCollage');
-    const aestheticCollageHint = document.getElementById('aestheticCollageHint');
-
-    const aesthetics = [
-      "assets/ZeeNYBoardCoquette.png", // La vie en rose (left)
-      "assets/ZeeNYBoardVogue.png",    // Noir (center)
-      "assets/ZeeNYBoardBurgundy.png", // Burgundy (right)
+    // Board order = left-to-right the same way it appears on the main screen.
+    const boards = [
+      { id: "boardGood", src: "ZeeNYBoardGoodTimes.png" },
+      { id: "boardThoughts", src: "ZeeNYBoardThoughts.png" },
     ];
 
-    let aestheticMode = "idle"; // intro | carousel | collage
-    let aestheticIdx = 0;
-    let aestheticTimers = [];
-    let aestheticAnimating = false;
+    const intro = document.getElementById("intro");
+    const stage = document.getElementById("stage");
+    const modal = document.getElementById("modal");
+    const modalInner = document.getElementById("modalInner");
+    const modalImg = document.getElementById("modalImg");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
 
-    function aestheticReset(){
-      clearTimers(aestheticTimers);
-      aestheticMode = "idle";
-      aestheticIdx = 0;
-      aestheticAnimating = false;
+    let currentIndex = 0;
 
-      aestheticIntro.classList.remove('show');
-      aestheticDim.classList.remove('on');
-      aestheticHint.classList.remove('on');
-
-      aestheticStage.innerHTML = "";
-      aestheticStage.classList.remove('on');
-      aestheticStage.setAttribute('aria-hidden','true');
-
-      aestheticCollage.classList.remove('on');
-      aestheticCollage.setAttribute('aria-hidden','true');
-      aestheticCollage.innerHTML = `<div class="collageHint" id="aestheticCollageHint">click a board to zoom • → continues</div>`;
+    function setModalImage(index){
+      currentIndex = (index + boards.length) % boards.length; // loop
+      modalImg.src = boards[currentIndex].src;
     }
 
-    function aestheticShowCarousel(startIndex=0, {instant=false} = {}){
-      aestheticMode = "carousel";
-      aestheticIdx = Math.max(0, Math.min(aesthetics.length - 1, startIndex));
-
-      aestheticStage.innerHTML = "";
-      aestheticStage.classList.add('on');
-      aestheticStage.setAttribute('aria-hidden','false');
-
-      aestheticCollage.classList.remove('on');
-      aestheticCollage.setAttribute('aria-hidden','true');
-      aestheticDim.classList.add('on');
-      aestheticHint.classList.add('on');
-
-      const card = buildMediaCard(aesthetics[aestheticIdx], "Aesthetic board");
-      aestheticStage.appendChild(card);
-
-      if(instant) card.classList.add('active');
-      else requestAnimationFrame(()=> card.classList.add('active'));
+    function openModal(index){
+      setModalImage(index);
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
     }
 
-    function aestheticAnimateTo(nextIndex){
-      if(aestheticAnimating) return;
-      if(aestheticMode !== "carousel") return;
+    function closeModal(){
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "hidden";
+    }
 
-      const clamped = Math.max(0, Math.min(aesthetics.length - 1, nextIndex));
-      if(clamped === aestheticIdx) return;
+    function next(){
+      setModalImage(currentIndex + 1);
+    }
 
-      aestheticAnimating = true;
+    function prev(){
+      setModalImage(currentIndex - 1);
+    }
 
-      const oldCard = aestheticStage.querySelector('.mediaCard');
-      const newCard = buildMediaCard(aesthetics[clamped], "Aesthetic board");
-      aestheticStage.appendChild(newCard);
+    // Click boards -> open modal
+    boards.forEach((b, idx) => {
+      const el = document.getElementById(b.id);
+      el.addEventListener("click", () => openModal(idx));
+    });
 
-      void newCard.offsetWidth;
+    // Close modal by clicking outside the image (but not on arrows / image)
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+    // Also treat clicking the dim area inside as close (outside content)
+    modalInner.addEventListener("click", (e) => {
+      // If they clicked the inner container but not the image or arrows
+      const isArrow = e.target === prevBtn || e.target === nextBtn;
+      const isImage = e.target === modalImg;
+      if (!isArrow && !isImage) {
+        // Clicking the padding around the image inside the modal closes
+        closeModal();
+      }
+    });
 
-      oldCard.classList.remove('active');
-      oldCard.classList.add('shrinkAway');
+    prevBtn.addEventListener("click", (e) => { e.stopPropagation(); prev(); });
+    nextBtn.addEventListener("click", (e) => { e.stopPropagation(); next(); });
 
-      requestAnimationFrame(() => newCard.classList.add('active'));
+    // Keyboard nav in modal
+    window.addEventListener("keydown", (e) => {
+      if (!modal.classList.contains("open")) return;
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "Escape") closeModal();
+    });
 
+    // Intro fade then boards "push into position" together (no slideshow)
+    function startIntro(){
+      intro.classList.add("show");
+      // show text briefly, then fade it out
+      setTimeout(() => intro.classList.add("hide"), 2400);
+      // once faded, bring boards in
       setTimeout(() => {
-        oldCard.remove();
-        aestheticIdx = clamped;
-        aestheticAnimating = false;
-      }, 560);
+        intro.style.display = "none";
+        document.body.classList.add("ready");
+      }, 3200);
     }
 
-    // EXACT collage: keep original aspect ratios, no crop, match screenshot layout
-    function renderAestheticCollageExact(){
-      aestheticCollage.innerHTML = `<div class="collageHint on" id="aestheticCollageHint">click a board to zoom • → continues</div>`;
-
-      // Positions/rotations tuned to match your screenshot.
-      // NOTE: Width is set in vw; height is computed from each image's natural aspect ratio.
-      const items = [
-        // left board (La vie en rose)
-        { src: aesthetics[0], left: "3.5vw",  top: "34vh", width: "44vw", rotate: "-10deg", z: 1 },
-        // center board (Noir)
-        { src: aesthetics[1], left: "26vw",   top: "6vh",  width: "48vw", rotate: "-6deg",  z: 2 },
-        // right board (Burgundy)
-        { src: aesthetics[2], left: "61vw",   top: "20vh", width: "34vw", rotate: "12deg",  z: 3 },
-      ];
-
-      const created = [];
-
-      items.forEach((it) => {
-        const wrap = document.createElement('div');
-        wrap.className = 'boardItem';
-        wrap.style.left = it.left;
-        wrap.style.top = it.top;
-        wrap.style.width = it.width;
-        wrap.style.zIndex = String(it.z);
-        wrap.style.transform = `rotate(${it.rotate})`;
-        wrap.dataset.src = it.src;
-
-        const img = document.createElement('img');
-        img.src = it.src;
-        img.alt = "Aesthetic board";
-        img.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          openZoomFromElement(img, it.src);
-        });
-
-        wrap.appendChild(img);
-        aestheticCollage.appendChild(wrap);
-        created.push({wrap, img});
-      });
-
-      // Compute heights from natural aspect ratios so NOTHING is cropped.
-      function applyHeights(){
-        created.forEach(({wrap, img}) => {
-          const w = wrap.getBoundingClientRect().width;
-          const nw = img.naturalWidth || 1;
-          const nh = img.naturalHeight || 1;
-          const ratio = nw / nh; // w / h
-          const h = w / ratio;
-          wrap.style.height = h + "px";
-        });
-      }
-
-      // Wait until all images loaded (or already cached), then size.
-      let pending = created.length;
-      created.forEach(({img}) => {
-        if(img.complete && img.naturalWidth){
-          pending--;
-          if(pending === 0) applyHeights();
-        } else {
-          img.addEventListener('load', () => {
-            pending--;
-            if(pending === 0) applyHeights();
-          }, {once:true});
-        }
-      });
-
-      // Resize handler
-      window.addEventListener('resize', applyHeights, {passive:true});
-    }
-
-    function aestheticShowCollage(){
-      aestheticMode = "collage";
-      aestheticAnimating = false;
-
-      aestheticDim.classList.remove('on');
-      aestheticHint.classList.remove('on');
-
-      aestheticStage.classList.remove('on');
-      aestheticStage.setAttribute('aria-hidden','true');
-      aestheticStage.innerHTML = "";
-
-      renderAestheticCollageExact();
-
-      aestheticCollage.classList.add('on');
-      aestheticCollage.setAttribute('aria-hidden','false');
-    }
-
-    function aestheticEnter(){
-      aestheticReset();
-      aestheticMode = "intro";
-      aestheticIntro.classList.add('show');
-
-      aestheticTimers.push(setTimeout(() => {
-        aestheticIntro.classList.remove('show');
-        aestheticMode = "carousel";
-        setTimeout(() => aestheticShowCarousel(0, {instant:false}), 220);
-      }, 3000));
-    }
-
-    function aestheticSkipIntro(){
-      if(aestheticMode !== "intro") return;
-      clearTimers(aestheticTimers);
-      aestheticIntro.classList.remove('show');
-      aestheticMode = "carousel";
-      aestheticShowCarousel(0, {instant:true});
-    }
-
-    function aestheticPrev(){
-      if(aestheticMode === "intro"){
-        clearTimers(aestheticTimers);
-        aestheticIntro.classList.remove('show');
-        prevPage();
-        return;
-      }
-      if(aestheticMode === "carousel"){
-        if(aestheticIdx === 0) prevPage();
-        else aestheticAnimateTo(aestheticIdx - 1);
-        return;
-      }
-      if(aestheticMode === "collage"){
-        aestheticShowCarousel(aesthetics.length - 1, {instant:true});
-        return;
-      }
-    }
-
-    function aestheticNext(){
-      if(aestheticMode === "intro"){
-        aestheticSkipIntro();
-        return;
-      }
-      if(aestheticMode === "carousel"){
-        if(aestheticIdx === aesthetics.length - 1){
-          aestheticShowCollage();
-        }else{
-          aestheticAnimateTo(aestheticIdx + 1);
-        }
-        return;
-      }
-      if(aestheticMode === "collage"){
-        nextPage();
-        return;
-      }
-    }
-
-    // =========================
-    // TWEETS section
-    // =========================
-    const tweetIntro = document.getElementById('tweetIntro');
-    const tweetStage = document.getElementById('tweetStage');
-    const tweetDim = document.getElementById('tweetDim');
-    const tweetHint = document.getElementById('tweetHint');
-    const tweetCollage = document.getElementById('tweetCollage');
-
-    const tweets = [
-      "assets/ZeeNYTweet1.png",
-      "assets/ZeeNYTweet2.png",
-      "assets/ZeeNYTweet3.png",
-      "assets/ZeeNYTweet4.png",
-      "assets/ZeeNYTweet5.png",
-      "assets/ZeeNYTweet6.png",
-      "assets/ZeeNYTweet7.png",
-      "assets/ZeeNYTweet8.png",
-    ];
-
-    let tweetMode = "idle"; // intro | carousel | collage
-    let tweetIdx = 0;
-    let tweetTimers = [];
-    let tweetAnimating = false;
-
-    function tweetReset(){
-      clearTimers(tweetTimers);
-      tweetMode = "idle";
-      tweetIdx = 0;
-      tweetAnimating = false;
-
-      tweetIntro.classList.remove('show');
-      tweetDim.classList.remove('on');
-      tweetHint.classList.remove('on');
-
-      tweetStage.innerHTML = "";
-      tweetStage.classList.remove('on');
-      tweetStage.setAttribute('aria-hidden','true');
-
-      tweetCollage.classList.remove('on');
-      tweetCollage.setAttribute('aria-hidden','true');
-      tweetCollage.innerHTML = `<div class="collageHint" id="tweetCollageHint">click a tweet to zoom • → continues</div>`;
-    }
-
-    function tweetShowCarousel(startIndex=0, {instant=false} = {}){
-      tweetMode = "carousel";
-      tweetIdx = Math.max(0, Math.min(tweets.length - 1, startIndex));
-
-      tweetStage.innerHTML = "";
-      tweetStage.classList.add('on');
-      tweetStage.setAttribute('aria-hidden','false');
-
-      tweetCollage.classList.remove('on');
-      tweetCollage.setAttribute('aria-hidden','true');
-
-      tweetDim.classList.add('on');
-      tweetHint.classList.add('on');
-
-      const card = buildMediaCard(tweets[tweetIdx], "Top tweet");
-      tweetStage.appendChild(card);
-
-      if(instant) card.classList.add('active');
-      else requestAnimationFrame(()=> card.classList.add('active'));
-    }
-
-    function tweetAnimateTo(nextIndex){
-      if(tweetAnimating) return;
-      if(tweetMode !== "carousel") return;
-
-      const clamped = Math.max(0, Math.min(tweets.length - 1, nextIndex));
-      if(clamped === tweetIdx) return;
-
-      tweetAnimating = true;
-
-      const oldCard = tweetStage.querySelector('.mediaCard');
-      const newCard = buildMediaCard(tweets[clamped], "Top tweet");
-      tweetStage.appendChild(newCard);
-
-      void newCard.offsetWidth;
-
-      oldCard.classList.remove('active');
-      oldCard.classList.add('shrinkAway');
-
-      requestAnimationFrame(() => newCard.classList.add('active'));
-
-      setTimeout(() => {
-        oldCard.remove();
-        tweetIdx = clamped;
-        tweetAnimating = false;
-      }, 560);
-    }
-
-    function tweetShowCollage(){
-      tweetMode = "collage";
-      tweetAnimating = false;
-
-      tweetDim.classList.remove('on');
-      tweetHint.classList.remove('on');
-
-      tweetStage.classList.remove('on');
-      tweetStage.setAttribute('aria-hidden','true');
-      tweetStage.innerHTML = "";
-
-      tweetCollage.innerHTML = `<div class="collageHint on" id="tweetCollageHint">click a tweet to zoom • → continues</div>`;
-      scatterTweets(tweetCollage, tweets);
-
-      tweetCollage.classList.add('on');
-      tweetCollage.setAttribute('aria-hidden','false');
-    }
-
-    function tweetEnter(){
-      tweetReset();
-      tweetMode = "intro";
-      tweetIntro.classList.add('show');
-
-      tweetTimers.push(setTimeout(() => {
-        tweetIntro.classList.remove('show');
-        tweetMode = "carousel";
-        setTimeout(() => tweetShowCarousel(0, {instant:false}), 220);
-      }, 3000));
-    }
-
-    function tweetSkipIntro(){
-      if(tweetMode !== "intro") return;
-      clearTimers(tweetTimers);
-      tweetIntro.classList.remove('show');
-      tweetMode = "carousel";
-      tweetShowCarousel(0, {instant:true});
-    }
-
-    function tweetPrev(){
-      if(tweetMode === "intro"){
-        clearTimers(tweetTimers);
-        tweetIntro.classList.remove('show');
-        prevPage();
-        return;
-      }
-      if(tweetMode === "carousel"){
-        if(tweetIdx === 0) prevPage();
-        else tweetAnimateTo(tweetIdx - 1);
-        return;
-      }
-      if(tweetMode === "collage"){
-        tweetShowCarousel(tweets.length - 1, {instant:true});
-        return;
-      }
-    }
-
-    function tweetNext(){
-      if(tweetMode === "intro"){
-        tweetSkipIntro();
-        return;
-      }
-      if(tweetMode === "carousel"){
-        if(tweetIdx === tweets.length - 1){
-          tweetShowCollage();
-        }else{
-          tweetAnimateTo(tweetIdx + 1);
-        }
-        return;
-      }
-      if(tweetMode === "collage"){
-        nextPage();
-        return;
-      }
-    }
-
-    // =========================
-    // Arrow handlers (context-aware)
-    // =========================
-    leftArrow.addEventListener('click', () => {
-      const k = currentPageKey();
-      if(k === 'tweets') tweetPrev();
-      else if(k === 'aesthetics') aestheticPrev();
-      else prevPage();
-    });
-
-    rightArrow.addEventListener('click', () => {
-      const k = currentPageKey();
-      if(k === 'tweets') tweetNext();
-      else if(k === 'aesthetics') aestheticNext();
-      else nextPage();
-    });
-
-    window.addEventListener('keydown', (e) => {
-      const a = document.activeElement;
-      const tag = (a && a.tagName ? a.tagName.toLowerCase() : '');
-      if(tag === 'textarea') return;
-
-      if(e.key === 'ArrowRight' || e.key === 'PageDown'){
-        const k = currentPageKey();
-        if(k === 'tweets') tweetNext();
-        else if(k === 'aesthetics') aestheticNext();
-        else nextPage();
-      }
-      if(e.key === 'ArrowLeft' || e.key === 'PageUp'){
-        const k = currentPageKey();
-        if(k === 'tweets') tweetPrev();
-        else if(k === 'aesthetics') aestheticPrev();
-        else prevPage();
-      }
-      if(e.key === 'Home') goToPage(0);
-      if(e.key === 'End') goToPage(totalPages - 1);
-      if(e.key === 'Escape') closeZoom();
-    });
-
-    updateArrowDisabled();
-
-    // =========================
-    // Zoom overlay logic
-    // =========================
-    const overlay = document.getElementById('overlay');
-    let zoomEl = null;
-    let zoomFromRect = null;
-    let zoomOpen = false;
-
-    function openZoomFromElement(imgEl, srcOverride=null){
-      if(zoomOpen) return;
-
-      const src = srcOverride || imgEl.src;
-      const rect = imgEl.getBoundingClientRect();
-      zoomFromRect = rect;
-
-      zoomEl = document.createElement('div');
-      zoomEl.className = 'zoomImg';
-      zoomEl.style.top = rect.top + 'px';
-      zoomEl.style.left = rect.left + 'px';
-      zoomEl.style.width = rect.width + 'px';
-      zoomEl.style.height = rect.height + 'px';
-      zoomEl.style.transform = 'translateZ(0)';
-      zoomEl.innerHTML = `<img src="${src}" alt="Zoomed item" />`;
-      document.body.appendChild(zoomEl);
-
-      overlay.classList.add('open');
-      overlay.setAttribute('aria-hidden','false');
-      zoomOpen = true;
-
-      const pad = 34;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const maxW = vw - pad * 2;
-      const maxH = vh - pad * 2;
-
-      const zimg = zoomEl.querySelector('img');
-
-      function place(ratio){
-        let ww = Math.min(maxW, maxH * ratio);
-        let hh = ww / ratio;
-        if(hh > maxH){ hh = maxH; ww = hh * ratio; }
-        const tt = (vh - hh) / 2;
-        const ll = (vw - ww) / 2;
-        zoomEl.style.top = tt + 'px';
-        zoomEl.style.left = ll + 'px';
-        zoomEl.style.width = ww + 'px';
-        zoomEl.style.height = hh + 'px';
-      }
-
-      const ratioGuess = rect.width / rect.height;
-      requestAnimationFrame(() => place(ratioGuess));
-
-      zimg.addEventListener('load', () => {
-        const ir = zimg.naturalWidth / zimg.naturalHeight;
-        place(ir);
-      }, { once: true });
-
-      zoomEl.addEventListener('click', closeZoom);
-    }
-
-    function closeZoom(){
-      if(!zoomOpen || !zoomEl || !zoomFromRect) return;
-
-      overlay.classList.remove('open');
-      overlay.setAttribute('aria-hidden','true');
-
-      zoomEl.style.top = zoomFromRect.top + 'px';
-      zoomEl.style.left = zoomFromRect.left + 'px';
-      zoomEl.style.width = zoomFromRect.width + 'px';
-      zoomEl.style.height = zoomFromRect.height + 'px';
-
-      window.setTimeout(() => {
-        if(zoomEl){
-          zoomEl.remove();
-          zoomEl = null;
-        }
-        zoomOpen = false;
-        zoomFromRect = null;
-      }, 560);
-    }
-
-    overlay.addEventListener('click', closeZoom);
-    window.addEventListener('resize', () => { if(zoomOpen) closeZoom(); });
-
-    // Initial staged page hooks
-    if(currentPageKey() === 'tweets') tweetEnter();
-    if(currentPageKey() === 'aesthetics') aestheticEnter();
+    // If you want it instant (no text), comment startIntro() and just add 'ready' immediately.
+    startIntro();
+    // document.body.classList.add("ready");
   </script>
 </body>
 </html>
