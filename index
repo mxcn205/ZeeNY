@@ -1333,8 +1333,39 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       return;
     }
     
-    // Always restart songs section when going back
-    resetAndShowSongs();
+    // Navigate backwards in songs
+    if (currentSongPhase === 3) {
+      // From first place to second place
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      currentSongPhase = 1;
+      const podium = document.getElementById('podium');
+      podium.style.transform = 'translateX(-80%) scale(1.8)';
+      
+      setTimeout(() => {
+        currentAudio = new Audio('assets/ZeeNYSong2.mp3');
+        currentAudio.play();
+      }, 300);
+    } else if (currentSongPhase === 1) {
+      // From second place to third place
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      currentSongPhase = 0;
+      const podium = document.getElementById('podium');
+      podium.style.transform = 'translateX(-20%) scale(1.8)';
+      
+      setTimeout(() => {
+        currentAudio = new Audio('assets/ZeeNYSong3.mp3');
+        currentAudio.play();
+      }, 300);
+    } else {
+      // From third place or intro - go to previous section
+      resetAndShowSongs();
+    }
     return;
   }
   
@@ -1378,8 +1409,27 @@ document.getElementById('rightArrow').addEventListener('click', () => {
       return;
     }
     
-    // If on first place song, advance to next section
-    if (currentSongPhase === 3) {
+    // Navigate forwards in songs
+    if (currentSongPhase === 0) {
+      // From third place to second place
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      const cover3 = document.getElementById('cover-3');
+      cover3.classList.remove('visible');
+      setTimeout(() => zoomToSecond(), 800);
+    } else if (currentSongPhase === 1) {
+      // From second place to darken/first place
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      const cover2 = document.getElementById('cover-2');
+      cover2.classList.remove('visible');
+      setTimeout(() => showTopSongDarken(), 800);
+    } else if (currentSongPhase === 3) {
+      // From first place to next section
       if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
