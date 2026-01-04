@@ -1397,8 +1397,9 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       }
       currentSongPhase = 1;
       const podium = document.getElementById('podium');
+      // Move to second place with zoom - moved 200px up
       podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
-      podium.style.bottom = '8vh';
+      podium.style.bottom = 'calc(8vh + 200px)';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong2.mp3');
@@ -1413,8 +1414,9 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       }
       currentSongPhase = 0;
       const podium = document.getElementById('podium');
+      // Move to third place with zoom - moved 200px up
       podium.style.transform = 'translateX(calc(-50% + 280px)) scale(1.5)';
-      podium.style.bottom = '8vh';
+      podium.style.bottom = 'calc(8vh + 200px)';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong3.mp3');
