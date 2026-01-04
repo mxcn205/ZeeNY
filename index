@@ -142,7 +142,7 @@
     }
     .ready .hint{ opacity: 1; }
 
-    /* ====== BOARDS (AESTHETICS / GOOD TIMES) ====== */
+    /* ====== BOARDS (AESTHETICS / GOOD TIMES / LOOKING FORWARD) ====== */
     .board{
       position:absolute;
       display:block;
@@ -550,7 +550,17 @@
       </div>
     </section>
 
-    <!-- ===================== 3) TWEETS (POLAROID SHUFFLE) ===================== -->
+    <!-- ===================== 3) LOOKING FORWARD... ===================== -->
+    <section class="section" id="sec-forward" data-sec="lookingforward">
+      <div class="intro" id="intro-forward"><div class="card" id="forwardIntroText">Looking forward...</div></div>
+      <div class="stage" id="stage-forward">
+        <img id="forward-left" class="board" src="assets/ZeeNYBoard2026.png" alt="2026 Looking Forward board" />
+        <img id="forward-right" class="board" src="assets/ZeeNYBoardVacation.png" alt="On the map board" />
+        <div class="hint">Hover to glow • Click to view • In viewer: ⟵ / ⟶ loops</div>
+      </div>
+    </section>
+
+    <!-- ===================== 4) TWEETS (POLAROID SHUFFLE) ===================== -->
     <section class="section" id="sec-tweets" data-sec="tweets">
       <div class="intro" id="intro-tweets"><div class="card" id="tweetsIntroText">Top tweets this year</div></div>
       <div class="stage" id="stage-tweets">
@@ -566,7 +576,7 @@
       </div>
     </section>
 
-    <!-- ===================== 4) WRAPPED RECAP (TEXT ONLY) ===================== -->
+    <!-- ===================== 5) WRAPPED RECAP (TEXT ONLY) ===================== -->
     <section class="section" id="sec-recap" data-sec="recap">
       <div class="intro" id="intro-recap"><div class="card" id="recapIntroText">Your 2025 recap</div></div>
 
@@ -574,7 +584,6 @@
         <div class="wrappedCard" aria-label="Wrapped recap slides">
           <div class="wProgress" id="wProgress" aria-hidden="true"></div>
 
-          <!-- slides injected here -->
           <div class="wTapzone" aria-hidden="false">
             <button id="wPrev" aria-label="Previous recap slide"></button>
             <button id="wNext" aria-label="Next recap slide"></button>
@@ -587,7 +596,7 @@
 
   </div>
 
-  <!-- Modal viewer (reused for boards + full tweets) -->
+  <!-- Modal viewer (reused for boards + tweets) -->
   <div class="modal" id="modal" aria-hidden="true">
     <div class="modal-inner" id="modalInner">
       <div class="arrow left" id="modalPrev" aria-label="Previous">‹</div>
@@ -608,7 +617,7 @@
       },
 
       // Section order (left/right arrows move between these)
-      sections: ["title","aesthetics","goodtimes","tweets","recap"],
+      sections: ["title","aesthetics","goodtimes","lookingforward","tweets","recap"],
 
       // 3-second placeholder behavior (click right skips immediately; click left returns to previous section)
       placeholderSeconds: 3,
@@ -627,6 +636,14 @@
         items: [
           { id: "good-left",  src: "assets/ZeeNYBoardGoodTimes.png" },
           { id: "good-right", src: "assets/ZeeNYBoardThoughts.png" }
+        ]
+      },
+
+      lookingforward: {
+        introText: "Looking forward...",
+        items: [
+          { id: "forward-left",  src: "assets/ZeeNYBoard2026.png" },
+          { id: "forward-right", src: "assets/ZeeNYBoardVacation.png" }
         ]
       },
 
@@ -718,6 +735,7 @@
 
       if (key === "aesthetics") runPlaceholder("intro-aesthetics", "aestheticsIntroText", CONFIG.aesthetics.introText, () => mountAesthetics());
       else if (key === "goodtimes") runPlaceholder("intro-good", "goodIntroText", CONFIG.goodtimes.introText, () => mountGoodTimes());
+      else if (key === "lookingforward") runPlaceholder("intro-forward", "forwardIntroText", CONFIG.lookingforward.introText, () => mountLookingForward());
       else if (key === "tweets") runPlaceholder("intro-tweets", "tweetsIntroText", CONFIG.tweets.introText, () => mountTweets());
       else if (key === "recap") runPlaceholder("intro-recap", "recapIntroText", CONFIG.recap.introText, () => mountRecap());
       else document.body.classList.add("ready");
@@ -739,6 +757,7 @@
       const key = currentSectionKey();
       if (key === "aesthetics") return document.getElementById("intro-aesthetics").style.display !== "none";
       if (key === "goodtimes")  return document.getElementById("intro-good").style.display !== "none";
+      if (key === "lookingforward") return document.getElementById("intro-forward").style.display !== "none";
       if (key === "tweets")     return document.getElementById("intro-tweets").style.display !== "none";
       if (key === "recap")      return document.getElementById("intro-recap").style.display !== "none";
       return false;
@@ -746,7 +765,7 @@
 
     function handleSectionRight(){
       const key = currentSectionKey();
-      if ((key === "aesthetics" || key === "goodtimes" || key === "tweets" || key === "recap") && isPlaceholderShowing()){
+      if ((key === "aesthetics" || key === "goodtimes" || key === "lookingforward" || key === "tweets" || key === "recap") && isPlaceholderShowing()){
         skipPlaceholderNow(key);
         return;
       }
@@ -755,7 +774,7 @@
 
     function handleSectionLeft(){
       const key = currentSectionKey();
-      if ((key === "aesthetics" || key === "goodtimes" || key === "tweets" || key === "recap") && isPlaceholderShowing()){
+      if ((key === "aesthetics" || key === "goodtimes" || key === "lookingforward" || key === "tweets" || key === "recap") && isPlaceholderShowing()){
         prevSection();
         return;
       }
@@ -790,23 +809,23 @@
       if (placeholderTimer) { clearTimeout(placeholderTimer); placeholderTimer = null; }
 
       if (key === "aesthetics"){
-        const intro = document.getElementById("intro-aesthetics");
-        intro.style.display = "none";
+        document.getElementById("intro-aesthetics").style.display = "none";
         document.body.classList.add("ready");
         mountAesthetics(true);
       } else if (key === "goodtimes"){
-        const intro = document.getElementById("intro-good");
-        intro.style.display = "none";
+        document.getElementById("intro-good").style.display = "none";
         document.body.classList.add("ready");
         mountGoodTimes(true);
+      } else if (key === "lookingforward"){
+        document.getElementById("intro-forward").style.display = "none";
+        document.body.classList.add("ready");
+        mountLookingForward(true);
       } else if (key === "tweets"){
-        const intro = document.getElementById("intro-tweets");
-        intro.style.display = "none";
+        document.getElementById("intro-tweets").style.display = "none";
         document.body.classList.add("ready");
         mountTweets(true);
       } else if (key === "recap"){
-        const intro = document.getElementById("intro-recap");
-        intro.style.display = "none";
+        document.getElementById("intro-recap").style.display = "none";
         document.body.classList.add("ready");
         mountRecap(true);
       }
@@ -846,9 +865,7 @@
     modalPrev.addEventListener("click", (e) => { e.stopPropagation(); modalGo(-1); });
     modalNext.addEventListener("click", (e) => { e.stopPropagation(); modalGo(1); });
 
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeModal();
-    });
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
     modalInner.addEventListener("click", (e) => {
       const isArrow = (e.target === modalPrev || e.target === modalNext);
       const isImage = (e.target === modalImg);
@@ -945,6 +962,46 @@
     }
 
     /* ============================================================
+       LOOKING FORWARD LAYOUT + INTERACTIONS
+    ============================================================ */
+
+    let forwardMounted = false;
+
+    function mountLookingForward(force = false){
+      if (forwardMounted && !force) return;
+      forwardMounted = true;
+
+      const left = document.getElementById("forward-left");
+      const right = document.getElementById("forward-right");
+
+      // Two-board vibe (same feel as good times, slightly more airy)
+      left.style.width = "min(58vw, 920px)";
+      right.style.width = "min(58vw, 920px)";
+
+      // In-bounds with tasteful overlap
+      left.style.left = "6vw";
+      left.style.top  = "12vh";
+      right.style.left = "50vw";
+      right.style.top  = "14vh";
+
+      left.style.transform  = "translate3d(-40px,120px,0) scale(.86) rotate(-7deg)";
+      right.style.transform = "translate3d(40px,120px,0) scale(.86) rotate(7deg)";
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          left.style.transform  = "translate3d(0,0,0) scale(1) rotate(-7deg)";
+          right.style.transform = "translate3d(0,0,0) scale(1) rotate(7deg)";
+        });
+      });
+
+      const sources = CONFIG.lookingforward.items.map(x => x.src); // left->right ordering
+      CONFIG.lookingforward.items.forEach((item, idx) => {
+        const el = document.getElementById(item.id);
+        el.onclick = () => openModal(sources, idx);
+      });
+    }
+
+    /* ============================================================
        TWEETS: POLAROID SHUFFLE + CLICK TO FULL TWEET
     ============================================================ */
 
@@ -1029,7 +1086,6 @@
       if (recapMounted && !force) return;
       recapMounted = true;
 
-      // Clean out any old slides if remounting
       wSlides.forEach(s => s.remove());
       wSlides = [];
       wIndex = 0;
@@ -1067,6 +1123,10 @@
         f.style.width = (i <= activeIdx) ? "100%" : "0%";
         f.style.opacity = (i <= activeIdx) ? "1" : ".65";
       });
+    }
+
+    function prefersReducedMotion(){
+      return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     }
 
     function wGo(nextIdx){
@@ -1107,10 +1167,6 @@
 
     wNext.addEventListener("click", wNextSlide);
     wPrev.addEventListener("click", wPrevSlide);
-
-    function prefersReducedMotion(){
-      return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    }
 
     function makeWSlide(d){
       const s = document.createElement("section");
@@ -1181,8 +1237,8 @@
 
     /* ============================================================
        KEYBOARD HANDLING
-       - Global section arrows still work via on-screen arrows.
-       - In recap section: Left/Right = slides. Up/Down = sections.
+       - Recap section: Left/Right = slides; Up/Down = sections
+       - Other sections: Left/Right = sections
     ============================================================ */
     window.addEventListener("keydown", (e) => {
       if (modal.classList.contains("open")) return;
@@ -1197,7 +1253,6 @@
         return;
       }
 
-      // other sections: left/right switches sections
       if (e.key === "ArrowRight") handleSectionRight();
       if (e.key === "ArrowLeft") handleSectionLeft();
     }, { passive:false });
