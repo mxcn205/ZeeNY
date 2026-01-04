@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sarah-fy Wrapped</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Brush+Script+MT&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
 
 * {
   margin: 0;
@@ -14,7 +14,7 @@
 }
 
 body {
-  font-family: 'Brush Script MT', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Cookie', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
   width: 100vw;
   height: 100vh;
@@ -74,14 +74,14 @@ body::before {
   font-weight: 700;
   color: #4A3A3A;
   text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-  font-family: 'Brush Script MT', cursive;
+  font-family: 'Cookie', cursive;
 }
 
 .subtitle-text {
   font-size: 1.5em;
   color: #6B4A5A;
   margin-bottom: 30px;
-  font-family: 'Brush Script MT', cursive;
+  font-family: 'Cookie', cursive;
 }
 
 .hint-pill {
@@ -90,7 +90,7 @@ body::before {
   padding: 12px 24px;
   border-radius: 25px;
   font-size: 0.9em;
-  color: rgba(255,255,255,0.95);
+  color: #4A3A3A;
 }
 
 .nav-arrow {
@@ -156,7 +156,34 @@ body::before {
   animation: introFade 3s cubic-bezier(0.4, 0, 0.2, 1);
   max-width: 800px;
   text-align: center;
-  font-family: 'Brush Script MT', cursive;
+  font-family: 'Cookie', cursive;
+}
+
+.intro-card-multi {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 40px 60px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.5);
+  font-size: 2em;
+  font-weight: 600;
+  color: #4A3A3A;
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+  max-width: 800px;
+  text-align: center;
+  font-family: 'Cookie', cursive;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.intro-card-multi.active {
+  opacity: 1;
 }
 
 @keyframes introFade {
@@ -433,6 +460,7 @@ body::before {
   opacity: 0;
   animation: textFadeIn 1s ease-out 0.5s forwards;
   z-index: 1;
+  font-family: 'Cookie', cursive;
 }
 
 .spotlight-tweet {
@@ -527,19 +555,19 @@ body::before {
 .podium-spot.third .podium-block {
   width: 240px;
   height: 240px;
-  color: #CD7F32; /* Bronze */
+  color: #CD7F32;
 }
 
 .podium-spot.second .podium-block {
   width: 280px;
   height: 320px;
-  color: #C0C0C0; /* Silver */
+  color: #C0C0C0;
 }
 
 .podium-spot.first .podium-block {
   width: 320px;
   height: 400px;
-  color: #FFD700; /* Gold */
+  color: #FFD700;
 }
 
 .song-cover {
@@ -590,7 +618,7 @@ body::before {
   padding: 0 50px;
   opacity: 0;
   animation: textFadeIn 1s ease-out 0.5s forwards;
-  font-family: 'Brush Script MT', cursive;
+  font-family: 'Cookie', cursive;
 }
 
 .recap-card {
@@ -729,28 +757,20 @@ body::before {
 .word-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 15px;
   margin-top: 30px;
+  justify-content: center;
 }
 
 .word-chip {
   background: rgba(100,100,100,0.2);
-  padding: 12px 18px;
-  border-radius: 20px;
+  padding: 18px 24px;
+  border-radius: 25px;
   color: #1a1a1a;
   font-weight: 600;
-  font-size: 0.95em;
-  line-height: 1.3;
+  font-size: 1.4em;
+  line-height: 1.4;
   text-align: center;
-}
-
-.click-hint {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(255,255,255,0.7);
-  font-size: 0.9em;
 }
 
 @media (max-width: 768px) {
@@ -799,7 +819,8 @@ body::before {
 
 <!-- Section 2: Aesthetics Board -->
 <div class="section" id="section-1">
-  <div class="intro-card" id="intro-1">2025 Aesthetics</div>
+  <div class="intro-card-multi active" id="intro-1-1">Hi my love, you've had a very interesting year, let's see how it turned out!</div>
+  <div class="intro-card-multi" id="intro-1-2">You really upgraded your wardrobe in 2025! You've grown into your fashion sense and have mastered a wide variety of different styles. Out of those, here are a few that I think really represented your taste in 2025 :p</div>
   <div class="board-container" id="aesthetics-container" style="display:none;">
     <div class="board aesthetics-board-1">
       <img src="assets/ZeeNYBoardCoquette.png" alt="Coquette">
@@ -815,7 +836,7 @@ body::before {
 
 <!-- Section 3: Good Times Board -->
 <div class="section" id="section-2">
-  <div class="intro-card" id="intro-2">The good times :)</div>
+  <div class="intro-card" id="intro-2">Over the course of the year, you've gone through a lot. Whether it's academic stress, general mood swings, or an argument with me, your family, or your friends, I can see that life has really tested you. However, you've had lots of good days too! Here are some good moments we've had, as well as some positive irl memories from 2025 :)</div>
   <div class="board-container" id="goodtimes-container" style="display:none;">
     <div class="board good-times-board-1">
       <img src="assets/ZeeNYBoardGoodTimes.png" alt="Good Times">
@@ -828,9 +849,8 @@ body::before {
 
 <!-- Section 4: Tweets -->
 <div class="section" id="section-3">
-  <div class="intro-card" id="intro-3">Top tweets this year</div>
+  <div class="intro-card" id="intro-3">Twitter is where we met, and while I fell off in 2025, your account flourished! Let's take a look at your best bangers, there were many to choose from...</div>
   <div id="tweets-container" style="display:none; width:100%; height:100%; position:relative;">
-    <!-- Polaroids will be animated here -->
   </div>
 </div>
 
@@ -838,13 +858,12 @@ body::before {
 <div class="section" id="section-4">
   <div class="intro-card" id="intro-4">You listened to many songs this year. Out of them all, I picked three that coincidentally come from the same artist, and I'm sure you can guess who...</div>
   <div id="songs-container" style="display:none; width:100%; height:100%; position:relative;">
-    <!-- Podium will be shown here -->
   </div>
 </div>
 
 <!-- Section 6: Text Recap -->
 <div class="section" id="section-5">
-  <div class="intro-card" id="intro-5">Your 2025 recap</div>
+  <div class="intro-card" id="intro-5">It can't be a Wrapped without some numbers... Here's some stats from 2025, I used words for some of them so you don't completely dissociate, I know you my baby &lt;3</div>
   <div class="recap-card" id="recap-container" style="display:none;">
     <div class="progress-bar">
       <div class="progress-segment active"></div>
@@ -938,14 +957,12 @@ body::before {
         </div>
       </div>
     </div>
-    
-    <div class="click-hint">Click left/right half or use arrows</div>
   </div>
 </div>
 
 <!-- Section 7: Looking Forward Board -->
 <div class="section" id="section-6">
-  <div class="intro-card" id="intro-6">Looking forward...</div>
+  <div class="intro-card" id="intro-6">2025 was an eventful year, and we talked about the future quite a bit. As scary as it may sound sometimes, there are many things for you to look forward to! Whether it's new media to enjoy or opportunities to travel, 2026 is going to be a good year for you! Beyond 2026, the future will be exciting. We've talked so much about travel destinations so I thought you should take a look at them :0</div>
   <div class="board-container" id="forward-container" style="display:none;">
     <div class="board looking-forward-board-1">
       <img src="assets/ZeeNYBoard2026.png" alt="2026">
@@ -959,7 +976,7 @@ body::before {
 <!-- Section 8: End -->
 <div class="section" id="section-7">
   <div class="glass-card" onclick="restart()">
-    <div class="title-text">That's our 2025.</div>
+    <div class="title-text">That's it for 2025.</div>
     <div class="subtitle-text">And I'm still choosing you in 2026.</div>
     <div class="hint-pill">Click anywhere to restart</div>
   </div>
@@ -973,7 +990,7 @@ const totalSlides = 3;
 let currentPolaroid = 0;
 let polaroidAnimationPlayed = new Set();
 let isInSpotlight = false;
-let currentSongPhase = 0; // 0: third, 1: second, 2: darken, 3: first
+let currentSongPhase = 0;
 let currentAudio = null;
 
 const polaroids = [
@@ -987,7 +1004,6 @@ const polaroids = [
 ];
 
 function showSection(index) {
-  // Stop any playing audio when changing sections
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
@@ -1007,24 +1023,40 @@ function showSection(index) {
 }
 
 function resetAndShowAesthetics() {
-  const intro = document.getElementById('intro-1');
+  const intro1 = document.getElementById('intro-1-1');
+  const intro2 = document.getElementById('intro-1-2');
   const container = document.getElementById('aesthetics-container');
   
-  intro.style.display = 'flex';
+  intro1.classList.add('active');
+  intro2.classList.remove('active');
+  intro1.style.display = 'flex';
+  intro2.style.display = 'flex';
   container.style.display = 'none';
   
-  // Reset boards
   const boards = container.querySelectorAll('.board');
   boards.forEach(board => {
     board.style.animation = 'none';
-    board.offsetHeight; // Trigger reflow
+    board.offsetHeight;
     board.style.animation = null;
   });
   
   setTimeout(() => {
-    intro.style.display = 'none';
+    intro1.classList.remove('active');
+  }, 2500);
+  
+  setTimeout(() => {
+    intro2.classList.add('active');
+  }, 3200);
+  
+  setTimeout(() => {
+    intro2.classList.remove('active');
+  }, 5700);
+  
+  setTimeout(() => {
+    intro1.style.display = 'none';
+    intro2.style.display = 'none';
     container.style.display = 'block';
-  }, 2800);
+  }, 6400);
 }
 
 function resetAndShowGoodTimes() {
@@ -1034,11 +1066,10 @@ function resetAndShowGoodTimes() {
   intro.style.display = 'flex';
   container.style.display = 'none';
   
-  // Reset boards
   const boards = container.querySelectorAll('.board');
   boards.forEach(board => {
     board.style.animation = 'none';
-    board.offsetHeight; // Trigger reflow
+    board.offsetHeight;
     board.style.animation = null;
   });
   
@@ -1056,7 +1087,6 @@ function resetAndShowTweets() {
   container.style.display = 'none';
   container.innerHTML = '';
   
-  // Reset tweet state
   currentPolaroid = 0;
   polaroidAnimationPlayed.clear();
   isInSpotlight = false;
@@ -1075,48 +1105,16 @@ function resetAndShowForward() {
   intro.style.display = 'flex';
   container.style.display = 'none';
   
-  // Reset boards
   const boards = container.querySelectorAll('.board');
   boards.forEach(board => {
     board.style.animation = 'none';
-    board.offsetHeight; // Trigger reflow
+    board.offsetHeight;
     board.style.animation = null;
   });
   
   setTimeout(() => {
     intro.style.display = 'none';
     container.style.display = 'block';
-  }, 2800);
-}
-
-function handleAestheticsSection() {
-  const intro = document.getElementById('intro-1');
-  const container = document.getElementById('aesthetics-container');
-  
-  setTimeout(() => {
-    intro.style.display = 'none';
-    container.style.display = 'block';
-  }, 2800);
-}
-
-function handleGoodTimesSection() {
-  const intro = document.getElementById('intro-2');
-  const container = document.getElementById('goodtimes-container');
-  
-  setTimeout(() => {
-    intro.style.display = 'none';
-    container.style.display = 'block';
-  }, 2800);
-}
-
-function handleTweetsSection() {
-  const intro = document.getElementById('intro-3');
-  const container = document.getElementById('tweets-container');
-  
-  setTimeout(() => {
-    intro.style.display = 'none';
-    container.style.display = 'block';
-    animatePolaroids();
   }, 2800);
 }
 
@@ -1130,9 +1128,7 @@ function showPolaroid(index) {
   
   currentPolaroid = index;
   
-  // Clear container and show the polaroid
   if (!polaroidAnimationPlayed.has(index)) {
-    // First time seeing this polaroid - animate it
     container.innerHTML = '';
     const polaroid = document.createElement('div');
     polaroid.className = 'polaroid';
@@ -1142,7 +1138,6 @@ function showPolaroid(index) {
     
     polaroidAnimationPlayed.add(index);
     
-    // Auto-advance after animation completes
     setTimeout(() => {
       if (currentPolaroid === index && currentSection === 3) {
         if (currentPolaroid < polaroids.length - 1) {
@@ -1153,7 +1148,6 @@ function showPolaroid(index) {
       }
     }, 2670);
   } else {
-    // Already seen - show it statically
     container.innerHTML = '';
     const polaroid = document.createElement('div');
     polaroid.className = 'polaroid';
@@ -1177,37 +1171,6 @@ function showSpotlight() {
       </div>
     </div>
   `;
-}
-
-function animatePolaroids() {
-  const container = document.getElementById('tweets-container');
-  container.innerHTML = '';
-  
-  let delay = 0;
-  polaroids.forEach((src, i) => {
-    setTimeout(() => {
-      const polaroid = document.createElement('div');
-      polaroid.className = 'polaroid';
-      polaroid.innerHTML = `<img src="${src}" alt="Tweet ${i+1}">`;
-      polaroid.style.animation = 'polaroidEnter 2.67s ease-in-out forwards';
-      container.appendChild(polaroid);
-      
-      setTimeout(() => polaroid.remove(), 2670);
-    }, delay);
-    delay += 2800;
-  });
-  
-  setTimeout(() => {
-    container.innerHTML = `
-      <div class="spotlight-container">
-        <div class="spotlight"></div>
-        <div class="spotlight-text">And your top tweet of 2025 was…</div>
-        <div class="spotlight-tweet">
-          <img src="assets/ZeeNYTweet4.png" alt="Top Tweet">
-        </div>
-      </div>
-    `;
-  }, delay);
 }
 
 function resetAndShowSongs() {
@@ -1256,7 +1219,6 @@ function startSongsSequence() {
 }
 
 function zoomToThird() {
-  // Always stop any currently playing audio first
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
@@ -1266,18 +1228,6 @@ function zoomToThird() {
   currentSongPhase = 0;
   const podium = document.getElementById('podium');
   
-  // Center the third place COVER IMAGE perfectly in the middle of the screen with 1.6x zoom
-  // Shifted 200px higher to adjust camera viewpoint
-  // Podium layout (NO GAPS): [third: 240px] [first: 320px] [second: 280px]
-  // Total podium width: 240 + 320 + 280 = 840px
-  // Podium center is at 420px from left edge
-  // Third cover center is at 120px from left edge (half of 240px)
-  // Distance from podium center to third cover center: 420 - 120 = 300px (third is LEFT of center)
-  // So we need to shift podium RIGHT by 300px to center the third cover
-  // 
-  // Vertical: Cover is 400px tall, sits 30px above a 240px podium block
-  // Cover center is at: 240px + 30px + 200px = 470px from podium bottom
-  // Shifted up by 200px: 470 + 200 = 670px
   podium.style.transform = 'translateX(calc(-50% + 300px)) scale(1.6)';
   podium.style.bottom = 'calc(50vh - 670px)';
   
@@ -1291,14 +1241,12 @@ function zoomToThird() {
     currentAudio = new Audio('assets/ZeeNYSong3.mp3');
     currentAudio.play();
     currentAudio.onended = () => {
-      // Keep cover visible - don't remove
       setTimeout(() => zoomToSecond(), 800);
     };
   }, 1000);
 }
 
 function zoomToSecond(skipZoomTransition = false) {
-  // Always stop any currently playing audio first
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
@@ -1311,17 +1259,6 @@ function zoomToSecond(skipZoomTransition = false) {
   const alreadyRevealed = cover2.innerHTML !== '';
   
   if (skipZoomTransition || alreadyRevealed) {
-    // Center the second place COVER IMAGE perfectly in the middle of the screen with 1.6x zoom
-    // Shifted 200px higher to adjust camera viewpoint
-    // Podium layout (NO GAPS): [third: 240px] [first: 320px] [second: 280px]
-    // Total podium width: 840px, podium center at 420px from left
-    // Second cover center is at: 240 + 320 + 140 = 700px from left edge
-    // Distance from podium center to second cover center: 700 - 420 = 280px (second is RIGHT of center)
-    // So we need to shift podium LEFT by 280px to center the second cover
-    // 
-    // Vertical: Cover is 400px tall, sits 30px above a 320px podium block
-    // Cover center is at: 320px + 30px + 200px = 550px from podium bottom
-    // Shifted up by 200px: 550 + 200 = 750px
     podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.6)';
     podium.style.bottom = 'calc(50vh - 750px)';
     
@@ -1338,13 +1275,10 @@ function zoomToSecond(skipZoomTransition = false) {
       };
     }, 1000);
   } else {
-    // Zoom out first
     podium.style.transform = 'translateX(-50%) scale(1)';
     podium.style.bottom = '5vh';
     
     setTimeout(() => {
-      // Center the second place COVER IMAGE perfectly in the middle of the screen with 1.6x zoom
-      // Shifted 200px higher
       podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.6)';
       podium.style.bottom = 'calc(50vh - 750px)';
       
@@ -1365,7 +1299,6 @@ function zoomToSecond(skipZoomTransition = false) {
 }
 
 function showTopSongDarken() {
-  // Always stop any currently playing audio first
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
@@ -1375,7 +1308,6 @@ function showTopSongDarken() {
   currentSongPhase = 2;
   const container = document.getElementById('songs-container');
   
-  // Don't zoom out - keep at base scale
   const podium = document.getElementById('podium');
   podium.style.transform = 'translateX(-50%) scale(1)';
   podium.style.bottom = '5vh';
@@ -1391,7 +1323,6 @@ function showTopSongDarken() {
 }
 
 function zoomToFirst(skipZoomTransition = false) {
-  // Always stop any currently playing audio first
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
@@ -1405,17 +1336,6 @@ function zoomToFirst(skipZoomTransition = false) {
   
   const podium = document.getElementById('podium');
   
-  // Center the first place COVER IMAGE perfectly in the middle of the screen with 1.6x zoom
-  // Shifted 200px higher to adjust camera viewpoint
-  // Podium layout (NO GAPS): [third: 240px] [first: 320px] [second: 280px]
-  // Total podium width: 840px, podium center at 420px from left
-  // First cover center is at: 240 + 160 = 400px from left edge (160 = half of 320px)
-  // Distance from podium center to first cover center: 420 - 400 = 20px (first is slightly LEFT of center)
-  // So we need to shift podium RIGHT by 20px to center the first cover
-  // 
-  // Vertical: Cover is 400px tall, sits 30px above a 400px podium block
-  // Cover center is at: 400px + 30px + 200px = 630px from podium bottom
-  // Shifted up by 200px: 630 + 200 = 830px
   podium.style.transform = 'translateX(calc(-50% + 20px)) scale(1.6)';
   podium.style.bottom = 'calc(50vh - 830px)';
   
@@ -1434,16 +1354,6 @@ function zoomToFirst(skipZoomTransition = false) {
 function handleRecapSection() {
   const intro = document.getElementById('intro-5');
   const container = document.getElementById('recap-container');
-  
-  setTimeout(() => {
-    intro.style.display = 'none';
-    container.style.display = 'block';
-  }, 2800);
-}
-
-function handleForwardSection() {
-  const intro = document.getElementById('intro-6');
-  const container = document.getElementById('forward-container');
   
   setTimeout(() => {
     intro.style.display = 'none';
@@ -1472,7 +1382,6 @@ function changeSlide(direction) {
   const oldSlide = currentSlide;
   const newSlide = currentSlide + direction;
   
-  // Check boundaries and navigate sections if needed
   if (newSlide < 0) {
     prevSection();
     return;
@@ -1481,13 +1390,11 @@ function changeSlide(direction) {
     return;
   }
   
-  // Exit current slide
   slides[oldSlide].classList.remove('active');
   slides[oldSlide].classList.add(direction > 0 ? 'exit-left' : 'exit-right');
   
   currentSlide = newSlide;
   
-  // Enter new slide
   slides[currentSlide].classList.remove('exit-left', 'exit-right');
   if (direction > 0) {
     slides[currentSlide].classList.add('enter-from-right');
@@ -1505,18 +1412,36 @@ function changeSlide(direction) {
 
 document.getElementById('leftArrow').addEventListener('click', (e) => {
   e.stopPropagation();
+  
+  if (currentSection === 1) {
+    const intro1 = document.getElementById('intro-1-1');
+    const intro2 = document.getElementById('intro-1-2');
+    const container = document.getElementById('aesthetics-container');
+    
+    if (container.style.display === 'block') {
+      container.style.display = 'none';
+      intro2.style.display = 'flex';
+      setTimeout(() => intro2.classList.add('active'), 100);
+      return;
+    } else if (intro2.classList.contains('active')) {
+      intro2.classList.remove('active');
+      setTimeout(() => intro1.classList.add('active'), 100);
+      return;
+    } else if (intro1.classList.contains('active')) {
+      prevSection();
+      return;
+    }
+  }
+  
   const intro = document.querySelector(`#intro-${currentSection}`);
   
-  // Handle songs section navigation
   if (currentSection === 4) {
     if (intro && intro.style.display !== 'none') {
       prevSection();
       return;
     }
     
-    // Navigate backwards in songs
     if (currentSongPhase === 3) {
-      // From first place to second place
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
@@ -1524,7 +1449,6 @@ document.getElementById('leftArrow').addEventListener('click', (e) => {
       }
       currentSongPhase = 1;
       const podium = document.getElementById('podium');
-      // Center the second place cover image with 1.6x zoom (shifted 200px higher, no gaps)
       podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.6)';
       podium.style.bottom = 'calc(50vh - 750px)';
       
@@ -1533,7 +1457,6 @@ document.getElementById('leftArrow').addEventListener('click', (e) => {
         currentAudio.play();
       }, 600);
     } else if (currentSongPhase === 1) {
-      // From second place to third place
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
@@ -1541,7 +1464,6 @@ document.getElementById('leftArrow').addEventListener('click', (e) => {
       }
       currentSongPhase = 0;
       const podium = document.getElementById('podium');
-      // Center the third place cover image with 1.6x zoom (shifted 200px higher, no gaps)
       podium.style.transform = 'translateX(calc(-50% + 300px)) scale(1.6)';
       podium.style.bottom = 'calc(50vh - 670px)';
       
@@ -1550,7 +1472,6 @@ document.getElementById('leftArrow').addEventListener('click', (e) => {
         currentAudio.play();
       }, 600);
     } else {
-      // From third place or intro - go to previous section
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
@@ -1561,7 +1482,6 @@ document.getElementById('leftArrow').addEventListener('click', (e) => {
     return;
   }
   
-  // Handle tweets section navigation
   if (currentSection === 3) {
     if (intro && intro.style.display !== 'none') {
       prevSection();
@@ -1590,9 +1510,32 @@ document.getElementById('leftArrow').addEventListener('click', (e) => {
 
 document.getElementById('rightArrow').addEventListener('click', (e) => {
   e.stopPropagation();
+  
+  if (currentSection === 1) {
+    const intro1 = document.getElementById('intro-1-1');
+    const intro2 = document.getElementById('intro-1-2');
+    const container = document.getElementById('aesthetics-container');
+    
+    if (intro1.classList.contains('active')) {
+      intro1.classList.remove('active');
+      setTimeout(() => intro2.classList.add('active'), 100);
+      return;
+    } else if (intro2.classList.contains('active')) {
+      intro2.classList.remove('active');
+      setTimeout(() => {
+        intro1.style.display = 'none';
+        intro2.style.display = 'none';
+        container.style.display = 'block';
+      }, 100);
+      return;
+    } else if (container.style.display === 'block') {
+      nextSection();
+      return;
+    }
+  }
+  
   const intro = document.querySelector(`#intro-${currentSection}`);
   
-  // Handle songs section navigation
   if (currentSection === 4) {
     if (intro && intro.style.display !== 'none') {
       const container = document.getElementById('songs-container');
@@ -1602,25 +1545,19 @@ document.getElementById('rightArrow').addEventListener('click', (e) => {
       return;
     }
     
-    // Navigate forwards in songs
     if (currentSongPhase === 0) {
-      // From third place to second place
       if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
       }
-      // Keep cover-3 visible, just transition
       setTimeout(() => zoomToSecond(), 800);
     } else if (currentSongPhase === 1) {
-      // From second place to darken/first place
       if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
       }
-      // Keep cover-2 visible, just transition
       setTimeout(() => showTopSongDarken(), 800);
     } else if (currentSongPhase === 3) {
-      // From first place to next section
       if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
@@ -1630,7 +1567,6 @@ document.getElementById('rightArrow').addEventListener('click', (e) => {
     return;
   }
   
-  // Handle tweets section navigation
   if (currentSection === 3) {
     if (intro && intro.style.display !== 'none') {
       const container = document.getElementById('tweets-container');
@@ -1660,9 +1596,6 @@ document.getElementById('rightArrow').addEventListener('click', (e) => {
     if (container) {
       intro.style.display = 'none';
       container.style.display = 'block';
-      if (currentSection === 1 || currentSection === 2 || currentSection === 6) {
-        // Boards already animated on section show
-      }
     }
   } else if (currentSection === 5) {
     changeSlide(1);
@@ -1712,8 +1645,19 @@ function restart() {
   
   showSection(0);
   
+  const intro1 = document.getElementById('intro-1-1');
+  const intro2 = document.getElementById('intro-1-2');
+  if (intro1 && intro2) {
+    intro1.style.display = 'flex';
+    intro2.style.display = 'flex';
+    intro1.classList.add('active');
+    intro2.classList.remove('active');
+  }
+  
   document.querySelectorAll('[id^="intro-"]').forEach(intro => {
-    intro.style.display = 'flex';
+    if (intro.id !== 'intro-1-1' && intro.id !== 'intro-1-2') {
+      intro.style.display = 'flex';
+    }
   });
   document.querySelectorAll('[id$="-container"]').forEach(container => {
     container.style.display = 'none';
@@ -1729,7 +1673,6 @@ function restart() {
   segments.forEach((seg, i) => seg.classList.toggle('active', i === 0));
 }
 
-// Board fullscreen functionality
 function openBoardFullscreen(imageSrc) {
   const modal = document.createElement('div');
   modal.className = 'board-fullscreen-modal';
@@ -1753,7 +1696,6 @@ function openBoardFullscreen(imageSrc) {
   });
 }
 
-// Add click handlers to all boards after they load
 setTimeout(() => {
   document.querySelectorAll('.board').forEach(board => {
     board.addEventListener('click', (e) => {
