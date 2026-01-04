@@ -1141,10 +1141,9 @@ function zoomToThird() {
   currentSongPhase = 0;
   const podium = document.getElementById('podium');
   
-  // Center the third place cover on screen - adjust for cover position above podium
-  // Third place podium is on the left, need to shift entire podium right
+  // Center the third place cover on screen - moved 200px up
   podium.style.transform = 'translateX(calc(-50% + 280px)) scale(1.5)';
-  podium.style.bottom = '8vh';
+  podium.style.bottom = 'calc(8vh + 200px)';
   
   setTimeout(() => {
     const cover = document.getElementById('cover-3');
@@ -1176,9 +1175,9 @@ function zoomToSecond(skipZoomTransition = false) {
   const alreadyRevealed = cover2.innerHTML !== '';
   
   if (skipZoomTransition || alreadyRevealed) {
-    // Just shift camera to second place - no zoom out/in
+    // Just shift camera to second place - no zoom out/in - moved 200px up
     podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
-    podium.style.bottom = '8vh';
+    podium.style.bottom = 'calc(8vh + 200px)';
     
     setTimeout(() => {
       if (!cover2.innerHTML) {
@@ -1198,9 +1197,9 @@ function zoomToSecond(skipZoomTransition = false) {
     podium.style.bottom = '5vh';
     
     setTimeout(() => {
-      // Zoom into second place spot (right side)
+      // Zoom into second place spot (right side) - moved 200px up
       podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
-      podium.style.bottom = '8vh';
+      podium.style.bottom = 'calc(8vh + 200px)';
       
       setTimeout(() => {
         if (!cover2.innerHTML) {
@@ -1229,7 +1228,7 @@ function showTopSongDarken() {
   currentSongPhase = 2;
   const container = document.getElementById('songs-container');
   
-  // Zoom out first
+  // Don't zoom out - keep at base scale
   const podium = document.getElementById('podium');
   podium.style.transform = 'translateX(-50%) scale(1)';
   podium.style.bottom = '5vh';
@@ -1258,38 +1257,21 @@ function zoomToFirst(skipZoomTransition = false) {
   if (darken) darken.remove();
   
   const podium = document.getElementById('podium');
-  const cover1 = document.getElementById('cover-1');
-  const alreadyRevealed = cover1.innerHTML !== '';
   
-  if (skipZoomTransition || alreadyRevealed) {
-    // Just shift camera to first place - no zoom out/in
-    podium.style.transform = 'translateX(-50%) scale(1.5)';
-    podium.style.bottom = '8vh';
+  // No zoom effect - keep at base scale, just center position
+  podium.style.transform = 'translateX(-50%) scale(1)';
+  podium.style.bottom = '5vh';
+  
+  setTimeout(() => {
+    const cover1 = document.getElementById('cover-1');
+    if (!cover1.innerHTML) {
+      cover1.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
+      cover1.classList.add('visible');
+    }
     
-    setTimeout(() => {
-      if (!cover1.innerHTML) {
-        cover1.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
-        cover1.classList.add('visible');
-      }
-      
-      currentAudio = new Audio('assets/ZeeNYSong1.mp3');
-      currentAudio.play();
-    }, 1000);
-  } else {
-    // Zoom into first place spot (center)
-    podium.style.transform = 'translateX(-50%) scale(1.5)';
-    podium.style.bottom = '8vh';
-    
-    setTimeout(() => {
-      if (!cover1.innerHTML) {
-        cover1.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
-        cover1.classList.add('visible');
-      }
-      
-      currentAudio = new Audio('assets/ZeeNYSong1.mp3');
-      currentAudio.play();
-    }, 1000);
-  }
+    currentAudio = new Audio('assets/ZeeNYSong1.mp3');
+    currentAudio.play();
+  }, 1000);
 }
 
 function handleRecapSection() {
@@ -1415,8 +1397,8 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       }
       currentSongPhase = 1;
       const podium = document.getElementById('podium');
-      podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.8)';
-      podium.style.bottom = '15vh';
+      podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
+      podium.style.bottom = '8vh';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong2.mp3');
@@ -1431,8 +1413,8 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       }
       currentSongPhase = 0;
       const podium = document.getElementById('podium');
-      podium.style.transform = 'translateX(calc(-50% + 200px)) scale(1.8)';
-      podium.style.bottom = '15vh';
+      podium.style.transform = 'translateX(calc(-50% + 280px)) scale(1.5)';
+      podium.style.bottom = '8vh';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong3.mp3');
