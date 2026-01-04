@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sarah-fy Wrapped</title>
+<title>Sarah-fy Wrapped&lt;3</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
 
@@ -474,7 +474,7 @@ body::before {
 .spotlight-tweet img {
   width: 100%;
   border-radius: 15px;
-  box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.6), 0 0 60px rgba(255,215,0,0.8);
 }
 
 @keyframes textFadeIn {
@@ -863,7 +863,7 @@ body::before {
 
 <!-- Section 6: Text Recap -->
 <div class="section" id="section-5">
-  <div class="intro-card" id="intro-5">It can't be a Wrapped without some numbers... Here's some stats from 2025, I used words for some of them so you don't completely dissociate, I know you my baby &lt;3</div>
+  <div class="intro-card" id="intro-5">It can't be a Wrapped without some numbers... Here's some stats from 2025, I used words for some of them so you don't completely dissociate, I know my baby &lt;3</div>
   <div class="recap-card" id="recap-container" style="display:none;">
     <div class="progress-bar">
       <div class="progress-segment active"></div>
@@ -1050,13 +1050,13 @@ function resetAndShowAesthetics() {
   
   setTimeout(() => {
     intro2.classList.remove('active');
-  }, 5700);
+  }, 10700);
   
   setTimeout(() => {
     intro1.style.display = 'none';
     intro2.style.display = 'none';
     container.style.display = 'block';
-  }, 6400);
+  }, 11400);
 }
 
 function resetAndShowGoodTimes() {
@@ -1076,7 +1076,7 @@ function resetAndShowGoodTimes() {
   setTimeout(() => {
     intro.style.display = 'none';
     container.style.display = 'block';
-  }, 2800);
+  }, 16800);
 }
 
 function resetAndShowTweets() {
@@ -1095,7 +1095,7 @@ function resetAndShowTweets() {
     intro.style.display = 'none';
     container.style.display = 'block';
     showPolaroid(0);
-  }, 2800);
+  }, 8400);
 }
 
 function resetAndShowForward() {
@@ -1115,7 +1115,7 @@ function resetAndShowForward() {
   setTimeout(() => {
     intro.style.display = 'none';
     container.style.display = 'block';
-  }, 2800);
+  }, 19600);
 }
 
 function showPolaroid(index) {
@@ -1192,7 +1192,7 @@ function resetAndShowSongs() {
     intro.style.display = 'none';
     container.style.display = 'block';
     startSongsSequence();
-  }, 2800);
+  }, 8400);
 }
 
 function startSongsSequence() {
@@ -1358,7 +1358,7 @@ function handleRecapSection() {
   setTimeout(() => {
     intro.style.display = 'none';
     container.style.display = 'block';
-  }, 2800);
+  }, 8400);
 }
 
 function nextSection() {
