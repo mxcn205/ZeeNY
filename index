@@ -1141,9 +1141,10 @@ function zoomToThird() {
   currentSongPhase = 0;
   const podium = document.getElementById('podium');
   
-  // Focus on third place spot (left side) - adjusted for 2x size
-  podium.style.transform = 'translateX(calc(-50% + 200px)) scale(1.8)';
-  podium.style.bottom = '15vh';
+  // Center the third place cover on screen - adjust for cover position above podium
+  // Third place podium is on the left, need to shift entire podium right
+  podium.style.transform = 'translateX(calc(-50% + 280px)) scale(1.5)';
+  podium.style.bottom = '8vh';
   
   setTimeout(() => {
     const cover = document.getElementById('cover-3');
@@ -1161,7 +1162,7 @@ function zoomToThird() {
   }, 1000);
 }
 
-function zoomToSecond() {
+function zoomToSecond(skipZoomTransition = false) {
   // Always stop any currently playing audio first
   if (currentAudio) {
     currentAudio.pause();
@@ -1171,31 +1172,50 @@ function zoomToSecond() {
   
   currentSongPhase = 1;
   const podium = document.getElementById('podium');
+  const cover2 = document.getElementById('cover-2');
+  const alreadyRevealed = cover2.innerHTML !== '';
   
-  // Zoom out first
-  podium.style.transform = 'translateX(-50%) scale(1)';
-  podium.style.bottom = '5vh';
-  
-  setTimeout(() => {
-    // Zoom into second place spot (right side) - adjusted for 2x size
-    podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.8)';
-    podium.style.bottom = '15vh';
+  if (skipZoomTransition || alreadyRevealed) {
+    // Just shift camera to second place - no zoom out/in
+    podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
+    podium.style.bottom = '8vh';
     
     setTimeout(() => {
-      const cover = document.getElementById('cover-2');
-      if (!cover.innerHTML) {
-        cover.innerHTML = '<img src="assets/ZeeNYSongCover2.png" alt="Song 2">';
-        cover.classList.add('visible');
+      if (!cover2.innerHTML) {
+        cover2.innerHTML = '<img src="assets/ZeeNYSongCover2.png" alt="Song 2">';
+        cover2.classList.add('visible');
       }
       
       currentAudio = new Audio('assets/ZeeNYSong2.mp3');
       currentAudio.play();
       currentAudio.onended = () => {
-        // Keep cover visible - don't remove
         setTimeout(() => showTopSongDarken(), 800);
       };
     }, 1000);
-  }, 1200);
+  } else {
+    // Zoom out first
+    podium.style.transform = 'translateX(-50%) scale(1)';
+    podium.style.bottom = '5vh';
+    
+    setTimeout(() => {
+      // Zoom into second place spot (right side)
+      podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
+      podium.style.bottom = '8vh';
+      
+      setTimeout(() => {
+        if (!cover2.innerHTML) {
+          cover2.innerHTML = '<img src="assets/ZeeNYSongCover2.png" alt="Song 2">';
+          cover2.classList.add('visible');
+        }
+        
+        currentAudio = new Audio('assets/ZeeNYSong2.mp3');
+        currentAudio.play();
+        currentAudio.onended = () => {
+          setTimeout(() => showTopSongDarken(), 800);
+        };
+      }, 1000);
+    }, 1200);
+  }
 }
 
 function showTopSongDarken() {
@@ -1224,7 +1244,7 @@ function showTopSongDarken() {
   }, 800);
 }
 
-function zoomToFirst() {
+function zoomToFirst(skipZoomTransition = false) {
   // Always stop any currently playing audio first
   if (currentAudio) {
     currentAudio.pause();
@@ -1238,21 +1258,38 @@ function zoomToFirst() {
   if (darken) darken.remove();
   
   const podium = document.getElementById('podium');
+  const cover1 = document.getElementById('cover-1');
+  const alreadyRevealed = cover1.innerHTML !== '';
   
-  // Zoom into first place spot (center) - adjusted for 2x size
-  podium.style.transform = 'translateX(-50%) scale(1.8)';
-  podium.style.bottom = '20vh';
-  
-  setTimeout(() => {
-    const cover = document.getElementById('cover-1');
-    if (!cover.innerHTML) {
-      cover.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
-      cover.classList.add('visible');
-    }
+  if (skipZoomTransition || alreadyRevealed) {
+    // Just shift camera to first place - no zoom out/in
+    podium.style.transform = 'translateX(-50%) scale(1.5)';
+    podium.style.bottom = '8vh';
     
-    currentAudio = new Audio('assets/ZeeNYSong1.mp3');
-    currentAudio.play();
-  }, 1000);
+    setTimeout(() => {
+      if (!cover1.innerHTML) {
+        cover1.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
+        cover1.classList.add('visible');
+      }
+      
+      currentAudio = new Audio('assets/ZeeNYSong1.mp3');
+      currentAudio.play();
+    }, 1000);
+  } else {
+    // Zoom into first place spot (center)
+    podium.style.transform = 'translateX(-50%) scale(1.5)';
+    podium.style.bottom = '8vh';
+    
+    setTimeout(() => {
+      if (!cover1.innerHTML) {
+        cover1.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
+        cover1.classList.add('visible');
+      }
+      
+      currentAudio = new Audio('assets/ZeeNYSong1.mp3');
+      currentAudio.play();
+    }, 1000);
+  }
 }
 
 function handleRecapSection() {
