@@ -1,1079 +1,1490 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2025 Wrapped</title>
-  <style>
-    :root {
-      --pink-100: hsl(340, 80%, 95%);
-      --pink-200: hsl(340, 70%, 85%);
-      --pink-300: hsl(340, 65%, 75%);
-      --pink-400: hsl(340, 60%, 65%);
-      --pink-500: hsl(340, 55%, 55%);
-      --pink-600: hsl(340, 50%, 45%);
-      --pink-glow: hsla(340, 80%, 70%, 0.6);
-      --glass-bg: hsla(340, 30%, 98%, 0.12);
-      --glass-border: hsla(340, 50%, 90%, 0.2);
-      --glass-shadow: 0 8px 32px hsla(340, 50%, 20%, 0.3);
-      --text-primary: hsl(340, 20%, 98%);
-      --text-secondary: hsla(340, 20%, 90%, 0.8);
-      --overlay-dark: hsla(340, 40%, 8%, 0.7);
-      --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background: url('assets/ZeeNYbg.png') center/cover no-repeat fixed;
-      color: var(--text-primary);
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center, hsla(340, 40%, 15%, 0.5) 0%, hsla(340, 50%, 5%, 0.85) 100%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .app {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-
-    /* Navigation Arrows */
-    .nav-arrow {
-      position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 50px;
-      height: 50px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 100;
-      transition: var(--transition-smooth);
-      opacity: 0.7;
-    }
-
-    .nav-arrow:hover {
-      opacity: 1;
-      background: hsla(340, 50%, 90%, 0.25);
-      box-shadow: 0 0 20px var(--pink-glow);
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    .nav-arrow.left { left: 20px; }
-    .nav-arrow.right { right: 20px; }
-
-    .nav-arrow svg {
-      width: 24px;
-      height: 24px;
-      fill: none;
-      stroke: var(--text-primary);
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* Sections */
-    .section {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.5s ease, visibility 0.5s ease;
-    }
-
-    .section.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    /* Intro Card */
-    .intro-card {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      opacity: 0;
-      visibility: hidden;
-    }
-
-    .intro-card.showing {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .intro-card-inner {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 60px 80px;
-      text-align: center;
-      box-shadow: var(--glass-shadow);
-      animation: introFadeIn 0.6s ease forwards;
-    }
-
-    .intro-card.hiding .intro-card-inner {
-      animation: introFadeOut 0.4s ease forwards;
-    }
-
-    @keyframes introFadeIn {
-      from { opacity: 0; transform: scale(0.9) translateY(20px); filter: blur(10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-    }
-
-    @keyframes introFadeOut {
-      from { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-      to { opacity: 0; transform: scale(0.95) translateY(-10px); filter: blur(5px); }
-    }
-
-    .intro-text {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--pink-100), var(--pink-300));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* Title Section */
-    .title-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 32px;
-      padding: 60px 80px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: var(--glass-shadow);
-      transition: var(--transition-bounce);
-      max-width: 90vw;
-    }
-
-    .title-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 12px 48px hsla(340, 60%, 50%, 0.4);
-      border-color: var(--pink-400);
-    }
-
-    .title-card h1 {
-      font-size: clamp(2.5rem, 8vw, 5rem);
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--pink-100) 0%, var(--pink-300) 50%, var(--pink-100) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 16px;
-      letter-spacing: -0.02em;
-    }
-
-    .title-card p {
-      font-size: clamp(1rem, 2.5vw, 1.5rem);
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
-
-    .title-hint {
-      display: inline-block;
-      background: hsla(340, 50%, 80%, 0.15);
-      border: 1px solid hsla(340, 50%, 80%, 0.3);
-      border-radius: 100px;
-      padding: 10px 20px;
-      font-size: 0.85rem;
-      color: var(--pink-200);
-    }
-
-    /* Board Container */
-    .board-container {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 20px;
-    }
-
-    .board {
-      max-width: min(320px, 40vw);
-      max-height: 70vh;
-      object-fit: contain;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px hsla(340, 50%, 10%, 0.5);
-      cursor: pointer;
-      transition: var(--transition-bounce);
-      opacity: 0;
-      transform: translateY(60px) scale(0.86) rotate(-2deg);
-    }
-
-    .board.visible {
-      opacity: 1;
-      transform: translateY(0) scale(1) rotate(0deg);
-    }
-
-    .board:nth-child(2) { transition-delay: 0.1s; transform: translateY(60px) scale(0.86) rotate(1deg); }
-    .board:nth-child(3) { transition-delay: 0.2s; transform: translateY(60px) scale(0.86) rotate(-1.5deg); }
-
-    .board:hover {
-      transform: translateY(-10px) scale(1.05) rotate(0deg) !important;
-      box-shadow: 0 30px 80px hsla(340, 60%, 50%, 0.4), 0 0 40px var(--pink-glow);
-      filter: saturate(1.1) contrast(1.05);
-    }
-
-    /* Polaroid Container */
-    .polaroid-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    .polaroid {
-      position: absolute;
-      width: clamp(100px, 15vw, 160px);
-      cursor: pointer;
-      transition: var(--transition-bounce);
-      filter: drop-shadow(0 10px 30px hsla(340, 50%, 10%, 0.6));
-    }
-
-    .polaroid:hover {
-      transform: scale(1.15) rotate(0deg) !important;
-      filter: drop-shadow(0 20px 50px var(--pink-glow));
-      z-index: 10;
-    }
-
-    .polaroid img {
-      width: 100%;
-      border-radius: 4px;
-    }
-
-    .shuffle-hint {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 100px;
-      padding: 10px 24px;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      z-index: 10;
-    }
-
-    /* Spotlight Overlay */
-    .spotlight-overlay {
-      position: absolute;
-      inset: 0;
-      background: hsla(340, 50%, 5%, 0.92);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
-      z-index: 60;
-    }
-
-    .spotlight-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .spotlight-text {
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      font-weight: 600;
-      color: var(--pink-200);
-      text-align: center;
-      margin-bottom: 40px;
-      animation: spotlightPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes spotlightPulse {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 1; }
-    }
-
-    .spotlight-image {
-      max-width: min(600px, 90vw);
-      max-height: 70vh;
-      object-fit: contain;
-      border-radius: 12px;
-      box-shadow: 0 0 100px var(--pink-glow);
-      opacity: 0;
-      transform: scale(0.9);
-      transition: all 0.6s ease;
-    }
-
-    .spotlight-image.visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    /* Recap Section */
-    .recap-container {
-      width: min(700px, 90vw);
-      background: var(--glass-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--glass-border);
-      border-radius: 32px;
-      padding: 40px;
-      box-shadow: var(--glass-shadow);
-    }
-
-    .progress-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 32px;
-    }
-
-    .progress-segment {
-      flex: 1;
-      height: 4px;
-      background: hsla(340, 50%, 80%, 0.2);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-segment.active {
-      background: linear-gradient(90deg, var(--pink-400), var(--pink-300));
-    }
-
-    .recap-slide {
-      display: none;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .recap-slide.active {
-      display: block;
-      animation: slideIn 0.5s ease forwards;
-    }
-
-    .recap-slide.exiting {
-      animation: slideOut 0.3s ease forwards;
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(30px); filter: blur(8px); }
-      to { opacity: 1; transform: translateX(0); filter: blur(0); }
-    }
-
-    @keyframes slideOut {
-      from { opacity: 1; transform: translateX(0); filter: blur(0); }
-      to { opacity: 0; transform: translateX(-30px); filter: blur(8px); }
-    }
-
-    .kicker {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--pink-400);
-      margin-bottom: 8px;
-    }
-
-    .recap-title {
-      font-size: clamp(1.5rem, 4vw, 2.2rem);
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--pink-100), var(--pink-200));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
-    }
-
-    .recap-sub {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-    }
-
-    .big-number {
-      font-size: clamp(4rem, 15vw, 8rem);
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--pink-200), var(--pink-400));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .big-desc {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
-
-    .stat-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: hsla(340, 50%, 90%, 0.08);
-      border-radius: 12px;
-    }
-
-    .stat-label {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .stat-value {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--pink-200);
-    }
-
-    .word-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .word-chip {
-      background: hsla(340, 50%, 80%, 0.15);
-      border: 1px solid hsla(340, 50%, 80%, 0.3);
-      border-radius: 100px;
-      padding: 8px 18px;
-      font-size: 0.9rem;
-      color: var(--pink-100);
-    }
-
-    /* Modal */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: hsla(340, 50%, 5%, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-
-    .modal.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .modal-content {
-      position: relative;
-      max-width: 90vw;
-      max-height: 90vh;
-    }
-
-    .modal-image {
-      max-width: 90vw;
-      max-height: 85vh;
-      object-fit: contain;
-      border-radius: 16px;
-      box-shadow: 0 0 80px var(--pink-glow);
-    }
-
-    .modal-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 44px;
-      height: 44px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition-smooth);
-    }
-
-    .modal-nav:hover {
-      background: hsla(340, 50%, 90%, 0.3);
-      box-shadow: 0 0 20px var(--pink-glow);
-    }
-
-    .modal-nav.left { left: -60px; }
-    .modal-nav.right { right: -60px; }
-
-    .modal-nav svg {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: var(--text-primary);
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: -50px;
-      right: 0;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      cursor: pointer;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav-arrow {
-        width: 40px;
-        height: 40px;
-      }
-      .nav-arrow.left { left: 10px; }
-      .nav-arrow.right { right: 10px; }
-      
-      .board-container {
-        gap: 20px;
-      }
-      
-      .board {
-        max-width: min(260px, 80vw);
-      }
-      
-      .title-card {
-        padding: 40px;
-      }
-      
-      .intro-card-inner {
-        padding: 40px;
-      }
-      
-      .modal-nav.left { left: 10px; }
-      .modal-nav.right { right: 10px; }
-      
-      .recap-container {
-        padding: 24px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sarah-fy Wrapped</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Brush+Script+MT&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Brush Script MT', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  background: url('assets/ZeeNYbg.png') center/cover no-repeat;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255,182,193,0.2), rgba(255,105,180,0.3));
+  pointer-events: none;
+}
+
+.section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 60px 80px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  text-align: center;
+  max-width: 600px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: scale(1.02);
+}
+
+.title-text {
+  font-size: 5em;
+  font-weight: 700;
+  color: #4A3A3A;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+  font-family: 'Brush Script MT', cursive;
+}
+
+.subtitle-text {
+  font-size: 1.5em;
+  color: #6B4A5A;
+  margin-bottom: 30px;
+  font-family: 'Brush Script MT', cursive;
+}
+
+.hint-pill {
+  display: inline-block;
+  background: rgba(255,255,255,0.3);
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 0.9em;
+  color: rgba(255,255,255,0.95);
+}
+
+.nav-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.nav-arrow:hover {
+  background: rgba(255,255,255,0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.nav-arrow.left {
+  left: 30px;
+}
+
+.nav-arrow.right {
+  right: 30px;
+}
+
+.nav-arrow::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-top: 3px solid white;
+  border-right: 3px solid white;
+}
+
+.nav-arrow.left::before {
+  transform: rotate(-135deg);
+  margin-left: 5px;
+}
+
+.nav-arrow.right::before {
+  transform: rotate(45deg);
+  margin-right: 5px;
+}
+
+.intro-card {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 40px 60px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.5);
+  font-size: 2em;
+  font-weight: 600;
+  color: #4A3A3A;
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+  animation: introFade 3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 800px;
+  text-align: center;
+  font-family: 'Brush Script MT', cursive;
+}
+
+@keyframes introFade {
+  0%, 100% { opacity: 0; transform: scale(0.95); }
+  10%, 90% { opacity: 1; transform: scale(1); }
+}
+
+.board-container {
+  position: relative;
+  width: 90%;
+  max-width: 1200px;
+  height: 80vh;
+}
+
+.board {
+  position: absolute;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  opacity: 0;
+  animation: boardEnter 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.board img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+@keyframes boardEnter {
+  0% {
+    opacity: 0;
+    transform: translate(var(--start-x), var(--start-y)) rotate(var(--start-rot)) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(var(--end-rot)) scale(1);
+  }
+}
+
+.aesthetics-board-1 {
+  width: 35%;
+  height: 50%;
+  top: 20%;
+  left: 5%;
+  z-index: 1;
+  --start-x: -150vw;
+  --start-y: -50vh;
+  --start-rot: -180deg;
+  --end-rot: -8deg;
+  animation-delay: 0.2s;
+}
+
+.aesthetics-board-2 {
+  width: 40%;
+  height: 55%;
+  top: 15%;
+  left: 30%;
+  z-index: 3;
+  --start-x: 0;
+  --start-y: -150vh;
+  --start-rot: 180deg;
+  --end-rot: 3deg;
+  animation-delay: 0.4s;
+}
+
+.aesthetics-board-3 {
+  width: 35%;
+  height: 50%;
+  top: 25%;
+  right: 8%;
+  z-index: 2;
+  --start-x: 150vw;
+  --start-y: 50vh;
+  --start-rot: 180deg;
+  --end-rot: 6deg;
+  animation-delay: 0.6s;
+}
+
+.good-times-board-1 {
+  width: 50%;
+  height: 60%;
+  top: 15%;
+  left: 8%;
+  z-index: 2;
+  --start-x: -150vw;
+  --start-y: 100vh;
+  --start-rot: -270deg;
+  --end-rot: -5deg;
+  animation-delay: 0.2s;
+}
+
+.good-times-board-2 {
+  width: 45%;
+  height: 55%;
+  top: 22%;
+  right: 10%;
+  z-index: 1;
+  --start-x: 150vw;
+  --start-y: -100vh;
+  --start-rot: 270deg;
+  --end-rot: 7deg;
+  animation-delay: 0.5s;
+}
+
+.looking-forward-board-1 {
+  width: 55%;
+  height: 50%;
+  top: 18%;
+  left: 10%;
+  z-index: 2;
+  --start-x: -150vw;
+  --start-y: -80vh;
+  --start-rot: -180deg;
+  --end-rot: -4deg;
+  animation-delay: 0.2s;
+}
+
+.looking-forward-board-2 {
+  width: 35%;
+  height: 65%;
+  top: 12%;
+  right: 12%;
+  z-index: 1;
+  --start-x: 150vw;
+  --start-y: 80vh;
+  --start-rot: 200deg;
+  --end-rot: 5deg;
+  animation-delay: 0.5s;
+}
+
+.polaroid {
+  position: absolute;
+  width: 400px;
+  max-width: 80vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  opacity: 0;
+}
+
+.polaroid img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+@keyframes polaroidEnter {
+  0% {
+    opacity: 0;
+    transform: translate(100vw, -50%) rotate(20deg);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-2deg);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-2deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-150vw, -50%) rotate(-20deg);
+  }
+}
+
+.spotlight-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: spotlightFade 1s ease-out forwards;
+}
+
+@keyframes spotlightFade {
+  to { opacity: 1; }
+}
+
+.spotlight {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+  pointer-events: none;
+}
+
+.spotlight-text {
+  font-size: 2em;
+  color: white;
+  text-align: center;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: textFadeIn 1s ease-out 0.5s forwards;
+  z-index: 1;
+}
+
+.spotlight-tweet {
+  width: 500px;
+  max-width: 85vw;
+  opacity: 0;
+  animation: tweetReveal 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 2s forwards;
+  z-index: 1;
+}
+
+.spotlight-tweet img {
+  width: 100%;
+  border-radius: 15px;
+  box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+}
+
+@keyframes textFadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes tweetReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.podium-container {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.podium-spot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.podium-block {
+  background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
+  backdrop-filter: blur(15px);
+  border-radius: 15px 15px 0 0;
+  border: 2px solid rgba(255,255,255,0.5);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3em;
+  font-weight: 700;
+  color: #4A3A3A;
+}
+
+.podium-spot.third .podium-block {
+  width: 120px;
+  height: 120px;
+}
+
+.podium-spot.second .podium-block {
+  width: 140px;
+  height: 160px;
+}
+
+.podium-spot.first .podium-block {
+  width: 160px;
+  height: 200px;
+}
+
+.song-cover {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 20px;
+  width: 200px;
+  height: 200px;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.song-cover.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.song-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.songs-darken {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: spotlightFade 1s ease-out forwards;
+  z-index: 10;
+}
+
+.songs-text {
+  font-size: 2.5em;
+  color: white;
+  text-align: center;
+  padding: 0 50px;
+  opacity: 0;
+  animation: textFadeIn 1s ease-out 0.5s forwards;
+  font-family: 'Brush Script MT', cursive;
+}
+
+.recap-card {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 50px 70px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  max-width: 700px;
+  width: 90%;
+  position: relative;
+}
+
+.progress-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.progress-segment {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.progress-segment.active {
+  background: white;
+}
+
+.slides-wrapper {
+  position: relative;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+.slide {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateX(100%);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.slide.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.slide.exit-left {
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.slide.exit-right {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.slide.enter-from-left {
+  transform: translateX(-100%);
+}
+
+.slide.enter-from-right {
+  transform: translateX(100%);
+}
+
+.kicker {
+  font-size: 0.9em;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.slide-title {
+  font-size: 2.2em;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+}
+
+.slide-sub {
+  font-size: 1.1em;
+  color: #2a2a2a;
+  margin-bottom: 30px;
+}
+
+.big-number {
+  font-size: 5em;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-shadow: 0 2px 4px rgba(255,255,255,0.6);
+  margin: 20px 0;
+}
+
+.big-desc {
+  font-size: 1.3em;
+  color: #2a2a2a;
+  margin-bottom: 30px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  color: #1a1a1a;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-size: 1.05em;
+  color: #2a2a2a;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.word-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.word-chip {
+  background: rgba(100,100,100,0.2);
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 1.05em;
+}
+
+.click-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+  .glass-card {
+    padding: 40px 50px;
+  }
+  
+  .title-text {
+    font-size: 2.5em;
+  }
+  
+  .subtitle-text {
+    font-size: 1.2em;
+  }
+  
+  .recap-card {
+    padding: 40px 30px;
+  }
+  
+  .slide {
+    left: 30px;
+    right: 30px;
+  }
+  
+  .slide-title {
+    font-size: 1.8em;
+  }
+  
+  .big-number {
+    font-size: 3.5em;
+  }
+}
+</style>
 </head>
 <body>
-  <div class="app">
-    <!-- Navigation Arrows -->
-    <div class="nav-arrow left" onclick="prevSection()">
-      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+
+<div class="nav-arrow left" id="leftArrow"></div>
+<div class="nav-arrow right" id="rightArrow"></div>
+
+<!-- Section 1: Title -->
+<div class="section active" id="section-0">
+  <div class="glass-card" onclick="nextSection()">
+    <div class="title-text">Sarah-fy Wrapped</div>
+  </div>
+</div>
+
+<!-- Section 2: Aesthetics Board -->
+<div class="section" id="section-1">
+  <div class="intro-card" id="intro-1">2025 Aesthetics</div>
+  <div class="board-container" id="aesthetics-container" style="display:none;">
+    <div class="board aesthetics-board-1">
+      <img src="assets/ZeeNYBoardCoquette.png" alt="Coquette">
     </div>
-    <div class="nav-arrow right" onclick="nextSection()">
-      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    <div class="board aesthetics-board-2">
+      <img src="assets/ZeeNYBoardVogue.png" alt="Vogue">
     </div>
-
-    <!-- Sections -->
-    <section class="section active" data-sec="title">
-      <div class="title-card" onclick="nextSection()">
-        <h1>2025, wrapped</h1>
-        <p>A scrapbook you can click into.</p>
-        <span class="title-hint">Use the arrows (or ← / →) to move through sections</span>
-      </div>
-    </section>
-
-    <section class="section" data-sec="aesthetics">
-      <div class="intro-card" id="intro-aesthetics">
-        <div class="intro-card-inner">
-          <span class="intro-text">2025 Aesthetics</span>
-        </div>
-      </div>
-      <div class="board-container" id="boards-aesthetics">
-        <img class="board" src="assets/ZeeNYBoardCoquette.png" alt="Coquette Board" data-index="0">
-        <img class="board" src="assets/ZeeNYBoardVogue.png" alt="Vogue Board" data-index="1">
-        <img class="board" src="assets/ZeeNYBoardBurgundy.png" alt="Burgundy Board" data-index="2">
-      </div>
-    </section>
-
-    <section class="section" data-sec="goodtimes">
-      <div class="intro-card" id="intro-goodtimes">
-        <div class="intro-card-inner">
-          <span class="intro-text">The good times :)</span>
-        </div>
-      </div>
-      <div class="board-container" id="boards-goodtimes">
-        <img class="board" src="assets/ZeeNYBoardGoodTimes.png" alt="Good Times Board" data-index="0">
-        <img class="board" src="assets/ZeeNYBoardThoughts.png" alt="Thoughts Board" data-index="1">
-      </div>
-    </section>
-
-    <section class="section" data-sec="lookingforward">
-      <div class="intro-card" id="intro-lookingforward">
-        <div class="intro-card-inner">
-          <span class="intro-text">Looking forward...</span>
-        </div>
-      </div>
-      <div class="board-container" id="boards-lookingforward">
-        <img class="board" src="assets/ZeeNYBoard2026.png" alt="2026 Board" data-index="0">
-        <img class="board" src="assets/ZeeNYBoardVacation.png" alt="Vacation Board" data-index="1">
-      </div>
-    </section>
-
-    <section class="section" data-sec="tweets">
-      <div class="intro-card" id="intro-tweets">
-        <div class="intro-card-inner">
-          <span class="intro-text">Top tweets this year</span>
-        </div>
-      </div>
-      <div class="polaroid-container" id="polaroid-container"></div>
-      <div class="shuffle-hint">Press R to reshuffle</div>
-      <div class="spotlight-overlay" id="spotlight">
-        <div class="spotlight-text">And your top tweet of 2025...</div>
-        <img class="spotlight-image" id="spotlight-image" src="assets/ZeeNYTweet4.png" alt="Top Tweet">
-      </div>
-    </section>
-
-    <section class="section" data-sec="recap">
-      <div class="intro-card" id="intro-recap">
-        <div class="intro-card-inner">
-          <span class="intro-text">Your 2025 recap</span>
-        </div>
-      </div>
-      <div class="recap-container" id="recap-container">
-        <div class="progress-bar">
-          <div class="progress-segment active" data-slide="0"></div>
-          <div class="progress-segment" data-slide="1"></div>
-          <div class="progress-segment" data-slide="2"></div>
-        </div>
-        
-        <div class="recap-slide active" data-slide="0">
-          <div class="kicker">By the numbers</div>
-          <div class="recap-title">2025, in soft stats.</div>
-          <div class="recap-sub">Not tracked. Just remembered.</div>
-          <div class="big-number">∞</div>
-          <div class="big-desc">Small moments that mattered anyway.</div>
-          <div class="stat-rows">
-            <div class="stat-row"><span class="stat-label">Time zones crossed</span><span class="stat-value">1</span></div>
-            <div class="stat-row"><span class="stat-label">Comfortable silences</span><span class="stat-value">more than expected</span></div>
-            <div class="stat-row"><span class="stat-label">Check-ins with no pressure</span><span class="stat-value">a lot</span></div>
-            <div class="stat-row"><span class="stat-label">Hard conversations survived</span><span class="stat-value">all of them</span></div>
-            <div class="stat-row"><span class="stat-label">Times we chose patience</span><span class="stat-value">countless</span></div>
-          </div>
-        </div>
-
-        <div class="recap-slide" data-slide="1">
-          <div class="kicker">Most replayed moments</div>
-          <div class="recap-title">The ones we kept coming back to.</div>
-          <div class="recap-sub">No rankings needed. Just repeats.</div>
-          <div class="stat-rows">
-            <div class="stat-row"><span class="stat-label">1. Late-night tired calls</span><span class="stat-value">REPEAT</span></div>
-            <div class="stat-row"><span class="stat-label">2. Sending something small instead of saying something big</span><span class="stat-value">REPEAT</span></div>
-            <div class="stat-row"><span class="stat-label">3. Comfortable silence</span><span class="stat-value">REPEAT</span></div>
-            <div class="stat-row"><span class="stat-label">4. Taking space, then coming back</span><span class="stat-value">REPEAT</span></div>
-            <div class="stat-row"><span class="stat-label">5. Laughing at nothing</span><span class="stat-value">REPEAT</span></div>
-          </div>
-        </div>
-
-        <div class="recap-slide" data-slide="2">
-          <div class="kicker">Most used words</div>
-          <div class="recap-title">Unofficial, but accurate.</div>
-          <div class="recap-sub">If our year had a vocabulary.</div>
-          <div class="word-chips">
-            <span class="word-chip">okay</span>
-            <span class="word-chip">tired</span>
-            <span class="word-chip">yeah</span>
-            <span class="word-chip">later</span>
-            <span class="word-chip">i'm here</span>
-            <span class="word-chip">no pressure</span>
-            <span class="word-chip">goodnight</span>
-            <span class="word-chip">miss you</span>
-            <span class="word-chip">❤️</span>
-            <span class="word-chip">lol</span>
-            <span class="word-chip">same</span>
-            <span class="word-chip">safe</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Modal -->
-    <div class="modal" id="modal" onclick="closeModalOnBackground(event)">
-      <div class="modal-content">
-        <div class="modal-close">ESC or click outside to close</div>
-        <div class="modal-nav left" onclick="modalPrev(event)">
-          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-        </div>
-        <img class="modal-image" id="modal-image" src="" alt="Preview">
-        <div class="modal-nav right" onclick="modalNext(event)">
-          <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-        </div>
-      </div>
+    <div class="board aesthetics-board-3">
+      <img src="assets/ZeeNYBoardBurgundy.png" alt="Burgundy">
     </div>
   </div>
+</div>
 
-  <script>
-    // Section order
-    const sectionOrder = ['title', 'aesthetics', 'goodtimes', 'lookingforward', 'tweets', 'recap'];
-    let currentSectionIndex = 0;
-    let introShowing = false;
-    let introTimeout = null;
+<!-- Section 3: Good Times Board -->
+<div class="section" id="section-2">
+  <div class="intro-card" id="intro-2">The good times :)</div>
+  <div class="board-container" id="goodtimes-container" style="display:none;">
+    <div class="board good-times-board-1">
+      <img src="assets/ZeeNYBoardGoodTimes.png" alt="Good Times">
+    </div>
+    <div class="board good-times-board-2">
+      <img src="assets/ZeeNYBoardThoughts.png" alt="Thoughts">
+    </div>
+  </div>
+</div>
 
-    // Board images per section
-    const boardImages = {
-      aesthetics: ['assets/ZeeNYBoardCoquette.png', 'assets/ZeeNYBoardVogue.png', 'assets/ZeeNYBoardBurgundy.png'],
-      goodtimes: ['assets/ZeeNYBoardGoodTimes.png', 'assets/ZeeNYBoardThoughts.png'],
-      lookingforward: ['assets/ZeeNYBoard2026.png', 'assets/ZeeNYBoardVacation.png']
-    };
+<!-- Section 4: Tweets -->
+<div class="section" id="section-3">
+  <div class="intro-card" id="intro-3">Top tweets this year</div>
+  <div id="tweets-container" style="display:none; width:100%; height:100%; position:relative;">
+    <!-- Polaroids will be animated here -->
+  </div>
+</div>
 
-    // Polaroid and tweet images
-    const polaroidImages = [
-      'assets/ZeeNYPolaroid1.png', 'assets/ZeeNYPolaroid2.png', 'assets/ZeeNYPolaroid3.png',
-      'assets/ZeeNYPolaroid5.png', 'assets/ZeeNYPolaroid6.png', 'assets/ZeeNYPolaroid7.png',
-      'assets/ZeeNYPolaroid8.png'
-    ];
-    const tweetImages = [
-      'assets/ZeeNYTweet1.png', 'assets/ZeeNYTweet2.png', 'assets/ZeeNYTweet3.png',
-      'assets/ZeeNYTweet5.png', 'assets/ZeeNYTweet6.png', 'assets/ZeeNYTweet7.png',
-      'assets/ZeeNYTweet8.png'
-    ];
+<!-- Section 5: Songs -->
+<div class="section" id="section-4">
+  <div class="intro-card" id="intro-4">You listened to many songs this year. Out of them all, I picked three that coincidentally come from the same artist, and I'm sure you can guess who...</div>
+  <div id="songs-container" style="display:none; width:100%; height:100%; position:relative;">
+    <!-- Podium will be shown here -->
+  </div>
+</div>
 
-    // Modal state
-    let modalImages = [];
-    let modalIndex = 0;
-    let modalOpen = false;
-
-    // Recap state
-    let recapSlide = 0;
-    let inRecapSection = false;
-
-    // Tweets state
-    let spotlightShown = false;
-    let tweetsSectionViewed = false;
-
-    // Initialize
-    function init() {
-      createPolaroids();
-      setupBoardClicks();
-      setupRecapClicks();
-    }
-
-    // Create polaroids
-    function createPolaroids() {
-      const container = document.getElementById('polaroid-container');
-      container.innerHTML = '';
-      polaroidImages.forEach((src, i) => {
-        const div = document.createElement('div');
-        div.className = 'polaroid';
-        div.innerHTML = `<img src="${src}" alt="Polaroid ${i + 1}">`;
-        div.dataset.index = i;
-        div.onclick = () => openTweetModal(i);
-        container.appendChild(div);
-      });
-      shufflePolaroids();
-    }
-
-    function shufflePolaroids() {
-      const polaroids = document.querySelectorAll('.polaroid');
-      const containerRect = document.getElementById('polaroid-container').getBoundingClientRect();
-      const polaroidSize = Math.min(160, window.innerWidth * 0.15);
+<!-- Section 6: Text Recap -->
+<div class="section" id="section-5">
+  <div class="intro-card" id="intro-5">Your 2025 recap</div>
+  <div class="recap-card" id="recap-container" style="display:none;">
+    <div class="progress-bar">
+      <div class="progress-segment active"></div>
+      <div class="progress-segment"></div>
+      <div class="progress-segment"></div>
+    </div>
+    
+    <div class="slides-wrapper">
+      <div class="slide active" id="slide-0">
+        <div class="kicker">By the numbers</div>
+        <div class="slide-title">2025, in soft stats.</div>
+        <div class="slide-sub">Not tracked. Just remembered.</div>
+        <div class="big-number">∞</div>
+        <div class="big-desc">Small moments that mattered anyway.</div>
+        <div class="stat-row">
+          <div class="stat-label">Time zones crossed</div>
+          <div class="stat-value">1</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Comfortable silences</div>
+          <div class="stat-value">more than expected</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Check-ins with no pressure</div>
+          <div class="stat-value">a lot</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Hard conversations survived</div>
+          <div class="stat-value">all of them</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Times we chose patience</div>
+          <div class="stat-value">countless</div>
+        </div>
+      </div>
       
-      polaroids.forEach((p, i) => {
-        const maxX = containerRect.width - polaroidSize - 100;
-        const maxY = containerRect.height - polaroidSize - 100;
-        const x = 50 + Math.random() * maxX;
-        const y = 50 + Math.random() * maxY;
-        const rotation = (Math.random() - 0.5) * 30;
-        
-        p.style.left = x + 'px';
-        p.style.top = y + 'px';
-        p.style.transform = `rotate(${rotation}deg)`;
-        p.style.opacity = '0';
-        
-        setTimeout(() => {
-          p.style.opacity = '1';
-        }, 100 + i * 80);
-      });
-    }
+      <div class="slide" id="slide-1">
+        <div class="kicker">Most replayed moments</div>
+        <div class="slide-title">The ones we kept coming back to.</div>
+        <div class="slide-sub">No rankings needed. Just repeats.</div>
+        <div class="stat-row">
+          <div class="stat-label">Late-night tired calls</div>
+          <div class="stat-value">REPEAT</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Sending something small instead of saying something big</div>
+          <div class="stat-value">REPEAT</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Comfortable silence</div>
+          <div class="stat-value">REPEAT</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Taking space, then coming back</div>
+          <div class="stat-value">REPEAT</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Laughing at nothing</div>
+          <div class="stat-value">REPEAT</div>
+        </div>
+      </div>
+      
+      <div class="slide" id="slide-2">
+        <div class="kicker">Most used words</div>
+        <div class="slide-title">Unofficial, but accurate.</div>
+        <div class="slide-sub">If our year had a vocabulary.</div>
+        <div class="word-chips">
+          <div class="word-chip">okay</div>
+          <div class="word-chip">tired</div>
+          <div class="word-chip">yeah</div>
+          <div class="word-chip">later</div>
+          <div class="word-chip">i'm here</div>
+          <div class="word-chip">no pressure</div>
+          <div class="word-chip">goodnight</div>
+          <div class="word-chip">miss you</div>
+          <div class="word-chip">❤️</div>
+          <div class="word-chip">lol</div>
+          <div class="word-chip">same</div>
+          <div class="word-chip">safe</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="click-hint">Click left/right half or use arrows</div>
+  </div>
+</div>
 
-    // Setup board clicks
-    function setupBoardClicks() {
-      document.querySelectorAll('.board').forEach(board => {
-        board.onclick = () => {
-          const section = board.closest('.section').dataset.sec;
-          const images = boardImages[section];
-          const index = parseInt(board.dataset.index);
-          openModal(images, index);
-        };
-      });
-    }
+<!-- Section 7: Looking Forward Board -->
+<div class="section" id="section-6">
+  <div class="intro-card" id="intro-6">Looking forward...</div>
+  <div class="board-container" id="forward-container" style="display:none;">
+    <div class="board looking-forward-board-1">
+      <img src="assets/ZeeNYBoard2026.png" alt="2026">
+    </div>
+    <div class="board looking-forward-board-2">
+      <img src="assets/ZeeNYBoardVacation.png" alt="Vacation">
+    </div>
+  </div>
+</div>
 
-    // Setup recap clicks
-    function setupRecapClicks() {
-      const container = document.getElementById('recap-container');
-      container.onclick = (e) => {
-        const rect = container.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        if (clickX < rect.width / 2) {
-          changeRecapSlide(-1);
+<!-- Section 8: End -->
+<div class="section" id="section-7">
+  <div class="glass-card" onclick="restart()">
+    <div class="title-text">That's our 2025.</div>
+    <div class="subtitle-text">And I'm still choosing you in 2026.</div>
+    <div class="hint-pill">Click anywhere to restart</div>
+  </div>
+</div>
+
+<script>
+let currentSection = 0;
+const totalSections = 8;
+let currentSlide = 0;
+const totalSlides = 3;
+let currentPolaroid = 0;
+let polaroidAnimationPlayed = new Set();
+let isInSpotlight = false;
+let currentSongPhase = 0; // 0: third, 1: second, 2: darken, 3: first
+let currentAudio = null;
+
+const polaroids = [
+  'assets/ZeeNYPolaroid1.png',
+  'assets/ZeeNYPolaroid2.png',
+  'assets/ZeeNYPolaroid3.png',
+  'assets/ZeeNYPolaroid5.png',
+  'assets/ZeeNYPolaroid6.png',
+  'assets/ZeeNYPolaroid7.png',
+  'assets/ZeeNYPolaroid8.png'
+];
+
+function showSection(index) {
+  document.querySelectorAll('.section').forEach((sec, i) => {
+    sec.classList.toggle('active', i === index);
+  });
+  
+  if (index === 1) resetAndShowAesthetics();
+  else if (index === 2) resetAndShowGoodTimes();
+  else if (index === 3) resetAndShowTweets();
+  else if (index === 4) resetAndShowSongs();
+  else if (index === 5) handleRecapSection();
+  else if (index === 6) resetAndShowForward();
+}
+
+function resetAndShowAesthetics() {
+  const intro = document.getElementById('intro-1');
+  const container = document.getElementById('aesthetics-container');
+  
+  intro.style.display = 'flex';
+  container.style.display = 'none';
+  
+  // Reset boards
+  const boards = container.querySelectorAll('.board');
+  boards.forEach(board => {
+    board.style.animation = 'none';
+    board.offsetHeight; // Trigger reflow
+    board.style.animation = null;
+  });
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function resetAndShowGoodTimes() {
+  const intro = document.getElementById('intro-2');
+  const container = document.getElementById('goodtimes-container');
+  
+  intro.style.display = 'flex';
+  container.style.display = 'none';
+  
+  // Reset boards
+  const boards = container.querySelectorAll('.board');
+  boards.forEach(board => {
+    board.style.animation = 'none';
+    board.offsetHeight; // Trigger reflow
+    board.style.animation = null;
+  });
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function resetAndShowTweets() {
+  const intro = document.getElementById('intro-3');
+  const container = document.getElementById('tweets-container');
+  
+  intro.style.display = 'flex';
+  container.style.display = 'none';
+  container.innerHTML = '';
+  
+  // Reset tweet state
+  currentPolaroid = 0;
+  polaroidAnimationPlayed.clear();
+  isInSpotlight = false;
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+    showPolaroid(0);
+  }, 2800);
+}
+
+function resetAndShowForward() {
+  const intro = document.getElementById('intro-5');
+  const container = document.getElementById('forward-container');
+  
+  intro.style.display = 'flex';
+  container.style.display = 'none';
+  
+  // Reset boards
+  const boards = container.querySelectorAll('.board');
+  boards.forEach(board => {
+    board.style.animation = 'none';
+    board.offsetHeight; // Trigger reflow
+    board.style.animation = null;
+  });
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function handleAestheticsSection() {
+  const intro = document.getElementById('intro-1');
+  const container = document.getElementById('aesthetics-container');
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function handleGoodTimesSection() {
+  const intro = document.getElementById('intro-2');
+  const container = document.getElementById('goodtimes-container');
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function handleTweetsSection() {
+  const intro = document.getElementById('intro-3');
+  const container = document.getElementById('tweets-container');
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+    animatePolaroids();
+  }, 2800);
+}
+
+function showPolaroid(index) {
+  const container = document.getElementById('tweets-container');
+  
+  if (index >= polaroids.length) {
+    showSpotlight();
+    return;
+  }
+  
+  currentPolaroid = index;
+  
+  // Clear container and show the polaroid
+  if (!polaroidAnimationPlayed.has(index)) {
+    // First time seeing this polaroid - animate it
+    container.innerHTML = '';
+    const polaroid = document.createElement('div');
+    polaroid.className = 'polaroid';
+    polaroid.innerHTML = `<img src="${polaroids[index]}" alt="Tweet ${index + 1}">`;
+    polaroid.style.animation = 'polaroidEnter 4s ease-in-out forwards';
+    container.appendChild(polaroid);
+    
+    polaroidAnimationPlayed.add(index);
+    
+    // Auto-advance after animation completes
+    setTimeout(() => {
+      if (currentPolaroid === index && currentSection === 3) {
+        if (currentPolaroid < polaroids.length - 1) {
+          showPolaroid(currentPolaroid + 1);
         } else {
-          changeRecapSlide(1);
-        }
-      };
-    }
-
-    function changeRecapSlide(dir) {
-      const slides = document.querySelectorAll('.recap-slide');
-      const segments = document.querySelectorAll('.progress-segment');
-      
-      slides[recapSlide].classList.remove('active');
-      slides[recapSlide].classList.add('exiting');
-      segments[recapSlide].classList.remove('active');
-      
-      setTimeout(() => {
-        slides[recapSlide].classList.remove('exiting');
-        recapSlide = (recapSlide + dir + 3) % 3;
-        slides[recapSlide].classList.add('active');
-        segments[recapSlide].classList.add('active');
-      }, 300);
-    }
-
-    // Section navigation
-    function goToSection(index, skipIntro = false) {
-      if (index < 0 || index >= sectionOrder.length) return;
-      
-      clearTimeout(introTimeout);
-      
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(s => s.classList.remove('active'));
-      
-      currentSectionIndex = index;
-      const secKey = sectionOrder[index];
-      const targetSection = document.querySelector(`[data-sec="${secKey}"]`);
-      targetSection.classList.add('active');
-      
-      inRecapSection = secKey === 'recap';
-      
-      // Handle intro cards
-      if (secKey !== 'title' && !skipIntro) {
-        showIntro(secKey);
-      } else if (secKey !== 'title') {
-        hideIntroImmediate(secKey);
-        showContent(secKey);
-      }
-      
-      // Handle tweets spotlight
-      if (secKey === 'tweets' && !spotlightShown) {
-        tweetsSectionViewed = true;
-      }
-    }
-
-    function showIntro(secKey) {
-      const intro = document.getElementById(`intro-${secKey}`);
-      if (!intro) {
-        showContent(secKey);
-        return;
-      }
-      
-      intro.classList.remove('hiding');
-      intro.classList.add('showing');
-      introShowing = true;
-      
-      introTimeout = setTimeout(() => {
-        hideIntro(secKey);
-      }, 3000);
-    }
-
-    function hideIntro(secKey) {
-      const intro = document.getElementById(`intro-${secKey}`);
-      if (!intro) return;
-      
-      intro.classList.add('hiding');
-      
-      setTimeout(() => {
-        intro.classList.remove('showing', 'hiding');
-        introShowing = false;
-        showContent(secKey);
-      }, 400);
-    }
-
-    function hideIntroImmediate(secKey) {
-      const intro = document.getElementById(`intro-${secKey}`);
-      if (intro) {
-        intro.classList.remove('showing', 'hiding');
-      }
-      introShowing = false;
-    }
-
-    function showContent(secKey) {
-      // Show boards
-      const boardContainer = document.getElementById(`boards-${secKey}`);
-      if (boardContainer) {
-        const boards = boardContainer.querySelectorAll('.board');
-        boards.forEach((b, i) => {
-          setTimeout(() => b.classList.add('visible'), i * 150);
-        });
-      }
-      
-      // Handle tweets spotlight
-      if (secKey === 'tweets' && !spotlightShown) {
-        setTimeout(() => {
           showSpotlight();
-        }, 5000);
-      }
-    }
-
-    function showSpotlight() {
-      if (sectionOrder[currentSectionIndex] !== 'tweets') return;
-      
-      const spotlight = document.getElementById('spotlight');
-      const image = document.getElementById('spotlight-image');
-      
-      spotlight.classList.add('active');
-      spotlightShown = true;
-      
-      setTimeout(() => {
-        image.classList.add('visible');
-      }, 2000);
-    }
-
-    function hideSpotlight() {
-      const spotlight = document.getElementById('spotlight');
-      const image = document.getElementById('spotlight-image');
-      spotlight.classList.remove('active');
-      image.classList.remove('visible');
-    }
-
-    function nextSection() {
-      if (introShowing) {
-        clearTimeout(introTimeout);
-        hideIntroImmediate(sectionOrder[currentSectionIndex]);
-        showContent(sectionOrder[currentSectionIndex]);
-        return;
-      }
-      
-      if (currentSectionIndex < sectionOrder.length - 1) {
-        hideSpotlight();
-        goToSection(currentSectionIndex + 1);
-      }
-    }
-
-    function prevSection() {
-      if (introShowing) {
-        clearTimeout(introTimeout);
-        hideIntroImmediate(sectionOrder[currentSectionIndex]);
-        if (currentSectionIndex > 0) {
-          goToSection(currentSectionIndex - 1, true);
         }
-        return;
       }
+    }, 4000);
+  } else {
+    // Already seen - show it statically
+    container.innerHTML = '';
+    const polaroid = document.createElement('div');
+    polaroid.className = 'polaroid';
+    polaroid.innerHTML = `<img src="${polaroids[index]}" alt="Tweet ${index + 1}">`;
+    polaroid.style.opacity = '1';
+    polaroid.style.transform = 'translate(-50%, -50%) rotate(-2deg)';
+    container.appendChild(polaroid);
+  }
+}
+
+function showSpotlight() {
+  const container = document.getElementById('tweets-container');
+  isInSpotlight = true;
+  
+  container.innerHTML = `
+    <div class="spotlight-container">
+      <div class="spotlight"></div>
+      <div class="spotlight-text">And your top tweet of 2025 was…</div>
+      <div class="spotlight-tweet">
+        <img src="assets/ZeeNYTweet4.png" alt="Top Tweet">
+      </div>
+    </div>
+  `;
+}
+
+function animatePolaroids() {
+  const container = document.getElementById('tweets-container');
+  container.innerHTML = '';
+  
+  let delay = 0;
+  polaroids.forEach((src, i) => {
+    setTimeout(() => {
+      const polaroid = document.createElement('div');
+      polaroid.className = 'polaroid';
+      polaroid.innerHTML = `<img src="${src}" alt="Tweet ${i+1}">`;
+      polaroid.style.animation = 'polaroidEnter 4s ease-in-out forwards';
+      container.appendChild(polaroid);
       
-      if (currentSectionIndex > 0) {
-        hideSpotlight();
-        // Reset board visibility
-        const boardContainer = document.getElementById(`boards-${sectionOrder[currentSectionIndex]}`);
-        if (boardContainer) {
-          boardContainer.querySelectorAll('.board').forEach(b => b.classList.remove('visible'));
-        }
-        goToSection(currentSectionIndex - 1);
-      }
-    }
+      setTimeout(() => polaroid.remove(), 4000);
+    }, delay);
+    delay += 4200;
+  });
+  
+  setTimeout(() => {
+    container.innerHTML = `
+      <div class="spotlight-container">
+        <div class="spotlight"></div>
+        <div class="spotlight-text">And your top tweet of 2025 was…</div>
+        <div class="spotlight-tweet">
+          <img src="assets/ZeeNYTweet4.png" alt="Top Tweet">
+        </div>
+      </div>
+    `;
+  }, delay);
+}
 
-    // Modal functions
-    function openModal(images, index) {
-      modalImages = images;
-      modalIndex = index;
-      modalOpen = true;
-      updateModalImage();
-      document.getElementById('modal').classList.add('active');
-    }
+function resetAndShowSongs() {
+  const intro = document.getElementById('intro-4');
+  const container = document.getElementById('songs-container');
+  
+  intro.style.display = 'flex';
+  container.style.display = 'none';
+  container.innerHTML = '';
+  
+  currentSongPhase = 0;
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+    startSongsSequence();
+  }, 2800);
+}
 
-    function openTweetModal(polaroidIndex) {
-      openModal(tweetImages, polaroidIndex);
-    }
+function startSongsSequence() {
+  const container = document.getElementById('songs-container');
+  
+  container.innerHTML = `
+    <div class="podium-container" id="podium">
+      <div class="podium-spot third" id="third-spot">
+        <div class="song-cover" id="cover-3"></div>
+        <div class="podium-block">3</div>
+      </div>
+      <div class="podium-spot first" id="first-spot">
+        <div class="song-cover" id="cover-1"></div>
+        <div class="podium-block">1</div>
+      </div>
+      <div class="podium-spot second" id="second-spot">
+        <div class="song-cover" id="cover-2"></div>
+        <div class="podium-block">2</div>
+      </div>
+    </div>
+  `;
+  
+  setTimeout(() => zoomToThird(), 500);
+}
 
-    function updateModalImage() {
-      document.getElementById('modal-image').src = modalImages[modalIndex];
-    }
+function zoomToThird() {
+  currentSongPhase = 0;
+  const podium = document.getElementById('podium');
+  
+  // Focus on third place spot (left side)
+  podium.style.transform = 'translateX(-20%) scale(1.8)';
+  podium.style.bottom = '30vh';
+  
+  setTimeout(() => {
+    const cover = document.getElementById('cover-3');
+    cover.innerHTML = '<img src="assets/ZeeNYSongCover3.png" alt="Song 3">';
+    cover.classList.add('visible');
+    
+    currentAudio = new Audio('assets/ZeeNYSong3.mp3');
+    currentAudio.play();
+    currentAudio.onended = () => {
+      cover.classList.remove('visible');
+      setTimeout(() => zoomToSecond(), 800);
+    };
+  }, 1000);
+}
 
-    function closeModal() {
-      modalOpen = false;
-      document.getElementById('modal').classList.remove('active');
-    }
-
-    function closeModalOnBackground(e) {
-      if (e.target.id === 'modal') {
-        closeModal();
-      }
-    }
-
-    function modalNext(e) {
-      e.stopPropagation();
-      modalIndex = (modalIndex + 1) % modalImages.length;
-      updateModalImage();
-    }
-
-    function modalPrev(e) {
-      e.stopPropagation();
-      modalIndex = (modalIndex - 1 + modalImages.length) % modalImages.length;
-      updateModalImage();
-    }
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (modalOpen) {
-        if (e.key === 'Escape') closeModal();
-        if (e.key === 'ArrowLeft') modalPrev(e);
-        if (e.key === 'ArrowRight') modalNext(e);
-        return;
-      }
+function zoomToSecond() {
+  currentSongPhase = 1;
+  const podium = document.getElementById('podium');
+  
+  // Zoom out first
+  podium.style.transform = 'translateX(-50%) scale(1)';
+  podium.style.bottom = '10vh';
+  
+  setTimeout(() => {
+    // Zoom into second place spot (right side)
+    podium.style.transform = 'translateX(-80%) scale(1.8)';
+    podium.style.bottom = '30vh';
+    
+    setTimeout(() => {
+      const cover = document.getElementById('cover-2');
+      cover.innerHTML = '<img src="assets/ZeeNYSongCover2.png" alt="Song 2">';
+      cover.classList.add('visible');
       
-      if (inRecapSection) {
-        if (e.key === 'ArrowLeft') changeRecapSlide(-1);
-        if (e.key === 'ArrowRight') changeRecapSlide(1);
-        if (e.key === 'ArrowUp') prevSection();
-        if (e.key === 'ArrowDown') nextSection();
-        return;
-      }
-      
-      if (e.key === 'ArrowLeft') prevSection();
-      if (e.key === 'ArrowRight') nextSection();
-      if (e.key.toLowerCase() === 'r' && sectionOrder[currentSectionIndex] === 'tweets') {
-        shufflePolaroids();
-      }
-    });
+      currentAudio = new Audio('assets/ZeeNYSong2.mp3');
+      currentAudio.play();
+      currentAudio.onended = () => {
+        cover.classList.remove('visible');
+        setTimeout(() => showTopSongDarken(), 800);
+      };
+    }, 1000);
+  }, 1200);
+}
 
-    // Initialize on load
-    init();
-  </script>
+function showTopSongDarken() {
+  currentSongPhase = 2;
+  const container = document.getElementById('songs-container');
+  
+  // Zoom out first
+  const podium = document.getElementById('podium');
+  podium.style.transform = 'translateX(-50%) scale(1)';
+  podium.style.bottom = '10vh';
+  
+  setTimeout(() => {
+    const darken = document.createElement('div');
+    darken.className = 'songs-darken';
+    darken.innerHTML = '<div class="songs-text">And your top song for 2025 was...<br>(according to me at least)</div>';
+    container.appendChild(darken);
+    
+    setTimeout(() => zoomToFirst(), 3000);
+  }, 800);
+}
+
+function zoomToFirst() {
+  currentSongPhase = 3;
+  const container = document.getElementById('songs-container');
+  const darken = container.querySelector('.songs-darken');
+  if (darken) darken.remove();
+  
+  const podium = document.getElementById('podium');
+  
+  // Zoom into first place spot (center)
+  podium.style.transform = 'translateX(-50%) scale(2)';
+  podium.style.bottom = '30vh';
+  
+  setTimeout(() => {
+    const cover = document.getElementById('cover-1');
+    cover.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
+    cover.classList.add('visible');
+    
+    currentAudio = new Audio('assets/ZeeNYSong1.mp3');
+    currentAudio.play();
+  }, 1000);
+}
+
+function handleRecapSection() {
+  const intro = document.getElementById('intro-5');
+  const container = document.getElementById('recap-container');
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function resetAndShowForward() {
+  const intro = document.getElementById('intro-6');
+  const container = document.getElementById('forward-container');
+  
+  intro.style.display = 'flex';
+  container.style.display = 'none';
+  
+  // Reset boards
+  const boards = container.querySelectorAll('.board');
+  boards.forEach(board => {
+    board.style.animation = 'none';
+    board.offsetHeight; // Trigger reflow
+    board.style.animation = null;
+  });
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function handleForwardSection() {
+  const intro = document.getElementById('intro-6');
+  const container = document.getElementById('forward-container');
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function handleForwardSection() {
+  const intro = document.getElementById('intro-5');
+  const container = document.getElementById('forward-container');
+  
+  setTimeout(() => {
+    intro.style.display = 'none';
+    container.style.display = 'block';
+  }, 2800);
+}
+
+function nextSection() {
+  if (currentSection < totalSections - 1) {
+    currentSection++;
+    showSection(currentSection);
+  }
+}
+
+function prevSection() {
+  if (currentSection > 0) {
+    currentSection--;
+    showSection(currentSection);
+  }
+}
+
+function changeSlide(direction) {
+  const slides = document.querySelectorAll('.slide');
+  const segments = document.querySelectorAll('.progress-segment');
+  
+  const oldSlide = currentSlide;
+  const newSlide = currentSlide + direction;
+  
+  // Check boundaries and navigate sections if needed
+  if (newSlide < 0) {
+    prevSection();
+    return;
+  } else if (newSlide >= totalSlides) {
+    nextSection();
+    return;
+  }
+  
+  // Exit current slide
+  slides[oldSlide].classList.remove('active');
+  slides[oldSlide].classList.add(direction > 0 ? 'exit-left' : 'exit-right');
+  
+  currentSlide = newSlide;
+  
+  // Enter new slide
+  slides[currentSlide].classList.remove('exit-left', 'exit-right');
+  if (direction > 0) {
+    slides[currentSlide].classList.add('enter-from-right');
+  } else {
+    slides[currentSlide].classList.add('enter-from-left');
+  }
+  
+  setTimeout(() => {
+    slides[currentSlide].classList.remove('enter-from-right', 'enter-from-left');
+    slides[currentSlide].classList.add('active');
+  }, 50);
+  
+  segments.forEach((seg, i) => seg.classList.toggle('active', i === currentSlide));
+}
+
+document.getElementById('leftArrow').addEventListener('click', () => {
+  const intro = document.querySelector(`#intro-${currentSection}`);
+  
+  // Handle songs section navigation
+  if (currentSection === 4) {
+    if (intro && intro.style.display !== 'none') {
+      prevSection();
+      return;
+    }
+    
+    // Always restart songs section when going back
+    resetAndShowSongs();
+    return;
+  }
+  
+  // Handle tweets section navigation
+  if (currentSection === 3) {
+    if (intro && intro.style.display !== 'none') {
+      prevSection();
+      return;
+    }
+    
+    if (isInSpotlight) {
+      showPolaroid(polaroids.length - 1);
+      isInSpotlight = false;
+    } else if (currentPolaroid > 0) {
+      showPolaroid(currentPolaroid - 1);
+    } else {
+      prevSection();
+    }
+    return;
+  }
+  
+  if (intro && intro.style.display !== 'none') {
+    prevSection();
+  } else if (currentSection === 5) {
+    changeSlide(-1);
+  } else {
+    prevSection();
+  }
+});
+
+document.getElementById('rightArrow').addEventListener('click', () => {
+  const intro = document.querySelector(`#intro-${currentSection}`);
+  
+  // Handle songs section navigation
+  if (currentSection === 4) {
+    if (intro && intro.style.display !== 'none') {
+      const container = document.getElementById('songs-container');
+      intro.style.display = 'none';
+      container.style.display = 'block';
+      startSongsSequence();
+      return;
+    }
+    
+    // If on first place song, advance to next section
+    if (currentSongPhase === 3) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      nextSection();
+    }
+    return;
+  }
+  
+  // Handle tweets section navigation
+  if (currentSection === 3) {
+    if (intro && intro.style.display !== 'none') {
+      const container = document.getElementById('tweets-container');
+      intro.style.display = 'none';
+      container.style.display = 'block';
+      showPolaroid(0);
+      return;
+    }
+    
+    if (isInSpotlight) {
+      nextSection();
+    } else if (currentPolaroid < polaroids.length - 1) {
+      showPolaroid(currentPolaroid + 1);
+    } else {
+      showSpotlight();
+    }
+    return;
+  }
+  
+  if (intro && intro.style.display !== 'none') {
+    const container = document.getElementById(
+      currentSection === 1 ? 'aesthetics-container' :
+      currentSection === 2 ? 'goodtimes-container' :
+      currentSection === 5 ? 'recap-container' :
+      currentSection === 6 ? 'forward-container' : ''
+    );
+    if (container) {
+      intro.style.display = 'none';
+      container.style.display = 'block';
+      if (currentSection === 1 || currentSection === 2 || currentSection === 6) {
+        // Boards already animated on section show
+      }
+    }
+  } else if (currentSection === 5) {
+    changeSlide(1);
+  } else {
+    nextSection();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') {
+    document.getElementById('leftArrow').click();
+  } else if (e.key === 'ArrowRight') {
+    document.getElementById('rightArrow').click();
+  } else if (currentSection === 5) {
+    if (e.key === 'ArrowUp') prevSection();
+    else if (e.key === 'ArrowDown') nextSection();
+  }
+});
+
+document.getElementById('recap-container').addEventListener('click', (e) => {
+  const card = e.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const halfWidth = rect.width / 2;
+  
+  if (clickX < halfWidth) {
+    changeSlide(-1);
+  } else {
+    changeSlide(1);
+  }
+});
+
+function restart() {
+  currentSection = 0;
+  currentSlide = 0;
+  currentPolaroid = 0;
+  currentSongPhase = 0;
+  polaroidAnimationPlayed.clear();
+  isInSpotlight = false;
+  
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  
+  showSection(0);
+  
+  document.querySelectorAll('[id^="intro-"]').forEach(intro => {
+    intro.style.display = 'flex';
+  });
+  document.querySelectorAll('[id$="-container"]').forEach(container => {
+    container.style.display = 'none';
+  });
+  
+  const slides = document.querySelectorAll('.slide');
+  slides.forEach((s, i) => {
+    s.classList.remove('active', 'exit-left', 'exit-right', 'enter-from-left', 'enter-from-right');
+    if (i === 0) s.classList.add('active');
+  });
+  
+  const segments = document.querySelectorAll('.progress-segment');
+  segments.forEach((seg, i) => seg.classList.toggle('active', i === 0));
+}
+</script>
 </body>
 </html>
