@@ -1145,7 +1145,7 @@ function zoomToThird() {
     currentAudio = new Audio('assets/ZeeNYSong3.mp3');
     currentAudio.play();
     currentAudio.onended = () => {
-      cover.classList.remove('visible');
+      // Don't hide cover - keep it visible
       setTimeout(() => zoomToSecond(), 800);
     };
   }, 1000);
@@ -1172,7 +1172,7 @@ function zoomToSecond() {
       currentAudio = new Audio('assets/ZeeNYSong2.mp3');
       currentAudio.play();
       currentAudio.onended = () => {
-        cover.classList.remove('visible');
+        // Don't hide cover - keep it visible
         setTimeout(() => showTopSongDarken(), 800);
       };
     }, 1000);
