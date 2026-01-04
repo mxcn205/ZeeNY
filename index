@@ -177,6 +177,13 @@ body::before {
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   opacity: 0;
   animation: boardEnter 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.board:hover {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(255,0,255,0.6);
+  transform: scale(1.05);
 }
 
 .board img {
@@ -198,99 +205,164 @@ body::before {
 }
 
 .aesthetics-board-1 {
-  width: 35%;
-  height: 50%;
-  top: 20%;
-  left: 5%;
-  z-index: 1;
+  width: 45%;
+  height: 85%;
+  top: 5%;
+  left: 2%;
+  z-index: 2;
   --start-x: -150vw;
   --start-y: -50vh;
   --start-rot: -180deg;
-  --end-rot: -8deg;
+  --end-rot: -6deg;
   animation-delay: 0.2s;
 }
 
 .aesthetics-board-2 {
-  width: 40%;
-  height: 55%;
-  top: 15%;
-  left: 30%;
+  width: 28%;
+  height: 50%;
+  top: 8%;
+  left: 48%;
   z-index: 3;
   --start-x: 0;
   --start-y: -150vh;
   --start-rot: 180deg;
-  --end-rot: 3deg;
+  --end-rot: 2deg;
   animation-delay: 0.4s;
 }
 
 .aesthetics-board-3 {
-  width: 35%;
-  height: 50%;
-  top: 25%;
-  right: 8%;
-  z-index: 2;
+  width: 45%;
+  height: 80%;
+  top: 10%;
+  right: 2%;
+  z-index: 1;
   --start-x: 150vw;
   --start-y: 50vh;
   --start-rot: 180deg;
-  --end-rot: 6deg;
+  --end-rot: 5deg;
   animation-delay: 0.6s;
 }
 
 .good-times-board-1 {
-  width: 50%;
-  height: 60%;
-  top: 15%;
-  left: 8%;
+  width: 48%;
+  height: 90%;
+  top: 3%;
+  left: 2%;
   z-index: 2;
   --start-x: -150vw;
   --start-y: 100vh;
   --start-rot: -270deg;
-  --end-rot: -5deg;
-  animation-delay: 0.2s;
-}
-
-.good-times-board-2 {
-  width: 45%;
-  height: 55%;
-  top: 22%;
-  right: 10%;
-  z-index: 1;
-  --start-x: 150vw;
-  --start-y: -100vh;
-  --start-rot: 270deg;
-  --end-rot: 7deg;
-  animation-delay: 0.5s;
-}
-
-.looking-forward-board-1 {
-  width: 55%;
-  height: 50%;
-  top: 18%;
-  left: 10%;
-  z-index: 2;
-  --start-x: -150vw;
-  --start-y: -80vh;
-  --start-rot: -180deg;
   --end-rot: -4deg;
   animation-delay: 0.2s;
 }
 
+.good-times-board-2 {
+  width: 48%;
+  height: 90%;
+  top: 3%;
+  right: 2%;
+  z-index: 1;
+  --start-x: 150vw;
+  --start-y: -100vh;
+  --start-rot: 270deg;
+  --end-rot: 4deg;
+  animation-delay: 0.5s;
+}
+
+.looking-forward-board-1 {
+  width: 53%;
+  height: 90%;
+  top: 3%;
+  left: 2%;
+  z-index: 2;
+  --start-x: -150vw;
+  --start-y: -80vh;
+  --start-rot: -180deg;
+  --end-rot: -3deg;
+  animation-delay: 0.2s;
+}
+
 .looking-forward-board-2 {
-  width: 35%;
-  height: 65%;
-  top: 12%;
-  right: 12%;
+  width: 43%;
+  height: 90%;
+  top: 3%;
+  right: 2%;
   z-index: 1;
   --start-x: 150vw;
   --start-y: 80vh;
   --start-rot: 200deg;
-  --end-rot: 5deg;
+  --end-rot: 3deg;
   animation-delay: 0.5s;
+}
+
+.board-fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.board-fullscreen-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.board-fullscreen-modal img {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 15px;
+  box-shadow: 0 0 80px rgba(255,0,255,0.5);
+}
+
+.board-fullscreen-close {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.board-fullscreen-close:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+.board-fullscreen-close::before,
+.board-fullscreen-close::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 3px;
+  background: white;
+}
+
+.board-fullscreen-close::before {
+  transform: rotate(45deg);
+}
+
+.board-fullscreen-close::after {
+  transform: rotate(-45deg);
 }
 
 .polaroid {
   position: absolute;
-  width: 400px;
+  width: 600px;
   max-width: 80vw;
   top: 50%;
   left: 50%;
@@ -399,7 +471,7 @@ body::before {
   transform: translateX(-50%);
   display: flex;
   align-items: flex-end;
-  gap: 40px;
+  gap: 0px;
   transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -411,17 +483,45 @@ body::before {
   transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.podium-spot.third {
+  z-index: 1;
+}
+
+.podium-spot.first {
+  z-index: 3;
+}
+
+.podium-spot.second {
+  z-index: 2;
+}
+
 .podium-block {
-  background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
+  background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.2));
   backdrop-filter: blur(15px);
-  border-radius: 15px 15px 0 0;
+  border-radius: 0px;
   border: 2px solid rgba(255,255,255,0.5);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  border-left: none;
+  box-shadow: 
+    0 10px 30px rgba(0,0,0,0.2),
+    inset -5px -5px 10px rgba(0,0,0,0.1),
+    inset 5px 5px 10px rgba(255,255,255,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 4em;
   font-weight: 700;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateY(-2deg);
+}
+
+.podium-spot:first-child .podium-block {
+  border-left: 2px solid rgba(255,255,255,0.5);
+  border-radius: 15px 0 0 0;
+}
+
+.podium-spot:last-child .podium-block {
+  border-radius: 0 15px 0 0;
 }
 
 .podium-spot.third .podium-block {
@@ -604,7 +704,7 @@ body::before {
 .stat-row {
   display: flex;
   justify-content: space-between;
-  padding: 15px 0;
+  padding: 18px 0;
   border-bottom: 1px solid rgba(0,0,0,0.15);
   color: #1a1a1a;
 }
@@ -614,29 +714,34 @@ body::before {
 }
 
 .stat-label {
-  font-size: 1.05em;
+  font-size: 1.15em;
   color: #2a2a2a;
+  text-align: left;
 }
 
 .stat-value {
   font-weight: 600;
   color: #1a1a1a;
+  font-size: 1.15em;
+  text-align: right;
 }
 
 .word-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .word-chip {
   background: rgba(100,100,100,0.2);
-  padding: 10px 20px;
+  padding: 12px 18px;
   border-radius: 20px;
   color: #1a1a1a;
   font-weight: 600;
-  font-size: 1.05em;
+  font-size: 0.95em;
+  line-height: 1.3;
+  text-align: center;
 }
 
 .click-hint {
@@ -749,76 +854,87 @@ body::before {
     
     <div class="slides-wrapper">
       <div class="slide active" id="slide-0">
-        <div class="kicker">By the numbers</div>
-        <div class="slide-title">2025, in soft stats.</div>
-        <div class="slide-sub">Not tracked. Just remembered.</div>
-        <div class="big-number">∞</div>
-        <div class="big-desc">Small moments that mattered anyway.</div>
+        <div class="slide-title">2025 by the numbers...</div>
         <div class="stat-row">
-          <div class="stat-label">Time zones crossed</div>
-          <div class="stat-value">1</div>
+          <div class="stat-label">Pounds of chicken eaten</div>
+          <div class="stat-value">84</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Comfortable silences</div>
-          <div class="stat-value">more than expected</div>
+          <div class="stat-label">Time spent on Pinterest</div>
+          <div class="stat-value">1 year</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Check-ins with no pressure</div>
-          <div class="stat-value">a lot</div>
+          <div class="stat-label">Clothes saved on Pinterest</div>
+          <div class="stat-value">244</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Hard conversations survived</div>
-          <div class="stat-value">all of them</div>
+          <div class="stat-label">Clothes bought from Pinterest</div>
+          <div class="stat-value">0 :p</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Times we chose patience</div>
-          <div class="stat-value">countless</div>
+          <div class="stat-label">Twitter followers</div>
+          <div class="stat-value">2500</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">New friends</div>
+          <div class="stat-value">A lot :)</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Good memories</div>
+          <div class="stat-value">Even more :D</div>
         </div>
       </div>
       
       <div class="slide" id="slide-1">
-        <div class="kicker">Most replayed moments</div>
-        <div class="slide-title">The ones we kept coming back to.</div>
-        <div class="slide-sub">No rankings needed. Just repeats.</div>
+        <div class="slide-title">2025 by the numbers cont.</div>
         <div class="stat-row">
-          <div class="stat-label">Late-night tired calls</div>
-          <div class="stat-value">REPEAT</div>
+          <div class="stat-label">Late night calls</div>
+          <div class="stat-value">A very high number :0</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Sending something small instead of saying something big</div>
-          <div class="stat-value">REPEAT</div>
+          <div class="stat-label">Hours of sleep lost</div>
+          <div class="stat-value">Also a very high number...</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Comfortable silence</div>
-          <div class="stat-value">REPEAT</div>
+          <div class="stat-label">Drool gifs used</div>
+          <div class="stat-value">8374</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Taking space, then coming back</div>
-          <div class="stat-value">REPEAT</div>
+          <div class="stat-label">Twitter bangers</div>
+          <div class="stat-value">∞</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Laughing at nothing</div>
-          <div class="stat-value">REPEAT</div>
+          <div class="stat-label">Times your father died in your head</div>
+          <div class="stat-value">92784</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Times your professors pissed you off</div>
+          <div class="stat-value">738</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">New amazing auraful Chinese boyfriends</div>
+          <div class="stat-value">1...?</div>
         </div>
       </div>
       
       <div class="slide" id="slide-2">
-        <div class="kicker">Most used words</div>
-        <div class="slide-title">Unofficial, but accurate.</div>
-        <div class="slide-sub">If our year had a vocabulary.</div>
+        <div class="slide-title">Commonly used phrases...</div>
         <div class="word-chips">
-          <div class="word-chip">okay</div>
-          <div class="word-chip">tired</div>
-          <div class="word-chip">yeah</div>
-          <div class="word-chip">later</div>
-          <div class="word-chip">i'm here</div>
-          <div class="word-chip">no pressure</div>
-          <div class="word-chip">goodnight</div>
-          <div class="word-chip">miss you</div>
-          <div class="word-chip">❤️</div>
-          <div class="word-chip">lol</div>
-          <div class="word-chip">same</div>
-          <div class="word-chip">safe</div>
+          <div class="word-chip">Bwabie</div>
+          <div class="word-chip">#Need</div>
+          <div class="word-chip">Papa</div>
+          <div class="word-chip">Fat</div>
+          <div class="word-chip">I'm gonna kill my father</div>
+          <div class="word-chip">GEGE! GEGE! TOUCH MY WEE WEE! TOUCH MY FUCKING WEE WEE!!</div>
+          <div class="word-chip">F*****</div>
+          <div class="word-chip">KYS</div>
+          <div class="word-chip">Loser</div>
+          <div class="word-chip">Idiot</div>
+          <div class="word-chip">Dummy</div>
+          <div class="word-chip">I hate men</div>
+          <div class="word-chip">I hate my father</div>
+          <div class="word-chip">Dad</div>
+          <div class="word-chip">I mich u</div>
         </div>
       </div>
     </div>
@@ -871,6 +987,13 @@ const polaroids = [
 ];
 
 function showSection(index) {
+  // Stop any playing audio when changing sections
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  
   document.querySelectorAll('.section').forEach((sec, i) => {
     sec.classList.toggle('active', i === index);
   });
@@ -1014,7 +1137,7 @@ function showPolaroid(index) {
     const polaroid = document.createElement('div');
     polaroid.className = 'polaroid';
     polaroid.innerHTML = `<img src="${polaroids[index]}" alt="Tweet ${index + 1}">`;
-    polaroid.style.animation = 'polaroidEnter 4s ease-in-out forwards';
+    polaroid.style.animation = 'polaroidEnter 2.67s ease-in-out forwards';
     container.appendChild(polaroid);
     
     polaroidAnimationPlayed.add(index);
@@ -1028,7 +1151,7 @@ function showPolaroid(index) {
           showSpotlight();
         }
       }
-    }, 4000);
+    }, 2670);
   } else {
     // Already seen - show it statically
     container.innerHTML = '';
@@ -1066,12 +1189,12 @@ function animatePolaroids() {
       const polaroid = document.createElement('div');
       polaroid.className = 'polaroid';
       polaroid.innerHTML = `<img src="${src}" alt="Tweet ${i+1}">`;
-      polaroid.style.animation = 'polaroidEnter 4s ease-in-out forwards';
+      polaroid.style.animation = 'polaroidEnter 2.67s ease-in-out forwards';
       container.appendChild(polaroid);
       
-      setTimeout(() => polaroid.remove(), 4000);
+      setTimeout(() => polaroid.remove(), 2670);
     }, delay);
-    delay += 4200;
+    delay += 2800;
   });
   
   setTimeout(() => {
@@ -1143,10 +1266,20 @@ function zoomToThird() {
   currentSongPhase = 0;
   const podium = document.getElementById('podium');
   
-  // Center the third place cover on screen - adjusted for full visibility
-  // Reduced scale and horizontal shift, increased bottom margin
-  podium.style.transform = 'translateX(calc(-50% + 180px)) scale(1.25)';
-  podium.style.bottom = '18vh';
+  // Center the third place COVER IMAGE perfectly in the middle of the screen with 1.6x zoom
+  // Shifted 200px higher to adjust camera viewpoint
+  // Podium layout (NO GAPS): [third: 240px] [first: 320px] [second: 280px]
+  // Total podium width: 240 + 320 + 280 = 840px
+  // Podium center is at 420px from left edge
+  // Third cover center is at 120px from left edge (half of 240px)
+  // Distance from podium center to third cover center: 420 - 120 = 300px (third is LEFT of center)
+  // So we need to shift podium RIGHT by 300px to center the third cover
+  // 
+  // Vertical: Cover is 400px tall, sits 30px above a 240px podium block
+  // Cover center is at: 240px + 30px + 200px = 470px from podium bottom
+  // Shifted up by 200px: 470 + 200 = 670px
+  podium.style.transform = 'translateX(calc(-50% + 300px)) scale(1.6)';
+  podium.style.bottom = 'calc(50vh - 670px)';
   
   setTimeout(() => {
     const cover = document.getElementById('cover-3');
@@ -1178,9 +1311,19 @@ function zoomToSecond(skipZoomTransition = false) {
   const alreadyRevealed = cover2.innerHTML !== '';
   
   if (skipZoomTransition || alreadyRevealed) {
-    // Just shift camera to second place - adjusted for full visibility
-    podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.25)';
-    podium.style.bottom = '18vh';
+    // Center the second place COVER IMAGE perfectly in the middle of the screen with 1.6x zoom
+    // Shifted 200px higher to adjust camera viewpoint
+    // Podium layout (NO GAPS): [third: 240px] [first: 320px] [second: 280px]
+    // Total podium width: 840px, podium center at 420px from left
+    // Second cover center is at: 240 + 320 + 140 = 700px from left edge
+    // Distance from podium center to second cover center: 700 - 420 = 280px (second is RIGHT of center)
+    // So we need to shift podium LEFT by 280px to center the second cover
+    // 
+    // Vertical: Cover is 400px tall, sits 30px above a 320px podium block
+    // Cover center is at: 320px + 30px + 200px = 550px from podium bottom
+    // Shifted up by 200px: 550 + 200 = 750px
+    podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.6)';
+    podium.style.bottom = 'calc(50vh - 750px)';
     
     setTimeout(() => {
       if (!cover2.innerHTML) {
@@ -1200,9 +1343,10 @@ function zoomToSecond(skipZoomTransition = false) {
     podium.style.bottom = '5vh';
     
     setTimeout(() => {
-      // Zoom into second place spot - adjusted for full visibility
-      podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.25)';
-      podium.style.bottom = '18vh';
+      // Center the second place COVER IMAGE perfectly in the middle of the screen with 1.6x zoom
+      // Shifted 200px higher
+      podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.6)';
+      podium.style.bottom = 'calc(50vh - 750px)';
       
       setTimeout(() => {
         if (!cover2.innerHTML) {
@@ -1261,9 +1405,19 @@ function zoomToFirst(skipZoomTransition = false) {
   
   const podium = document.getElementById('podium');
   
-  // No zoom effect - keep at base scale, just center position
-  podium.style.transform = 'translateX(-50%) scale(1)';
-  podium.style.bottom = '5vh';
+  // Center the first place COVER IMAGE perfectly in the middle of the screen with 1.6x zoom
+  // Shifted 200px higher to adjust camera viewpoint
+  // Podium layout (NO GAPS): [third: 240px] [first: 320px] [second: 280px]
+  // Total podium width: 840px, podium center at 420px from left
+  // First cover center is at: 240 + 160 = 400px from left edge (160 = half of 320px)
+  // Distance from podium center to first cover center: 420 - 400 = 20px (first is slightly LEFT of center)
+  // So we need to shift podium RIGHT by 20px to center the first cover
+  // 
+  // Vertical: Cover is 400px tall, sits 30px above a 400px podium block
+  // Cover center is at: 400px + 30px + 200px = 630px from podium bottom
+  // Shifted up by 200px: 630 + 200 = 830px
+  podium.style.transform = 'translateX(calc(-50% + 20px)) scale(1.6)';
+  podium.style.bottom = 'calc(50vh - 830px)';
   
   setTimeout(() => {
     const cover1 = document.getElementById('cover-1');
@@ -1349,7 +1503,8 @@ function changeSlide(direction) {
   segments.forEach((seg, i) => seg.classList.toggle('active', i === currentSlide));
 }
 
-document.getElementById('leftArrow').addEventListener('click', () => {
+document.getElementById('leftArrow').addEventListener('click', (e) => {
+  e.stopPropagation();
   const intro = document.querySelector(`#intro-${currentSection}`);
   
   // Handle songs section navigation
@@ -1369,9 +1524,9 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       }
       currentSongPhase = 1;
       const podium = document.getElementById('podium');
-      // Move to second place with zoom - adjusted for full visibility
-      podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.25)';
-      podium.style.bottom = '18vh';
+      // Center the second place cover image with 1.6x zoom (shifted 200px higher, no gaps)
+      podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.6)';
+      podium.style.bottom = 'calc(50vh - 750px)';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong2.mp3');
@@ -1386,9 +1541,9 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       }
       currentSongPhase = 0;
       const podium = document.getElementById('podium');
-      // Move to third place with zoom - adjusted for full visibility
-      podium.style.transform = 'translateX(calc(-50% + 180px)) scale(1.25)';
-      podium.style.bottom = '18vh';
+      // Center the third place cover image with 1.6x zoom (shifted 200px higher, no gaps)
+      podium.style.transform = 'translateX(calc(-50% + 300px)) scale(1.6)';
+      podium.style.bottom = 'calc(50vh - 670px)';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong3.mp3');
@@ -1433,7 +1588,8 @@ document.getElementById('leftArrow').addEventListener('click', () => {
   }
 });
 
-document.getElementById('rightArrow').addEventListener('click', () => {
+document.getElementById('rightArrow').addEventListener('click', (e) => {
+  e.stopPropagation();
   const intro = document.querySelector(`#intro-${currentSection}`);
   
   // Handle songs section navigation
@@ -1527,6 +1683,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.getElementById('recap-container').addEventListener('click', (e) => {
+  e.stopPropagation();
   const card = e.currentTarget;
   const rect = card.getBoundingClientRect();
   const clickX = e.clientX - rect.left;
@@ -1571,6 +1728,44 @@ function restart() {
   const segments = document.querySelectorAll('.progress-segment');
   segments.forEach((seg, i) => seg.classList.toggle('active', i === 0));
 }
+
+// Board fullscreen functionality
+function openBoardFullscreen(imageSrc) {
+  const modal = document.createElement('div');
+  modal.className = 'board-fullscreen-modal';
+  modal.innerHTML = `
+    <div class="board-fullscreen-close"></div>
+    <img src="${imageSrc}" alt="Board Fullscreen">
+  `;
+  document.body.appendChild(modal);
+  
+  setTimeout(() => modal.classList.add('active'), 10);
+  
+  const closeBtn = modal.querySelector('.board-fullscreen-close');
+  const closeModal = () => {
+    modal.classList.remove('active');
+    setTimeout(() => modal.remove(), 400);
+  };
+  
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+}
+
+// Add click handlers to all boards after they load
+setTimeout(() => {
+  document.querySelectorAll('.board').forEach(board => {
+    board.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const img = board.querySelector('img');
+      if (img) {
+        openBoardFullscreen(img.src);
+      }
+    });
+  });
+}, 100);
+
 </script>
 </body>
 </html>
