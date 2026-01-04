@@ -946,7 +946,7 @@ function resetAndShowTweets() {
 }
 
 function resetAndShowForward() {
-  const intro = document.getElementById('intro-5');
+  const intro = document.getElementById('intro-6');
   const container = document.getElementById('forward-container');
   
   intro.style.display = 'flex';
@@ -1143,10 +1143,10 @@ function zoomToThird() {
   currentSongPhase = 0;
   const podium = document.getElementById('podium');
   
-  // Center the third place cover on screen - adjusted to keep top visible
-  // Reduced vertical offset to ensure top of 400px cover stays on screen
-  podium.style.transform = 'translateX(calc(-50% + 280px)) scale(1.5)';
-  podium.style.bottom = 'calc(8vh + 100px)';
+  // Center the third place cover on screen - adjusted for full visibility
+  // Reduced scale and horizontal shift, increased bottom margin
+  podium.style.transform = 'translateX(calc(-50% + 180px)) scale(1.25)';
+  podium.style.bottom = '18vh';
   
   setTimeout(() => {
     const cover = document.getElementById('cover-3');
@@ -1178,9 +1178,9 @@ function zoomToSecond(skipZoomTransition = false) {
   const alreadyRevealed = cover2.innerHTML !== '';
   
   if (skipZoomTransition || alreadyRevealed) {
-    // Just shift camera to second place - adjusted to keep top visible
-    podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
-    podium.style.bottom = 'calc(8vh + 100px)';
+    // Just shift camera to second place - adjusted for full visibility
+    podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.25)';
+    podium.style.bottom = '18vh';
     
     setTimeout(() => {
       if (!cover2.innerHTML) {
@@ -1200,9 +1200,9 @@ function zoomToSecond(skipZoomTransition = false) {
     podium.style.bottom = '5vh';
     
     setTimeout(() => {
-      // Zoom into second place spot - adjusted to keep top visible
-      podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
-      podium.style.bottom = 'calc(8vh + 100px)';
+      // Zoom into second place spot - adjusted for full visibility
+      podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.25)';
+      podium.style.bottom = '18vh';
       
       setTimeout(() => {
         if (!cover2.innerHTML) {
@@ -1287,39 +1287,8 @@ function handleRecapSection() {
   }, 2800);
 }
 
-function resetAndShowForward() {
-  const intro = document.getElementById('intro-6');
-  const container = document.getElementById('forward-container');
-  
-  intro.style.display = 'flex';
-  container.style.display = 'none';
-  
-  // Reset boards
-  const boards = container.querySelectorAll('.board');
-  boards.forEach(board => {
-    board.style.animation = 'none';
-    board.offsetHeight; // Trigger reflow
-    board.style.animation = null;
-  });
-  
-  setTimeout(() => {
-    intro.style.display = 'none';
-    container.style.display = 'block';
-  }, 2800);
-}
-
 function handleForwardSection() {
   const intro = document.getElementById('intro-6');
-  const container = document.getElementById('forward-container');
-  
-  setTimeout(() => {
-    intro.style.display = 'none';
-    container.style.display = 'block';
-  }, 2800);
-}
-
-function handleForwardSection() {
-  const intro = document.getElementById('intro-5');
   const container = document.getElementById('forward-container');
   
   setTimeout(() => {
@@ -1400,9 +1369,9 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       }
       currentSongPhase = 1;
       const podium = document.getElementById('podium');
-      // Move to second place with zoom - adjusted to keep top visible
-      podium.style.transform = 'translateX(calc(-50% - 280px)) scale(1.5)';
-      podium.style.bottom = 'calc(8vh + 100px)';
+      // Move to second place with zoom - adjusted for full visibility
+      podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.25)';
+      podium.style.bottom = '18vh';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong2.mp3');
@@ -1417,9 +1386,9 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       }
       currentSongPhase = 0;
       const podium = document.getElementById('podium');
-      // Move to third place with zoom - adjusted to keep top visible
-      podium.style.transform = 'translateX(calc(-50% + 280px)) scale(1.5)';
-      podium.style.bottom = 'calc(8vh + 100px)';
+      // Move to third place with zoom - adjusted for full visibility
+      podium.style.transform = 'translateX(calc(-50% + 180px)) scale(1.25)';
+      podium.style.bottom = '18vh';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong3.mp3');
