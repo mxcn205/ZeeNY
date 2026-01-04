@@ -1096,6 +1096,7 @@ function resetAndShowSongs() {
   currentSongPhase = 0;
   if (currentAudio) {
     currentAudio.pause();
+    currentAudio.currentTime = 0;
     currentAudio = null;
   }
   
@@ -1130,17 +1131,26 @@ function startSongsSequence() {
 }
 
 function zoomToThird() {
+  // Always stop any currently playing audio first
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  
   currentSongPhase = 0;
   const podium = document.getElementById('podium');
   
-  // Focus on third place spot (left side)
-  podium.style.transform = 'translateX(-20%) scale(1.8)';
-  podium.style.bottom = '20vh';
+  // Focus on third place spot (left side) - adjusted for 2x size
+  podium.style.transform = 'translateX(calc(-50% + 200px)) scale(1.8)';
+  podium.style.bottom = '15vh';
   
   setTimeout(() => {
     const cover = document.getElementById('cover-3');
-    cover.innerHTML = '<img src="assets/ZeeNYSongCover3.png" alt="Song 3">';
-    cover.classList.add('visible');
+    if (!cover.innerHTML) {
+      cover.innerHTML = '<img src="assets/ZeeNYSongCover3.png" alt="Song 3">';
+      cover.classList.add('visible');
+    }
     
     currentAudio = new Audio('assets/ZeeNYSong3.mp3');
     currentAudio.play();
@@ -1152,6 +1162,13 @@ function zoomToThird() {
 }
 
 function zoomToSecond() {
+  // Always stop any currently playing audio first
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  
   currentSongPhase = 1;
   const podium = document.getElementById('podium');
   
@@ -1160,14 +1177,16 @@ function zoomToSecond() {
   podium.style.bottom = '5vh';
   
   setTimeout(() => {
-    // Zoom into second place spot (right side)
-    podium.style.transform = 'translateX(-80%) scale(1.8)';
-    podium.style.bottom = '20vh';
+    // Zoom into second place spot (right side) - adjusted for 2x size
+    podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.8)';
+    podium.style.bottom = '15vh';
     
     setTimeout(() => {
       const cover = document.getElementById('cover-2');
-      cover.innerHTML = '<img src="assets/ZeeNYSongCover2.png" alt="Song 2">';
-      cover.classList.add('visible');
+      if (!cover.innerHTML) {
+        cover.innerHTML = '<img src="assets/ZeeNYSongCover2.png" alt="Song 2">';
+        cover.classList.add('visible');
+      }
       
       currentAudio = new Audio('assets/ZeeNYSong2.mp3');
       currentAudio.play();
@@ -1180,6 +1199,13 @@ function zoomToSecond() {
 }
 
 function showTopSongDarken() {
+  // Always stop any currently playing audio first
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  
   currentSongPhase = 2;
   const container = document.getElementById('songs-container');
   
@@ -1199,6 +1225,13 @@ function showTopSongDarken() {
 }
 
 function zoomToFirst() {
+  // Always stop any currently playing audio first
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  
   currentSongPhase = 3;
   const container = document.getElementById('songs-container');
   const darken = container.querySelector('.songs-darken');
@@ -1206,14 +1239,16 @@ function zoomToFirst() {
   
   const podium = document.getElementById('podium');
   
-  // Zoom into first place spot (center)
-  podium.style.transform = 'translateX(-50%) scale(2)';
-  podium.style.bottom = '25vh';
+  // Zoom into first place spot (center) - adjusted for 2x size
+  podium.style.transform = 'translateX(-50%) scale(1.8)';
+  podium.style.bottom = '20vh';
   
   setTimeout(() => {
     const cover = document.getElementById('cover-1');
-    cover.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
-    cover.classList.add('visible');
+    if (!cover.innerHTML) {
+      cover.innerHTML = '<img src="assets/ZeeNYSongCover1.png" alt="Song 1">';
+      cover.classList.add('visible');
+    }
     
     currentAudio = new Audio('assets/ZeeNYSong1.mp3');
     currentAudio.play();
@@ -1338,32 +1373,41 @@ document.getElementById('leftArrow').addEventListener('click', () => {
       // From first place to second place
       if (currentAudio) {
         currentAudio.pause();
+        currentAudio.currentTime = 0;
         currentAudio = null;
       }
       currentSongPhase = 1;
       const podium = document.getElementById('podium');
-      podium.style.transform = 'translateX(-80%) scale(1.8)';
+      podium.style.transform = 'translateX(calc(-50% - 200px)) scale(1.8)';
+      podium.style.bottom = '15vh';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong2.mp3');
         currentAudio.play();
-      }, 300);
+      }, 600);
     } else if (currentSongPhase === 1) {
       // From second place to third place
       if (currentAudio) {
         currentAudio.pause();
+        currentAudio.currentTime = 0;
         currentAudio = null;
       }
       currentSongPhase = 0;
       const podium = document.getElementById('podium');
-      podium.style.transform = 'translateX(-20%) scale(1.8)';
+      podium.style.transform = 'translateX(calc(-50% + 200px)) scale(1.8)';
+      podium.style.bottom = '15vh';
       
       setTimeout(() => {
         currentAudio = new Audio('assets/ZeeNYSong3.mp3');
         currentAudio.play();
-      }, 300);
+      }, 600);
     } else {
       // From third place or intro - go to previous section
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
       resetAndShowSongs();
     }
     return;
@@ -1512,6 +1556,7 @@ function restart() {
   
   if (currentAudio) {
     currentAudio.pause();
+    currentAudio.currentTime = 0;
     currentAudio = null;
   }
   
